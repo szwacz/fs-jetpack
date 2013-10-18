@@ -1,0 +1,25 @@
+{
+  "name": "fs-jetpack",
+  "description": "Jetpack for node's fs library",
+  "version": "0.1.0",
+  "author": "Jakub Szwacz <jakub@szwacz.com>",
+  "dependencies": {
+    "q": "0.9.x"
+  },
+  "devDependencies": {
+    "fs-extra": "0.7.x"
+  },
+  "scripts": {
+    "test": "jasmine-node spec"
+  },
+  "main": "main",
+  "keywords": [
+    
+  ],
+  "homepage": "https://github.com/szwacz/fs-jetpack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szwacz/fs-jetpack.git"
+  },
+  "licence": "MIT"
+}
