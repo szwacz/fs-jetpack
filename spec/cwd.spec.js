@@ -36,4 +36,14 @@ describe('cwd', function () {
         expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '../../..'));
     });
     
+    it('cwd contexts can be created recursively', function () {
+        var jetCwd1, jetCwd2;
+        
+        jetCwd1 = jetpack.cwd('..');
+        expect(jetCwd1.cwd()).toBe(pathUtil.resolve(process.cwd(), '..'));
+        
+        jetCwd2 = jetCwd1.cwd('..');
+        expect(jetCwd2.cwd()).toBe(pathUtil.resolve(process.cwd(), '../..'));
+    });
+    
 });
