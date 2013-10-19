@@ -10,22 +10,30 @@ describe('cwd', function () {
     });
     
     it('can create new context with different cwd', function () {
-        var jetCwd, relativeCwd, expectedPath;
+        var jetCwd = jetpack.cwd('/');
+        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '/'));
+        expect(jetpack.cwd()).toBe(process.cwd()); // cwd of main lib should be intact
+    });
+    
+    it('cwd resolving quirks', function () {
+        var jetCwd;
         
         // cwd can be relative path
         // then is resolved according to current cwd
-        relativeCwd = '..';
+        jetCwd = jetpack.cwd('..');
+        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '..'));
         
-        jetCwd = jetpack.cwd(relativeCwd);
-        expectedPath = pathUtil.resolve(process.cwd(), relativeCwd);
-        expect(jetCwd.cwd()).toBe(expectedPath);
-        expect(jetpack.cwd()).toBe(process.cwd()); // cwd of main lib should be intact
+        // path can be slash-separated
+        jetCwd = jetpack.cwd('../..');
+        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '..\\..'));
         
-        var absoluteCwd = '/';
-        // cwd can be absolute path
-        //jetCwd = jet.cwd('/');
-        //expect(jetCwd.cwd()).toBe('');
-        //expect(jet.cwd()).toBe(process.cwd()); // cwd of main lib should be intact
+        // path can be backslash-separated
+        jetCwd = jetpack.cwd('..\\..');
+        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '../..'));
+        
+        // path can have mixed separators
+        jetCwd = jetpack.cwd('..\\../..');
+        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '../../..'));
     });
     
 });
