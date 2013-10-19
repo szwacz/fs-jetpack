@@ -13,12 +13,14 @@ All asynchronous methods are promise based, and are using [Q library](https://gi
 Returns Current Working Directory (CWD) path, or creates new CWD context.
 
 *parameters:*
-* `path` (optional) path for new CWD context. Could be absolute, or relative. If relative path given new CWD will be resolved basing on `process.cwd()` value.
+
+`path` (optional) path for new CWD context. Could be absolute, or relative. If relative path given new CWD will be resolved basing on `process.cwd()` value.
 
 *returns:*
 
-If `path` not specified, returns CWD path. For main instance of fs-jetpack it is always `process.cwd()`.
+If `path` not specified, returns CWD path. For main instance of fs-jetpack it is always `process.cwd()`.  
 If `path` specified, returns new CWD context (see code below for explanation).
+
 
 ```javascript
 var jetpack = requite('fs-jetpack');
