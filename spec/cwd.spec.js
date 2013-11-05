@@ -10,30 +10,13 @@ describe('cwd', function () {
     });
     
     it('can create new context with different cwd', function () {
-        var jetCwd = jetpack.cwd('/');
+        var jetCwd = jetpack.cwd('/'); // absolute path
         expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '/'));
-        expect(jetpack.cwd()).toBe(process.cwd()); // cwd of main lib should be intact
-    });
-    
-    it('cwd resolving quirks', function () {
-        var jetCwd;
         
-        // cwd can be relative path
-        // then is resolved according to current cwd
-        jetCwd = jetpack.cwd('..');
-        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '..'));
-        
-        // path can be slash-separated
-        jetCwd = jetpack.cwd('../..');
-        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '..\\..'));
-        
-        // path can be backslash-separated
-        jetCwd = jetpack.cwd('..\\..');
+        jetCwd = jetpack.cwd('../..'); // relative path
         expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '../..'));
         
-        // path can have mixed separators
-        jetCwd = jetpack.cwd('..\\../..');
-        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), '../../..'));
+        expect(jetpack.cwd()).toBe(process.cwd()); // cwd of main lib should be intact
     });
     
     it('cwd contexts can be created recursively', function () {
