@@ -80,6 +80,46 @@ describe('dir', function () {
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
         });
         
+        if (process.platform === 'win32') {
+        
+            describe('windows specyfic', function () {
+                
+                
+                
+            });
+                
+        } else {
+            
+            describe('*nix specyfic', function () {
+                
+                // tests assume umask is not greater than 022
+                
+                it('should set mode to created file', function () {
+                    expect(fse.existsSync('something')).toBe(false);
+                    jetpack.file('something', { mode: '521' }); // mode as string
+                    expect(fse.statSync('something').mode.toString(8)).toBe('100521');
+                    expect(fse.existsSync('other')).toBe(false);
+                    jetpack.file('other', { mode: parseInt('521', 8) }); // mode as number
+                    expect(fse.statSync('other').mode.toString(8)).toBe('100521');
+                });
+                
+                it('should change mode of existing file if not match', function () {
+                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
+                    expect(fse.existsSync('something.txt')).toBe(true);
+                    jetpack.file('something.txt', { mode: '521' });
+                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100521');
+                });
+                
+                it('should leave mode of file intact if not specified', function () {
+                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
+                    jetpack.file('something.txt');
+                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
+                });
+                
+            });
+            
+        }
+        
     });
     
     describe('async', function () {
@@ -207,6 +247,63 @@ describe('dir', function () {
             });
             waitsFor(function () { return done; }, null, 200);
         });
+        
+        if (process.platform === 'win32') {
+        
+            describe('windows specyfic', function () {
+                
+                
+                
+            });
+                
+        } else {
+            
+            describe('*nix specyfic', function () {
+                
+                // tests assume umask is not greater than 022
+                
+                it('should set mode to created file', function () {
+                    var done = false;
+                    expect(fse.existsSync('something')).toBe(false);
+                    expect(fse.existsSync('other')).toBe(false);
+                    jetpack.fileAsync('something', { mode: '521' }) // mode as string
+                    .then(function () {
+                        return jetpack.fileAsync('other', { mode: parseInt('521', 8) }); // mode as number
+                    })
+                    .then(function () {
+                        expect(fse.statSync('something').mode.toString(8)).toBe('100521');
+                        expect(fse.statSync('other').mode.toString(8)).toBe('100521');
+                        done = true;
+                    });
+                    waitsFor(function () { return done; }, null, 200);
+                });
+                
+                it('should change mode of existing file if not match', function () {
+                    var done = false;
+                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
+                    expect(fse.existsSync('something.txt')).toBe(true);
+                    jetpack.fileAsync('something.txt', { mode: '521' })
+                    .then(function () {
+                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100521');
+                        done = true;
+                    });
+                    waitsFor(function () { return done; }, null, 200);
+                });
+                
+                it('should leave mode of file intact if not specified', function () {
+                    var done = false;
+                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
+                    jetpack.fileAsync('something.txt', { content: '123' })
+                    .then(function () {
+                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
+                        done = true;
+                    });
+                    waitsFor(function () { return done; }, null, 200);
+                });
+                
+            });
+            
+        }
         
     });
     

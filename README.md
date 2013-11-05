@@ -52,7 +52,7 @@ Ensures that directory meets given criteria. If any criterium is not met it will
 `criteria` (optional) criteria to be met by the directory. Is an object with possible fields:
 * `exists` (default: `true`) whether directory should exist or not. If set to `true` and `path` contains many nested, nonexistent directories all of them will be created.
 * `empty` (default: `false`) whether directory should be empty (no other files or directories inside). If set to `true` and directory contains any files or subdirectories all of them will be deleted. If `exists` set to `false` this field is ignored.
-* `mode` TODO
+* `mode` ensures directory has specified mode. If not set and directory already exists, current mode will be intact. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 *returns:*  
 New CWD context with this directory as CWD.  
@@ -94,7 +94,7 @@ Ensures that file meets given criteria. If any criterium is not met it will be a
 `criteria` (optional) criteria to be met by the directory. Is an object with possible fields:
 * `exists` (default: `true`) whether file should exist or not.
 * `empty` (default: `false`) whether file should be forced to be empty. If `exists` set to `false` this field is ignored.
-* `mode` TODO
+* `mode` ensures file has specified mode. If not set and file already exists, current mode will be intact. Value could be number (eg. `0700`) or string (eg. `'700'`).
 * `content` (string or buffer) ensures that file has precisely this content. If `exists` set to `false`, or `empty` set to `true` this field is ignored.
 
 *returns:*  
