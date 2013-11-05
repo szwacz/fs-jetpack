@@ -4,22 +4,11 @@ describe('dir', function () {
     
     var fse = require('fs-extra');
     var pathUtil = require('path');
+    var utils = require('./specUtils');
     var jetpack = require('..');
     
-    var originalCwd = process.cwd();
-    var workingDir = pathUtil.resolve(originalCwd, 'temp');
-    
-    beforeEach(function () {
-        if (fse.existsSync(workingDir)) {
-            fse.removeSync(workingDir);
-        }
-        fse.mkdirSync(workingDir);
-        process.chdir(workingDir);
-    });
-    
-    afterEach(function () {
-        process.chdir(originalCwd);
-    });
+    beforeEach(utils.beforeEach);
+    afterEach(utils.afterEach);
     
     describe('sync', function () {
         
@@ -62,6 +51,11 @@ describe('dir', function () {
             expect(fse.existsSync('something/other')).toBe(true);
             jetpack.dir('something', { exists: false, empty: true });
             expect(fse.existsSync('something')).toBe(false);
+        });
+        
+        it('if exists = false, returned CWD context should refer to parent of given directory', function () {
+            var context = jetpack.dir('something', { exists: false });
+            expect(context.cwd()).toBe(process.cwd());
         });
         
         it('if given path is file, should delete it and place dir instead', function () {
@@ -108,9 +102,15 @@ describe('dir', function () {
         
         it('should make sure dir does not exist', function () {
             var done = false;
-            fse.mkdirSync('something');
-            expect(fse.existsSync('something')).toBe(true);
+            expect(fse.existsSync('something')).toBe(false);
+            // dir does not exist
             jetpack.dirAsync('something', { exists: false })
+            .then(function () {
+                fse.mkdirSync('something');
+                expect(fse.existsSync('something')).toBe(true);
+                // dir exist
+                return jetpack.dirAsync('something', { exists: false });
+            })
             .then(function () {
                 expect(fse.existsSync('something')).toBe(false);
                 done = true;
@@ -149,6 +149,16 @@ describe('dir', function () {
             jetpack.dirAsync('something', { exists: false, empty: true })
             .then(function () {
                 expect(fse.existsSync('something')).toBe(false);
+                done = true;
+            });
+            waitsFor(function () { return done; }, null, 200);
+        });
+        
+        it('if exists = false, returned CWD context should refer to parent of given directory', function () {
+            var done = false;
+            jetpack.dirAsync('something', { exists: false })
+            .then(function (context) {
+                expect(context.cwd()).toBe(process.cwd());
                 done = true;
             });
             waitsFor(function () { return done; }, null, 200);
