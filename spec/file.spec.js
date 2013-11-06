@@ -88,6 +88,11 @@ describe('dir', function () {
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
         });
         
+        it('should return CWD context', function () {
+            var context = jetpack.file('something.txt');
+            expect(context.cwd()).toBe(jetpack.cwd());
+        });
+        
         if (process.platform === 'win32') {
         
             describe('windows specyfic', function () {
@@ -275,6 +280,16 @@ describe('dir', function () {
             jetpack.fileAsync('something.txt', { empty: true, content: '123' })
             .then(function () {
                 expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
+                done = true;
+            });
+            waitsFor(function () { return done; }, null, 200);
+        });
+        
+        it('should return CWD context', function () {
+            var done = false;
+            jetpack.fileAsync('something.txt')
+            .then(function (context) {
+                expect(context.cwd()).toBe(jetpack.cwd());
                 done = true;
             });
             waitsFor(function () { return done; }, null, 200);
