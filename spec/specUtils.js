@@ -1,9 +1,10 @@
 
 var fse = require('fs-extra');
 var pathUtil = require('path');
+var os = require('os');
 
 var originalCwd = process.cwd();
-var workingDir = pathUtil.resolve('../tmp');
+var workingDir = pathUtil.join(os.tmpdir(), 'fs-jetpack');
 
 module.exports.workingDir = workingDir;
 
