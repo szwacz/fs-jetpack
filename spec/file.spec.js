@@ -19,15 +19,19 @@ describe('dir', function () {
         });
         
         it('should make sure file does not exist', function () {
+            // file does not exist on disk
+            expect(fse.existsSync('something.txt')).toBe(false);
+            jetpack.file('something.txt', { exists: false });
+            expect(fse.existsSync('something.txt')).toBe(false);
+            
+            // file exists on disk
             fse.writeFileSync('something.txt', 'abc');
-            expect(fse.existsSync('something.txt')).toBe(true);
             jetpack.file('something.txt', { exists: false });
             expect(fse.existsSync('something.txt')).toBe(false);
         });
         
         it('should not bother about file emptiness if not said so', function () {
             fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
             jetpack.file('something.txt');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
         });
@@ -40,7 +44,8 @@ describe('dir', function () {
         });
         
         it('if given path is directory, should delete it and place file instead', function () {
-            fse.mkdirsSync('something/else');
+            // create nested directories to be sure we can delete non-empty dir
+            fse.mkdirsSync('something/other');
             expect(fse.statSync('something').isDirectory()).toBe(true);
             jetpack.file('something');
             expect(fse.statSync('something').isFile()).toBe(true);
@@ -52,28 +57,31 @@ describe('dir', function () {
             expect(fse.existsSync('new_dir/something.txt')).toBe(true);
         });
         
-        it("should set file content from string", function () {
+        it("should set file content", function () {
+            // content as string
+            jetpack.file('something.txt', { content: '123' });
+            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
+            
+            // content as buffer
+            jetpack.file('other.txt', { content: new Buffer('123') });
+            expect(fse.readFileSync('other.txt', { encoding: 'utf8' })).toBe('123');
+        });
+        
+        it("should set content of already existing file", function () {
             fse.writeFileSync('something.txt', 'abc');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
             jetpack.file('something.txt', { content: '123' });
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
         });
         
-        it("should set file content from buffer", function () {
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.file('something.txt', { content: new Buffer('123') });
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
-        });
-        
-        it('exists = false should take precedence over empty and content', function () {
+        it('*exists = false* should take precedence over *empty* and *content*', function () {
             fse.writeFileSync('something.txt', 'abc');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
             jetpack.file('something.txt', { exists: false, empty: true, content: '123' });
             expect(fse.existsSync('something.txt')).toBe(false);
         });
         
-        it('empty = true should take precedence over content', function () {
+        it('*empty = true* should take precedence over *content*', function () {
             fse.writeFileSync('something.txt', 'abc');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
             jetpack.file('something.txt', { empty: true, content: '123' });
@@ -84,7 +92,9 @@ describe('dir', function () {
         
             describe('windows specyfic', function () {
                 
-                
+                it('specyfying mode should have no effect (throw no error)', function () {
+                    jetpack.file('something.txt', { mode: '521' });
+                });
                 
             });
                 
@@ -94,12 +104,15 @@ describe('dir', function () {
                 
                 // tests assume umask is not greater than 022
                 
-                it('should set mode to created file', function () {
+                it('should set mode of created file', function () {
+                    // mode as string
                     expect(fse.existsSync('something')).toBe(false);
-                    jetpack.file('something', { mode: '521' }); // mode as string
+                    jetpack.file('something', { mode: '521' });
                     expect(fse.statSync('something').mode.toString(8)).toBe('100521');
+                    
+                    // mode as number
                     expect(fse.existsSync('other')).toBe(false);
-                    jetpack.file('other', { mode: parseInt('521', 8) }); // mode as number
+                    jetpack.file('other', { mode: parseInt('521', 8) });
                     expect(fse.statSync('other').mode.toString(8)).toBe('100521');
                 });
                 
@@ -112,7 +125,19 @@ describe('dir', function () {
                 
                 it('should leave mode of file intact if not specified', function () {
                     fse.writeFileSync('something.txt', 'abc', { mode: '700' });
+                    
+                    // ensure exists
                     jetpack.file('something.txt');
+                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
+                    
+                    // make file empty
+                    jetpack.file('something.txt', { empty: true });
+                    expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
+                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
+                    
+                    // set file content
+                    jetpack.file('something.txt', { content: '123' });
+                    expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
                     expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
                 });
                 
@@ -137,13 +162,16 @@ describe('dir', function () {
         
         it('should make sure file does not exist', function () {
             var done = false;
+            
+            // file does not exist on disk
             expect(fse.existsSync('something.txt')).toBe(false);
-            // file does not exist
             jetpack.fileAsync('something.txt', { exists: false })
             .then(function () {
+                expect(fse.existsSync('something.txt')).toBe(false);
+                
+                // file exists on disk
                 fse.writeFileSync('something.txt', 'abc');
                 expect(fse.existsSync('something.txt')).toBe(true);
-                // file exist
                 return jetpack.fileAsync('something.txt', { exists: false });
             })
             .then(function () {
@@ -156,7 +184,6 @@ describe('dir', function () {
         it('should not bother about file emptiness if not said so', function () {
             var done = false;
             fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
             jetpack.fileAsync('something.txt')
             .then(function () {
                 expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
@@ -179,6 +206,7 @@ describe('dir', function () {
         
         it('if given path is directory, should delete it and place file instead', function () {
             var done = false;
+            // create nested directories to be sure we can delete non-empty dir
             fse.mkdirsSync('something/else');
             expect(fse.statSync('something').isDirectory()).toBe(true);
             jetpack.fileAsync('something')
@@ -200,7 +228,23 @@ describe('dir', function () {
             waitsFor(function () { return done; }, null, 200);
         });
         
-        it("should set file content from string", function () {
+        it("should set file content", function () {
+            var done = false;
+            // content as string
+            jetpack.fileAsync('something.txt', { content: '123' })
+            .then(function () {
+                // content as buffer
+                return jetpack.fileAsync('other.txt', { content: new Buffer('123') });
+            })
+            .then(function () {
+                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
+                expect(fse.readFileSync('other.txt', { encoding: 'utf8' })).toBe('123');
+                done = true;
+            });
+            waitsFor(function () { return done; }, null, 200);
+        });
+        
+        it("should set content of already existing file", function () {
             var done = false;
             fse.writeFileSync('something.txt', 'abc');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
@@ -212,19 +256,7 @@ describe('dir', function () {
             waitsFor(function () { return done; }, null, 200);
         });
         
-        it("should set file content from buffer", function () {
-            var done = false;
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.fileAsync('something.txt', { content: new Buffer('123') })
-            .then(function () {
-                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('exists = false should take precedence over empty and content', function () {
+        it('*exists = false* should take precedence over *empty* and *content*', function () {
             var done = false;
             fse.writeFileSync('something.txt', 'abc');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
@@ -236,7 +268,7 @@ describe('dir', function () {
             waitsFor(function () { return done; }, null, 200);
         });
         
-        it('empty = true should take precedence over content', function () {
+        it('*empty = true* should take precedence over *content*', function () {
             var done = false;
             fse.writeFileSync('something.txt', 'abc');
             expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
@@ -252,7 +284,14 @@ describe('dir', function () {
         
             describe('windows specyfic', function () {
                 
-                
+                it('specyfying mode should have no effect (throw no error)', function () {
+                    var done = false;
+                    jetpack.fileAsync('something.txt', { mode: '521' })
+                    .then(function () {
+                        done = true;
+                    });
+                    waitsFor(function () { return done; }, null, 200);
+                });
                 
             });
                 
@@ -262,13 +301,15 @@ describe('dir', function () {
                 
                 // tests assume umask is not greater than 022
                 
-                it('should set mode to created file', function () {
+                it('should set mode of created file', function () {
                     var done = false;
                     expect(fse.existsSync('something')).toBe(false);
                     expect(fse.existsSync('other')).toBe(false);
-                    jetpack.fileAsync('something', { mode: '521' }) // mode as string
+                    // mode as string
+                    jetpack.fileAsync('something', { mode: '521' })
                     .then(function () {
-                        return jetpack.fileAsync('other', { mode: parseInt('521', 8) }); // mode as number
+                        // mode as number
+                        return jetpack.fileAsync('other', { mode: parseInt('521', 8) });
                     })
                     .then(function () {
                         expect(fse.statSync('something').mode.toString(8)).toBe('100521');
@@ -293,8 +334,24 @@ describe('dir', function () {
                 it('should leave mode of file intact if not specified', function () {
                     var done = false;
                     fse.writeFileSync('something.txt', 'abc', { mode: '700' });
-                    jetpack.fileAsync('something.txt', { content: '123' })
+                    
+                    // ensure exists
+                    jetpack.fileAsync('something.txt')
                     .then(function () {
+                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
+                        
+                        // make file empty
+                        return jetpack.fileAsync('something.txt', { empty: true });
+                    })
+                    .then(function () {
+                        expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
+                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
+                        
+                        // set file content
+                        return jetpack.fileAsync('something.txt', { content: '123' });
+                    })
+                    .then(function () {
+                        expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
                         expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
                         done = true;
                     });
