@@ -1,5 +1,5 @@
 #fs-jetpack
-This is an attempt to make comprehensive, higher level API for node's [fs](http://nodejs.org/api/fs.html) library.
+This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
 
 **Note: This is work in progress, nothing to see here for now. Come back in a few weeks.**
 
@@ -7,47 +7,6 @@ This is an attempt to make comprehensive, higher level API for node's [fs](http:
 #Usage
 ```javascript
 var jetpack = requite('fs-jetpack');
-```
-
-
-#What can it do?
-
-###Create directory/file trees in declarative style
-```javascript
-// Synchronous
-
-jetpack
-.dir('my_stuff')
-    .dir('work')
-        .file('hello.txt', { content: 'Hello! Wazup?' })
-        .cwd('..') // go back to parent directory
-    .dir('photos')
-        .file('me.jpg', { content: new Buffer('here should be image bytes') });
-
-
-// Asynchronous (unfortunately not that pretty)
-
-jetpack
-.dirAsync('my_stuff')
-    .then(function (context) {
-        return context.dirAsync('work');
-    })
-        .then(function (context) {
-            return context.fileAsync('hello.txt', { content: 'Hello! Wazup?' });
-        })
-    .then(function (context) {
-        return context.cwd('..').dirAsync('photos');
-    })
-        .then(function (context) {
-            return context.fileAsync('me.jpg', { content: new Buffer('here should be image bytes') });
-        });
-
-// both snippets will create file structure:
-// my_stuff
-// |- work
-// |  |- hello.txt
-// |- photos
-// |  |- me.jpg
 ```
 
 
@@ -109,13 +68,15 @@ var notExistsCwd = jetpack.dir('/my_stuff/some_dir', { exists: false });
 // if exists == false, returned CWD context refers to parent of specified directory
 console.log(notExistsCwd.cwd()) // '/my_stuff'
 
-// creates directory (if not exists) or make sure that it's empty (if exists)
+// creates directory with mode 0700 (if not exists)
+// or make sure that it's empty and has mode 0700 (if exists)
 jetpack.dir('empty_dir', { empty: true, mode: '700' });
 
-// because dir returns new CWD context pointing to that directory you can create dir chains
+// because dir returns new CWD context pointing to just
+// created directory you can create dir chains
 jetpack
-.dir('/main_dir') // creates '/main_dir'
-.dir('sub_dir'); // creates '/main_dir/sub_dir'
+.dir('main_dir') // creates 'main_dir'
+.dir('sub_dir'); // creates 'main_dir/sub_dir'
 ```
 
 
@@ -151,3 +112,44 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 
 ##fileAsync(path, [criteria])
 Asynchronous equivalent of `file()` method. The only difference is that it returns promise.
+
+
+#Cookbook
+
+Create directory/file tree in declarative style
+```javascript
+// Synchronous way
+
+jetpack
+.dir('my_stuff')
+    .dir('work')
+        .file('hello.txt', { content: 'Hello! Wazup?' })
+        .cwd('..') // go back to parent directory
+    .dir('photos')
+        .file('me.jpg', { content: new Buffer('here should be image bytes') });
+
+
+// Asynchronous way (unfortunately not that pretty)
+
+jetpack
+.dirAsync('my_stuff')
+    .then(function (context) {
+        return context.dirAsync('work');
+    })
+        .then(function (context) {
+            return context.fileAsync('hello.txt', { content: 'Hello! Wazup?' });
+        })
+    .then(function (context) {
+        return context.cwd('..').dirAsync('photos');
+    })
+        .then(function (context) {
+            return context.fileAsync('me.jpg', { content: new Buffer('here should be image bytes') });
+        });
+
+// both snippets will create file structure:
+// my_stuff
+// |- work
+// |  |- hello.txt
+// |- photos
+// |  |- me.jpg
+```
