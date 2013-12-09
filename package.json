@@ -15,7 +15,7 @@
   },
   "main": "main.js",
   "keywords": [
-    
+    "fs", "file system", "mkdirp", "wrench", "fs-extra"
   ],
   "homepage": "https://github.com/szwacz/fs-jetpack",
   "repository": {
