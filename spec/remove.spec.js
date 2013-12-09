@@ -58,10 +58,10 @@ describe('remove', function () {
                 expect(fse.existsSync('something/tmp')).toBe(false);
             });
             
-            it("should not test *only* against given path, only sub-paths", function () {
+            it("should test *only* against root path", function () {
                 fse.mkdirSync('something');
                 jetpack.remove('something', { only: ['something'] });
-                expect(fse.existsSync('something')).toBe(true);
+                expect(fse.existsSync('something')).toBe(false);
             });
             
             it("should delete *allBut*", function () {
@@ -83,10 +83,10 @@ describe('remove', function () {
                 expect(fse.existsSync('something/else')).toBe(false);
             });
             
-            it("should not test *allBut* against given path, only sub-paths", function () {
+            it("should test *allBut* agains root path", function () {
                 fse.mkdirSync('something');
                 jetpack.remove('something', { allBut: ['something'] });
-                expect(fse.existsSync('something')).toBe(false);
+                expect(fse.existsSync('something')).toBe(true);
             });
             
             it("*only* should take precedence over *allBut*", function () {
@@ -98,15 +98,6 @@ describe('remove', function () {
                 
                 expect(fse.existsSync('something/f1.txt')).toBe(true);
                 expect(fse.existsSync('something/f3.doc')).toBe(false);
-            });
-            
-            it("*only* and *allBut* should do nothing if removed element is single file", function () {
-                fse.writeFileSync('f1.txt', 'abc');
-                fse.writeFileSync('f2.txt', 'abc');
-                jetpack.remove('f1.txt', { only: ['blah'] });
-                jetpack.remove('f2.txt', { allBut: ['blah'] });
-                expect(fse.existsSync('f1.txt')).toBe(true); // TODO: should it be deleted? Shouldn't filters apply only to sub-tree?
-                expect(fse.existsSync('f2.txt')).toBe(false);
             });
             
         });
