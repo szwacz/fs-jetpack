@@ -1,20 +1,19 @@
 #fs-jetpack
+
 This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
 
-**Note: This is work in progress, nothing to see here for now. Come back in a few weeks.**
-
-
-#Installation and usage
+###Installation
+```
 TODO
-
-###Backwards compatibility policy
-TODO
+```
 
 ###Usage
-Just import and you are ready to go.
 ```javascript
 var jetpack = requite('fs-jetpack');
 ```
+
+###Backwards compatibility policy
+This library is all about fun to use, clean API, so if better way to do some task will emerge **breaking changes will be introduced ruthlessly** (ofcourse until we reach version 1.0.0). Just want to make this clear.
 
 
 #API
@@ -50,6 +49,25 @@ jetpackContext.dir('four'); // we just created directory '/one/two/four'
 var jetpackContext2 = jetpackContext.cwd('..');
 console.log(jetpackContext2.cwd()); // '/one'
 ```
+
+
+###copy(from, to, [options]) TODO
+Copies given file or directory.
+
+**parameters:**  
+`from` path to location you want to copy.  
+`to` destination path where copy should be placed.  
+`options` (optional) additional options for customization. Is an `object` with possible fields:  
+* `overwrite` 'no' 'nonExistent' 'ifNewer' 'yes'
+* `symlinks` 'copySymlink' 'copyDestination' 'omit'
+* `only`
+* `allBut`
+
+**returns:**  
+
+
+###copyAsync(from, to, [options]) TODO
+Asynchronous equivalent of `copy()` method. The only difference is that it returns promise.
 
 
 ###dir(path, [criteria])
@@ -127,14 +145,29 @@ Creates list of files
 **parameters:**  
 `path` path to file/directory to remove.  
 `options` (optional) additional options for customization. Is an `object` with possible fields:
-* `includeRoot` (default: `false`) whether should be returned directory as root object, or only its content (files inside that directory).
+* `includeRoot` (default: `false`) whether returned data should contain root directory (provided in path), or only its children.
 * `subDirs` (default: `false`) whether subdirectories should be also listed.
+* `symlinks` TODO
 
 **returns:**  
-`Array of Objects`
-
+Object structure. Here is simple example:
 ```javascript
-// TODO: returned object spec
+{
+    name: 'rootDir', // there is one root object if includeRoot was set to true
+    type: 'dir',
+    path: '/myStuff/rootDir', // absolute path to this location
+    size: 5, // (in bytes) in case of directory this number is combined size of all children
+    parent: null, // this directory actually has parent, but it was not scanned, so is not reachable
+    children: [ // contains Array of all dirs and files inside this directory
+        {
+            name: 'myFile.txt',
+            type: 'file',
+            path: '/myStuff/rootDir/myFile.txt',
+            parent: [Object], // reference to parent object
+            size: 3
+        }
+    ]
+}
 ```
 
 
@@ -170,7 +203,7 @@ jetpack.remove('my_app', { only: [ '*.log', 'temp' ] });
 jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 ```
 
-###removeAsync(path, [options]) - TODO
+###removeAsync(path, [options])
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
 
 
@@ -186,17 +219,26 @@ Few examples:
 
 #Cookbook
 
-Create directory/file tree in declarative style
+Create file tree in declarative style
 ```javascript
+/*
+ We want to create structure:
+ my_stuff
+ |- work
+ |  |- hello.txt
+ |- photos
+ |  |- me.jpg
+*/
+
 // Synchronous way
 
 jetpack
 .dir('my_stuff')
     .dir('work')
-        .file('hello.txt', { content: 'Hello! Wazup?' })
+        .file('hello.txt', { content: 'Hello world!' })
         .cwd('..') // go back to parent directory
     .dir('photos')
-        .file('me.jpg', { content: new Buffer('here should be image bytes') });
+        .file('me.jpg', { content: new Buffer('should be image bytes') });
 
 
 // Asynchronous way (unfortunately not that pretty)
@@ -207,19 +249,14 @@ jetpack
         return context.dirAsync('work');
     })
         .then(function (context) {
-            return context.fileAsync('hello.txt', { content: 'Hello! Wazup?' });
+            return context.fileAsync('hello.txt', { content: 'Hello world!' });
         })
     .then(function (context) {
         return context.cwd('..').dirAsync('photos');
     })
         .then(function (context) {
-            return context.fileAsync('me.jpg', { content: new Buffer('here should be image bytes') });
+            return context.fileAsync('me.jpg', {
+                content: new Buffer('should be image bytes')
+            });
         });
-
-// both snippets will create file structure:
-// my_stuff
-// |- work
-// |  |- hello.txt
-// |- photos
-// |  |- me.jpg
 ```
