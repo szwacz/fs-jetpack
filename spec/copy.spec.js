@@ -13,62 +13,63 @@ describe('copy', function () {
     describe('sync', function () {
         
         it("should copy file", function () {
-            fse.writeFileSync('something.txt', 'abc');
+            fse.writeFileSync('a.txt', 'abc');
             
-            jetpack.copy('something.txt', 'some.txt');
+            jetpack.copy('a.txt', 'b.txt');
             
-            expect(fse.existsSync('something.txt')).toBe(true);
-            expect(fse.readFileSync('some.txt', 'utf8')).toBe('abc');
+            expect(fse.existsSync('a.txt')).toBe(true);
+            expect(fse.readFileSync('b.txt', 'utf8')).toBe('abc');
         });
         
         it("should create lacking directories in path", function () {
-            fse.writeFileSync('something.txt', 'abc');
+            fse.writeFileSync('a.txt', 'abc');
             
-            jetpack.copy('something.txt', 'dir/something.txt');
+            jetpack.copy('a.txt', 'dir/a.txt');
             
-            expect(fse.existsSync('something.txt')).toBe(true);
-            expect(fse.readFileSync('dir/something.txt', 'utf8')).toBe('abc');
+            expect(fse.existsSync('a.txt')).toBe(true);
+            expect(fse.readFileSync('dir/a.txt', 'utf8')).toBe('abc');
         });
         
         it("should copy empty directory", function () {
-            fse.mkdirSync('something');
+            fse.mkdirSync('a');
             
-            jetpack.copy('something', 'dir/something');
+            jetpack.copy('a', 'dir/a');
             
-            expect(fse.statSync('dir/something').isDirectory()).toBe(true);
+            expect(fse.statSync('dir/a').isDirectory()).toBe(true);
         });
         
         it("should return recently used cwd()", function () {
-            fse.writeFileSync('something.txt', 'abc');
+            fse.writeFileSync('a.txt', 'abc');
             
-            var context = jetpack.copy('something.txt', 'dir/something.txt');
+            var context = jetpack.copy('a.txt', 'dir/a.txt');
             
             expect(context.cwd()).toBe(jetpack.cwd());
         });
         
         it("should copy tree", function () {
-            fse.mkdirSync('something');
-            fse.writeFileSync('something/f1.txt', 'abc');
-            fse.mkdirSync('something/more');
-            fse.mkdirSync('something/more/andMore');
-            fse.writeFileSync('something/more/f2.txt', '123');
+            fse.mkdirsSync('a/b/c');
+            fse.writeFileSync('a/f1.txt', 'abc');
+            fse.writeFileSync('a/b/f2.txt', '123');
             
-            jetpack.copy('something', 'dir/something');
+            jetpack.copy('a', 'dir/a');
             
-            expect(fse.readFileSync('dir/something/f1.txt', 'utf8')).toBe('abc');
-            expect(fse.existsSync('dir/something/more/andMore')).toBe(true);
-            expect(fse.readFileSync('dir/something/more/f2.txt', 'utf8')).toBe('123');
+            expect(fse.readFileSync('dir/a/f1.txt', 'utf8')).toBe('abc');
+            expect(fse.existsSync('dir/a/b/c')).toBe(true);
+            expect(fse.readFileSync('dir/a/b/f2.txt', 'utf8')).toBe('123');
         });
         
         describe('overwriting', function () {
             
             it("should not overwrite as default", function () {
-                fse.mkdirSync('a1');
-                fse.mkdirSync('a1/b');
+                fse.mkdirsSync('a1/b');
                 fse.writeFileSync('a1/f.txt', 'abc');
                 fse.mkdirSync('a2');
                 
-                jetpack.copy('a1', 'a2');
+                try {
+                    jetpack.copy('a1', 'a2');
+                } catch (err) {
+                    expect(err.code).toBe('EEXIST');
+                }
                 
                 expect(fse.existsSync('a2')).toBe(true);
                 expect(fse.existsSync('a2/b')).toBe(false);
@@ -76,8 +77,7 @@ describe('copy', function () {
             });
             
             it("should overwrite if it was specified", function () {
-                fse.mkdirSync('a1');
-                fse.mkdirSync('a1/b');
+                fse.mkdirsSync('a1/b');
                 fse.writeFileSync('a1/f.txt', 'abc');
                 fse.mkdirSync('a2');
                 
@@ -161,12 +161,12 @@ describe('copy', function () {
         
         it("should copy file", function () {
             var done = false;
-            fse.writeFileSync('something.txt', 'abc');
+            fse.writeFileSync('a.txt', 'abc');
             
-            jetpack.copyAsync('something.txt', 'some.txt')
+            jetpack.copyAsync('a.txt', 'b.txt')
             .then(function () {
-                expect(fse.existsSync('something.txt')).toBe(true);
-                expect(fse.readFileSync('some.txt', 'utf8')).toBe('abc');
+                expect(fse.existsSync('a.txt')).toBe(true);
+                expect(fse.readFileSync('b.txt', 'utf8')).toBe('abc');
                 done = true;
             });
             
@@ -175,12 +175,12 @@ describe('copy', function () {
         
         it("should create lacking directories in path", function () {
             var done = false;
-            fse.writeFileSync('something.txt', 'abc');
+            fse.writeFileSync('a.txt', 'abc');
             
-            jetpack.copyAsync('something.txt', 'dir/something.txt')
+            jetpack.copyAsync('a.txt', 'dir/a.txt')
             .then(function () {
-                expect(fse.existsSync('something.txt')).toBe(true);
-                expect(fse.readFileSync('dir/something.txt', 'utf8')).toBe('abc');
+                expect(fse.existsSync('a.txt')).toBe(true);
+                expect(fse.readFileSync('dir/a.txt', 'utf8')).toBe('abc');
                 done = true;
             });
             
@@ -189,11 +189,11 @@ describe('copy', function () {
         
         it("should copy empty directory", function () {
             var done = false;
-            fse.mkdirSync('something');
+            fse.mkdirSync('a');
             
-            jetpack.copyAsync('something', 'dir/something')
+            jetpack.copyAsync('a', 'dir/a')
             .then(function () {
-                expect(fse.statSync('dir/something').isDirectory()).toBe(true);
+                expect(fse.statSync('dir/a').isDirectory()).toBe(true);
                 done = true;
             });
             
@@ -202,9 +202,9 @@ describe('copy', function () {
         
         it("should return recently used cwd()", function () {
             var done = false;
-            fse.writeFileSync('something.txt', 'abc');
+            fse.writeFileSync('a.txt', 'abc');
             
-            jetpack.copyAsync('something.txt', 'dir/something.txt')
+            jetpack.copyAsync('a.txt', 'dir/a.txt')
             .then(function (context) {
                 expect(context.cwd()).toBe(jetpack.cwd());
                 done = true;
@@ -215,17 +215,17 @@ describe('copy', function () {
         
         it("should copy tree", function () {
             var done = false;
-            fse.mkdirSync('something');
-            fse.writeFileSync('something/f1.txt', 'abc');
-            fse.mkdirSync('something/more');
-            fse.mkdirSync('something/more/andMore');
-            fse.writeFileSync('something/more/f2.txt', '123');
+            fse.mkdirSync('a');
+            fse.writeFileSync('a/f1.txt', 'abc');
+            fse.mkdirSync('a/b');
+            fse.mkdirSync('a/b/c');
+            fse.writeFileSync('a/b/f2.txt', '123');
             
-            jetpack.copyAsync('something', 'dir/something')
+            jetpack.copyAsync('a', 'dir/a')
             .then(function () {
-                expect(fse.readFileSync('dir/something/f1.txt', 'utf8')).toBe('abc');
-                expect(fse.existsSync('dir/something/more/andMore')).toBe(true);
-                expect(fse.readFileSync('dir/something/more/f2.txt', 'utf8')).toBe('123');
+                expect(fse.readFileSync('dir/a/f1.txt', 'utf8')).toBe('abc');
+                expect(fse.existsSync('dir/a/b/c')).toBe(true);
+                expect(fse.readFileSync('dir/a/b/f2.txt', 'utf8')).toBe('123');
                 done = true;
             });
             
@@ -236,13 +236,13 @@ describe('copy', function () {
             
             it("should not overwrite as default", function () {
                 var done = false;
-                fse.mkdirSync('a1');
-                fse.mkdirSync('a1/b');
+                fse.mkdirsSync('a1/b');
                 fse.writeFileSync('a1/f.txt', 'abc');
                 fse.mkdirSync('a2');
                 
                 jetpack.copyAsync('a1', 'a2')
-                .then(function () {
+                .catch(function (err) {
+                    expect(err.code).toBe('EEXIST');
                     expect(fse.existsSync('a2')).toBe(true);
                     expect(fse.existsSync('a2/b')).toBe(false);
                     expect(fse.existsSync('a2/f.txt')).toBe(false);
@@ -254,8 +254,7 @@ describe('copy', function () {
             
             it("should overwrite if it was specified", function () {
                 var done = false;
-                fse.mkdirSync('a1');
-                fse.mkdirSync('a1/b');
+                fse.mkdirsSync('a1/b');
                 fse.writeFileSync('a1/f.txt', 'abc');
                 fse.mkdirSync('a2');
                 
