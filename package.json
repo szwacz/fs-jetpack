@@ -1,6 +1,6 @@
 {
   "name": "fs-jetpack",
-  "description": "Jetpack for node's fs library",
+  "description": "Jetpack for 'fs' library",
   "version": "0.1.0",
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
