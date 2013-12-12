@@ -33,6 +33,7 @@ Returns Current Working Directory (CWD) path, or creates new CWD context.
 If `path` not specified, returns CWD path. For main instance of fs-jetpack it is always `process.cwd()`.  
 If `path` specified, returns new CWD context, which is totally the same thing as jetpack library, but resolves paths according to its inner CWD path, not the global one (`process.cwd()`). See code below for more.
 
+**examples:**
 ```javascript
 // let's assume that process.cwd() outputs...
 console.log(process.cwd()); // '/one/two/three'
@@ -51,22 +52,38 @@ console.log(jetpackContext2.cwd()); // '/one'
 ```
 
 
-###copy(from, to, [options]) TODO
+###copy(from, to, [options])
 Copies given file or directory.
 
 **parameters:**  
 `from` path to location you want to copy.  
 `to` destination path where copy should be placed.  
 `options` (optional) additional options for customization. Is an `object` with possible fields:  
-* `overwrite` 'no' 'nonExistent' 'ifNewer' 'yes'
-* `symlinks` 'copySymlink' 'copyDestination' 'omit'
-* `only`
-* `allBut`
+* `overwrite` (default: `'no'`) mode to use if file already exists in destination location. Is a `string` with possible values:  
+`'no'` don't allow to replace any file or directory in destination location.
+`'yes'` replace every file already existing.
+`'merge'` *(TODO, not implemented yet)*  
+`'ifNewer'` *(TODO, not implemented yet)*
+* `only` (`array` of masks) will copy **only** items matching any of specified masks. Mask is `string` with .gitignore-like notation (see section *"Matching paths .gitignore style"*).
+* `allBut` (`array` of masks) will copy **everything except** items matching any of specified masks. If `only` is specified this field is ignored.
+* `symlinks` *(TODO, not implemented yet)*
 
 **returns:**  
+Recently used CWD context.
 
+**examples:**
+```javascript
+// copy file and replace it if exists
+jetpack.copy('/my_file.txt', '/somwhere/my_file.txt', { overwrite: 'yes' });
 
-###copyAsync(from, to, [options]) TODO
+// copy only .txt files inside my_dir
+jetpack.copy('/my_dir', '/somewhere/my_dir', { only: ['*.txt'] });
+
+// copy everything except temp directory inside my_dir
+jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
+```
+
+###copyAsync(from, to, [options])
 Asynchronous equivalent of `copy()` method. The only difference is that it returns promise.
 
 
@@ -84,6 +101,7 @@ Ensures that directory meets given criteria. If any criterium is not met it will
 New CWD context with directory specified in `path` as CWD.  
 If `exists` field was set to `false` returned CWD context points to parent directory of given `path`.
 
+**examples:**
 ```javascript
 // creates directory if not exists
 jetpack.dir('new_dir');
@@ -123,6 +141,7 @@ Ensures that file meets given criteria. If any criterium is not met it will be a
 **returns:**  
 Recently used CWD context.
 
+**examples:**
 ```javascript
 // creates file if not exists
 jetpack.file('something.txt');
@@ -147,7 +166,7 @@ Creates list of files
 `options` (optional) additional options for customization. Is an `object` with possible fields:
 * `includeRoot` (default: `false`) whether returned data should contain root directory (provided in path), or only its children.
 * `subDirs` (default: `false`) whether subdirectories should be also listed.
-* `symlinks` TODO
+* `symlinks` *(TODO, not implemented yet)*
 
 **returns:**  
 Object structure. Here is simple example:
@@ -156,7 +175,7 @@ Object structure. Here is simple example:
     name: 'rootDir', // there is one root object if includeRoot was set to true
     type: 'dir',
     path: '/myStuff/rootDir', // absolute path to this location
-    size: 5, // (in bytes) in case of directory this number is combined size of all children
+    size: 150, // (in bytes) in case of directory this number is combined size of all children
     parent: null, // this directory actually has parent, but it was not scanned, so is not reachable
     children: [ // contains Array of all dirs and files inside this directory
         {
@@ -164,7 +183,7 @@ Object structure. Here is simple example:
             type: 'file',
             path: '/myStuff/rootDir/myFile.txt',
             parent: [Object], // reference to parent object
-            size: 3
+            size: 150
         }
     ]
 }
@@ -187,6 +206,7 @@ Deletes given path, no matter what it is (file or directory).
 **returns:**  
 CWD context of directory parent to removed path.
 
+**examples:**
 ```javascript
 // will delete 'notes.txt'
 jetpack.remove('my_work/notes.txt');
@@ -209,20 +229,25 @@ Asynchronous equivalent of `remove()` method. The only difference is that it ret
 
 #Matching paths .gitignore style
 
-Anywhere path matching is needed, this library uses notation familiar to you from .gitignore file (thanks to [minimatch](https://github.com/isaacs/minimatch)).
+For filtering options (`only` and `allBut` properties) this library uses notation familiar to you from .gitignore file (thanks to [minimatch](https://github.com/isaacs/minimatch)).
 
 Few examples:
 ```javascript
-// TODO
+'work' // matches any file or directory named "work", nevermind in which subdirectory it is
+'*.txt' // matches any .txt file, nevermind in which subdirectory it is
+'my_documents/*' // matches any file inside directory "my_documents"
+'logs/2013-*.log' // matches any log file from 2013
+'logs/2013-12-??.log' // matches any log file from december 2013 ('?' matches any character)
+'my_documents/**/work' // matches any file or directory named "work" in subdirectories of "my_documents"
 ```
 
 
-#Cookbook
+#Chaining jetpack commands
 
-Create file tree in declarative style
+Because almost every jetpack method returns CWD context, you can chain commands together. What lets you create files in more declarative style:
 ```javascript
 /*
- We want to create structure:
+ We want to create file structure:
  my_stuff
  |- work
  |  |- hello.txt
