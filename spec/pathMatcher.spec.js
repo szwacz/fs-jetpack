@@ -5,9 +5,10 @@ describe('pathMatcher', function () {
     var matcher = require('../lib/pathMatcher');
     
     it("test matches", function () {
-        var test;
+        var test = matcher.create('/', ['c.txt']);
+        expect(test('/a/b/c.txt')).toBe(true);
         
-        test = matcher.create('/', ['c.txt']);
+        test = matcher.create('/', ['a/b/c.txt']);
         expect(test('/a/b/c.txt')).toBe(true);
         
         test = matcher.create('/', ['c.*']);
@@ -29,27 +30,49 @@ describe('pathMatcher', function () {
         expect(test('/a/b/c.txt')).toBe(false);
     });
     
+    it("test absolute matches", function () {
+        var test = matcher.create('/', ['/a']);
+        expect(test('/a')).toBe(true);
+        expect(test('/a/b')).toBe(false);
+        expect(test('/b/a')).toBe(false);
+        
+        test = matcher.create('/', ['/a/b/c.txt']);
+        expect(test('/a/b/c.txt')).toBe(true);
+        
+        test = matcher.create('/', ['/a/**/c.txt']);
+        expect(test('/a/b/c.txt')).toBe(true);
+    });
+    
+    it("test multiple masks", function () {
+        var test = matcher.create('/', ['a/**', '*.txt']);
+        expect(test('/a/b/c')).toBe(true); // should match mask 1
+        expect(test('/x/y/z.txt')).toBe(true); // should match mask 2
+    });
+    
     it("backslashes as separators", function () {
         var test = matcher.create('/', ['a\\b']);
         expect(test('/a/b')).toBe(true);
         expect(test('\\a\\b')).toBe(true);
+        
+        test = matcher.create('\\', ['a/**/b']);
+        expect(test('/a/x/b')).toBe(true);
+        expect(test('\\a\\x\\b')).toBe(true);
     });
     
     it("test reference directory", function () {
-        var test;
-        
-        test = matcher.create('/', ['a/**']);
+        var test = matcher.create('/', ['a/**']);
         expect(test('/a/b/c')).toBe(true);
         
         test = matcher.create('/a', ['a/**']);
         expect(test('/a/b/c')).toBe(false);
+        
+        test = matcher.create('/a', ['b/**']);
+        expect(test('/a/b/c')).toBe(true);
     });
     
     it("characters #! should have no special meaning", function () {
         // these characters have meaning in .gitignore, but here should have not
-        var test;
-        
-        test = matcher.create('/', ['!a']);
+        var test = matcher.create('/', ['!a']);
         expect(test('/!a')).toBe(true);
         
         test = matcher.create('/', ['#a']);
