@@ -91,7 +91,7 @@ describe('dir', function () {
             describe('windows specyfic', function () {
                 
                 it('specyfying mode should have no effect (throw no error)', function () {
-                    jetpack.dir('something', { mode: '521' });
+                    jetpack.dir('something', { mode: '511' });
                 });
                 
             });
@@ -105,27 +105,27 @@ describe('dir', function () {
                 it('should set mode to created directory', function () {
                     // mode as string
                     expect(fse.existsSync('something')).toBe(false);
-                    jetpack.dir('something', { mode: '521' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40521');
+                    jetpack.dir('something', { mode: '511' });
+                    expect(fse.statSync('something').mode.toString(8)).toBe('40511');
                     
                     // mode as number
                     expect(fse.existsSync('other')).toBe(false);
-                    jetpack.dir('other', { mode: parseInt('521', 8) });
-                    expect(fse.statSync('other').mode.toString(8)).toBe('40521');
+                    jetpack.dir('other', { mode: parseInt('511', 8) });
+                    expect(fse.statSync('other').mode.toString(8)).toBe('40511');
                 });
                 
                 it('should set that mode to every created directory', function () {
                     expect(fse.existsSync('something')).toBe(false);
-                    jetpack.dir('something/other', { mode: '721' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40721');
-                    expect(fse.statSync('something/other').mode.toString(8)).toBe('40721');
+                    jetpack.dir('something/other', { mode: '711' });
+                    expect(fse.statSync('something').mode.toString(8)).toBe('40711');
+                    expect(fse.statSync('something/other').mode.toString(8)).toBe('40711');
                 });
                 
                 it('should change mode of existing directory if not match', function () {
                     fse.mkdirSync('something', '777');
                     expect(fse.existsSync('something')).toBe(true);
-                    jetpack.dir('something', { mode: '521' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40521');
+                    jetpack.dir('something', { mode: '511' });
+                    expect(fse.statSync('something').mode.toString(8)).toBe('40511');
                 });
                 
                 it('should leave mode of directory intact if not specified', function () {
@@ -272,7 +272,7 @@ describe('dir', function () {
                 
                 it('specyfying mode should have no effect (throw no error)', function () {
                     var done = false;
-                    jetpack.dirAsync('something', { mode: '521' })
+                    jetpack.dirAsync('something', { mode: '511' })
                     .then(function () {
                         done = true;
                     });
@@ -292,14 +292,14 @@ describe('dir', function () {
                     expect(fse.existsSync('something')).toBe(false);
                     expect(fse.existsSync('other')).toBe(false);
                     //mode as string
-                    jetpack.dirAsync('something', { mode: '521' })
+                    jetpack.dirAsync('something', { mode: '511' })
                     .then(function () {
                         //mode as number
-                        return jetpack.dirAsync('other', { mode: parseInt('521', 8) });
+                        return jetpack.dirAsync('other', { mode: parseInt('511', 8) });
                     })
                     .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40521');
-                        expect(fse.statSync('other').mode.toString(8)).toBe('40521');
+                        expect(fse.statSync('something').mode.toString(8)).toBe('40511');
+                        expect(fse.statSync('other').mode.toString(8)).toBe('40511');
                         done = true;
                     });
                     waitsFor(function () { return done; }, null, 200);
@@ -308,10 +308,10 @@ describe('dir', function () {
                 it('should set that mode to every created directory (mode as number)', function () {
                     var done = false;
                     expect(fse.existsSync('something')).toBe(false);
-                    jetpack.dirAsync('something/other', { mode: '721' })
+                    jetpack.dirAsync('something/other', { mode: '711' })
                     .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40721');
-                        expect(fse.statSync('something/other').mode.toString(8)).toBe('40721');
+                        expect(fse.statSync('something').mode.toString(8)).toBe('40711');
+                        expect(fse.statSync('something/other').mode.toString(8)).toBe('40711');
                         done = true;
                     });
                     waitsFor(function () { return done; }, null, 200);
@@ -321,9 +321,9 @@ describe('dir', function () {
                     var done = false;
                     fse.mkdirSync('something', '777');
                     expect(fse.existsSync('something')).toBe(true);
-                    jetpack.dirAsync('something', { mode: '521' })
+                    jetpack.dirAsync('something', { mode: '511' })
                     .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40521');
+                        expect(fse.statSync('something').mode.toString(8)).toBe('40511');
                         done = true;
                     });
                     waitsFor(function () { return done; }, null, 200);
