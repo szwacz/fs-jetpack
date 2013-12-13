@@ -98,7 +98,7 @@ describe('dir', function () {
             describe('windows specyfic', function () {
                 
                 it('specyfying mode should have no effect (throw no error)', function () {
-                    jetpack.file('something.txt', { mode: '521' });
+                    jetpack.file('something.txt', { mode: '511' });
                 });
                 
             });
@@ -112,20 +112,20 @@ describe('dir', function () {
                 it('should set mode of created file', function () {
                     // mode as string
                     expect(fse.existsSync('something')).toBe(false);
-                    jetpack.file('something', { mode: '521' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('100521');
+                    jetpack.file('something', { mode: '511' });
+                    expect(fse.statSync('something').mode.toString(8)).toBe('100511');
                     
                     // mode as number
                     expect(fse.existsSync('other')).toBe(false);
-                    jetpack.file('other', { mode: parseInt('521', 8) });
-                    expect(fse.statSync('other').mode.toString(8)).toBe('100521');
+                    jetpack.file('other', { mode: parseInt('511', 8) });
+                    expect(fse.statSync('other').mode.toString(8)).toBe('100511');
                 });
                 
                 it('should change mode of existing file if not match', function () {
                     fse.writeFileSync('something.txt', 'abc', { mode: '700' });
                     expect(fse.existsSync('something.txt')).toBe(true);
-                    jetpack.file('something.txt', { mode: '521' });
-                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100521');
+                    jetpack.file('something.txt', { mode: '511' });
+                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100511');
                 });
                 
                 it('should leave mode of file intact if not specified', function () {
@@ -301,7 +301,7 @@ describe('dir', function () {
                 
                 it('specyfying mode should have no effect (throw no error)', function () {
                     var done = false;
-                    jetpack.fileAsync('something.txt', { mode: '521' })
+                    jetpack.fileAsync('something.txt', { mode: '511' })
                     .then(function () {
                         done = true;
                     });
@@ -321,14 +321,14 @@ describe('dir', function () {
                     expect(fse.existsSync('something')).toBe(false);
                     expect(fse.existsSync('other')).toBe(false);
                     // mode as string
-                    jetpack.fileAsync('something', { mode: '521' })
+                    jetpack.fileAsync('something', { mode: '511' })
                     .then(function () {
                         // mode as number
-                        return jetpack.fileAsync('other', { mode: parseInt('521', 8) });
+                        return jetpack.fileAsync('other', { mode: parseInt('511', 8) });
                     })
                     .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('100521');
-                        expect(fse.statSync('other').mode.toString(8)).toBe('100521');
+                        expect(fse.statSync('something').mode.toString(8)).toBe('100511');
+                        expect(fse.statSync('other').mode.toString(8)).toBe('100511');
                         done = true;
                     });
                     waitsFor(function () { return done; }, null, 200);
@@ -338,9 +338,9 @@ describe('dir', function () {
                     var done = false;
                     fse.writeFileSync('something.txt', 'abc', { mode: '700' });
                     expect(fse.existsSync('something.txt')).toBe(true);
-                    jetpack.fileAsync('something.txt', { mode: '521' })
+                    jetpack.fileAsync('something.txt', { mode: '511' })
                     .then(function () {
-                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100521');
+                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100511');
                         done = true;
                     });
                     waitsFor(function () { return done; }, null, 200);
