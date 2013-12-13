@@ -1,6 +1,6 @@
 "use strict";
 
-describe('dir', function () {
+describe('file', function () {
     
     var fse = require('fs-extra');
     var pathUtil = require('path');
