@@ -20,9 +20,9 @@ This library is all about fun to use, clean API, so if better way to do some tas
 
 All asynchronous methods are promise based, and are using [Q library](https://github.com/kriskowal/q) for that purpose.
 
-Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking api, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish between them.
+Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish one from another.
 
-**Index:**
+**Index**
 * <a href="#cwdpath">cwd([path])</a>
 * <a href="#copyfrom-to-options">copy(from, to, [options])</a>
 * <a href="#copyasyncfrom-to-options">copyAsync(from, to, [options])</a>
@@ -182,8 +182,12 @@ Creates list of files
 * `symlinks` *(TODO, not implemented yet)*
 
 **returns:**  
-Object structure. Here is simple example:
+`array` of `objects` with most basic settings, and tree structure with more sophisticated settings.
 ```javascript
+jetpack.list('rootDir'); // will return array of objects
+
+jetpack.list('rootDir', { includeRoot: true, subDirs: true });
+// will return tree structure of this shape:
 {
     name: 'rootDir', // there is one root object if includeRoot was set to true
     type: 'dir',
