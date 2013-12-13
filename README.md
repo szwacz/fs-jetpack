@@ -4,7 +4,7 @@ This is an attempt to make comprehensive, higher level API for node's [fs librar
 
 ###Installation
 ```
-TODO
+npm install fs-jetpack
 ```
 
 ###Usage
@@ -20,14 +20,27 @@ This library is all about fun to use, clean API, so if better way to do some tas
 
 All asynchronous methods are promise based, and are using [Q library](https://github.com/kriskowal/q) for that purpose.
 
-Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking api, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference :).
+Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking api, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish between them.
+
+**Index:**
+* <a href="#cwdpath">cwd([path])</a>
+* <a href="#copyfrom-to-options">copy(from, to, [options])</a>
+* <a href="#copyasyncfrom-to-options">copyAsync(from, to, [options])</a>
+* <a href="#dirpath-criteria">dir(path, [criteria])</a>
+* <a href="#dirasyncpath-criteria">dirAsync(path, [criteria])</a>
+* <a href="#filepath-criteria">file(path, [criteria])</a>
+* <a href="#fileasyncpath-criteria">fileAsync(path, [criteria])</a>
+* <a href="#listpath-options">list(path, [options])</a>
+* <a href="#listasyncpath-options">listAsync(path, [options])</a>
+* <a href="#removepath-options">remove(path, [options])</a>
+* <a href="#removeasyncpath-options">removeAsync(path, [options])</a>
 
 
 ###cwd([path])
 Returns Current Working Directory (CWD) path, or creates new CWD context.
 
 **parameters:**  
-`path` (optional) path for new CWD context. Could be absolute, or relative. If relative path given new CWD will be resolved basing on `process.cwd()` value.
+`path` (optional) path for new CWD context. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD context.
 
 **returns:**  
 If `path` not specified, returns CWD path. For main instance of fs-jetpack it is always `process.cwd()`.  
@@ -60,8 +73,8 @@ Copies given file or directory.
 `to` destination path where copy should be placed.  
 `options` (optional) additional options for customization. Is an `object` with possible fields:  
 * `overwrite` (default: `'no'`) mode to use if file already exists in destination location. Is a `string` with possible values:  
-`'no'` don't allow to replace any file or directory in destination location.
-`'yes'` replace every file already existing.
+`'no'` don't allow to replace any file or directory in destination location.  
+`'yes'` replace every file already existing.  
 `'merge'` *(TODO, not implemented yet)*  
 `'ifNewer'` *(TODO, not implemented yet)*
 * `only` (`array` of masks) will copy **only** items matching any of specified masks. Mask is `string` with .gitignore-like notation (see section *"Matching paths .gitignore style"*).
@@ -233,18 +246,18 @@ For filtering options (`only` and `allBut` properties) this library uses notatio
 
 Few examples:
 ```javascript
-'work' // matches any file or directory named "work", nevermind in which subdirectory it is
+'work' // matches any item (file or dir) named "work", nevermind in which subdirectory it is
 '*.txt' // matches any .txt file, nevermind in which subdirectory it is
 'my_documents/*' // matches any file inside directory "my_documents"
 'logs/2013-*.log' // matches any log file from 2013
-'logs/2013-12-??.log' // matches any log file from december 2013 ('?' matches any character)
-'my_documents/**/work' // matches any file or directory named "work" in subdirectories of "my_documents"
+'logs/2013-12-??.log' // matches any log file from december 2013
+'my_documents/**/work' // matches any item named "work" inside "my_documents" and its subdirs
 ```
 
 
 #Chaining jetpack commands
 
-Because almost every jetpack method returns CWD context, you can chain commands together. What lets you create files in more declarative style:
+Because almost every jetpack method returns CWD context, you can chain commands together. What lets you operate on files in more declarative style, for example:
 ```javascript
 /*
  We want to create file structure:
