@@ -49,16 +49,6 @@ describe('pathMatcher', function () {
         expect(test('/x/y/z.txt')).toBe(true); // should match mask 2
     });
     
-    it("backslashes as separators", function () {
-        var test = matcher.create('/', ['a\\b']);
-        expect(test('/a/b')).toBe(true);
-        expect(test('\\a\\b')).toBe(true);
-        
-        test = matcher.create('\\', ['a/**/b']);
-        expect(test('/a/x/b')).toBe(true);
-        expect(test('\\a\\x\\b')).toBe(true);
-    });
-    
     it("test reference directory", function () {
         var test = matcher.create('/', ['a/**']);
         expect(test('/a/b/c')).toBe(true);
