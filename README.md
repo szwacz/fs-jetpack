@@ -1,6 +1,6 @@
 #fs-jetpack
 
-This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
+Attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
 
 ###Installation
 ```
@@ -11,9 +11,6 @@ npm install fs-jetpack
 ```javascript
 var jetpack = requite('fs-jetpack');
 ```
-
-###Backwards compatibility policy
-This library is all about fun to use, clean API, so if better way to do some task will emerge **breaking changes will be introduced ruthlessly** (ofcourse until we reach version 1.0.0). Just want to make this clear.
 
 
 #API
@@ -54,14 +51,14 @@ console.log(process.cwd()); // '/one/two/three'
 console.log(jetpack.cwd()); // '/one/two/three'
 
 // now let's create new CWD context...
-var jetpackContext = jetpack.cwd('..');
-console.log(jetpackContext.cwd()); // '/one/two'
+var jetParent = jetpack.cwd('..');
+console.log(jetParent.cwd()); // '/one/two'
 // ...and use this new context
-jetpackContext.dir('four'); // we just created directory '/one/two/four'
+jetParent.dir('four'); // we just created directory '/one/two/four'
 
 // one CWD context can be used to create next CWD context
-var jetpackContext2 = jetpackContext.cwd('..');
-console.log(jetpackContext2.cwd()); // '/one'
+var jetParentParent = jetpackContext.cwd('..');
+console.log(jetParentParent.cwd()); // '/one'
 ```
 
 
@@ -104,7 +101,7 @@ Asynchronous equivalent of `copy()` method. The only difference is that it retur
 Ensures that directory meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
-`path` path to directory to examine.
+`path` path to directory to examine.  
 `criteria` (optional) criteria to be met by the directory. Is an `object` with possible fields:
 * `exists` (default: `true`) whether directory should exist or not. If set to `true` and `path` contains many nested, nonexistent directories all of them will be created.
 * `empty` (default: `false`) whether directory should be empty (no other files or directories inside). If set to `true` and directory contains any files or subdirectories all of them will be deleted. If `exists = false` this field is ignored.
@@ -148,8 +145,8 @@ Ensures that file meets given criteria. If any criterium is not met it will be a
 `criteria` (optional) criteria to be met by the directory. Is an `object` with possible fields:
 * `exists` (default: `true`) whether file should exist or not.
 * `empty` (default: `false`) whether file should be forced to be empty. If `exists = false` this field is ignored.
-* `mode` ensures file has specified mode. If not set and file already exists, current mode will be intact. Value could be number (eg. `0700`) or string (eg. `'700'`).
 * `content` (`string` or `buffer`) ensures that file has precisely this content. If `exists = false`, or `empty = true` this field is ignored.
+* `mode` ensures file has specified mode. If not set and file already exists, current mode will be intact. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 **returns:**  
 Recently used CWD context.
