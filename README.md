@@ -217,7 +217,7 @@ Reads content of file.
 
 **parameters:**  
 `path` path to file.  
-`mode` (optional) how the content of file should be returned. Is an `object` with possible fields:
+`mode` (optional) how the content of file should be returned. Is a String with possible values:
 * `'utf8'` (default) content will be returned as UTF-8 String.
 * `'buf'` content will be returned as Buffer.
 * `'json'` content will be returned as parsed JSON object.
