@@ -34,14 +34,14 @@ Commonly used naming convention in node world is reversed in this library. Async
 
 
 ###cwd([path])
-Returns Current Working Directory (CWD) path, or creates new CWD context.
+Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
 
 **parameters:**  
-`path` (optional) path for new CWD context. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD context.
+`path` (optional) path to become new CWD. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD.
 
 **returns:**  
-If `path` not specified, returns CWD path. For main instance of fs-jetpack it is always `process.cwd()`.  
-If `path` specified, returns new CWD context, which is totally the same thing as jetpack library, but resolves paths according to its inner CWD path, not the global one (`process.cwd()`). See code below for more.
+If `path` not specified, returns CWD path of this jetpack object. For main instance of fs-jetpack it is always `process.cwd()`.  
+If `path` specified, returns new jetpack object (totally the same thing as main jetpack). The new object resolves paths according to its inner CWD, not the global one (`process.cwd()`).
 
 **examples:**
 ```javascript
