@@ -29,6 +29,7 @@ Commonly used naming convention in node world is reversed in this library. Async
 * <a href="#fileasyncpath-criteria">fileAsync(path, [criteria])</a>
 * <a href="#listpath-options">list(path, [options])</a>
 * <a href="#listasyncpath-options">listAsync(path, [options])</a>
+* <a href="#readpath-mode">read(path, [mode])</a>
 * <a href="#removepath-options">remove(path, [options])</a>
 * <a href="#removeasyncpath-options">removeAsync(path, [options])</a>
 
@@ -208,6 +209,24 @@ jetpack.list('rootDir', { includeRoot: true, subDirs: true });
 
 ###listAsync(path, [options])
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
+
+
+###read(path, [mode])
+Reads content of file.
+
+**parameters:**  
+`path` path to file.  
+`mode` (optional) how the content of file should be returned. Is an `object` with possible fields:
+* `'utf8'` (default) content will be returned as UTF-8 String.
+* `'buf'` content will be returned as Buffer.
+* `'json'` content will be returned as parsed JSON object.
+
+**returns:**  
+File content in specified format.
+
+
+###readAsync(path, [mode])
+Asynchronous equivalent of `read()` method. The only difference is that it returns promise.
 
 
 ###remove(path, [options])
