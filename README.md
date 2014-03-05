@@ -212,6 +212,24 @@ jetpack.list('rootDir', { includeRoot: true, subDirs: true });
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
 
 
+###path([parts...])
+Returns path resolved to current CWD.
+
+**parameters:**  
+`parts` (optional) strings to join and resolve as path (as many as you like).
+
+**returns:**  
+Resolved path as String.
+
+**examples:**
+```javascript
+jetpack.cwd(); // if it returns '/one/two'
+jetpack.path(); // this will return the same '/one/two'
+jetpack.path('three'); // this will return '/one/two/three'
+jetpack.path('..', 'four'); // this will return '/one/four'
+```
+
+
 ###read(path, [mode])
 Reads content of file.
 
