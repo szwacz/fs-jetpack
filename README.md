@@ -29,6 +29,7 @@ Commonly used naming convention in node world is reversed in this library. Async
 * <a href="#fileasyncpath-criteria">fileAsync(path, [criteria])</a>
 * <a href="#listpath-options">list(path, [options])</a>
 * <a href="#listasyncpath-options">listAsync(path, [options])</a>
+* <a href="#pathparts">path([parts...])</a>
 * <a href="#readpath-mode">read(path, [mode])</a>
 * <a href="#readasyncpath-mode">readAsync(path, [mode])</a>
 * <a href="#removepath-options">remove(path, [options])</a>
