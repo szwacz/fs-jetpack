@@ -59,12 +59,22 @@ describe('file', function () {
         
         it("should set file content", function () {
             // content as string
-            jetpack.file('something.txt', { content: '123' });
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
+            jetpack.file('file.txt', { content: '123' });
+            expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
             
             // content as buffer
-            jetpack.file('other.txt', { content: new Buffer('123') });
-            expect(fse.readFileSync('other.txt', { encoding: 'utf8' })).toBe('123');
+            jetpack.file('file.txt', { content: new Buffer('123') });
+            expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
+            
+            // content as JSON object
+            jetpack.file('file.txt', { content: { a: "abc", b: 123 } });
+            var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
+            expect(data).toEqual({ a: "abc", b: 123 });
+            
+            // content as JSON array
+            jetpack.file('file.txt', { content: ["abc", 123] });
+            var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
+            expect(data).toEqual(["abc", 123]);
         });
         
         it("should set content of already existing file", function () {
@@ -236,14 +246,26 @@ describe('file', function () {
         it("should set file content", function () {
             var done = false;
             // content as string
-            jetpack.fileAsync('something.txt', { content: '123' })
+            jetpack.fileAsync('file.txt', { content: '123' })
             .then(function () {
+                expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
                 // content as buffer
-                return jetpack.fileAsync('other.txt', { content: new Buffer('123') });
+                return jetpack.fileAsync('file.txt', { content: new Buffer('123') });
             })
             .then(function () {
-                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
-                expect(fse.readFileSync('other.txt', { encoding: 'utf8' })).toBe('123');
+                expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
+                // content as JSON object
+                return jetpack.fileAsync('file.txt', { content: { a: "abc", b: 123 } });
+            })
+            .then(function () {
+                var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
+                expect(data).toEqual({ a: "abc", b: 123 });
+                // content as JSON array
+                return jetpack.fileAsync('file.txt', { content: ["abc", 123] });
+            })
+            .then(function () {
+                var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
+                expect(data).toEqual(["abc", 123]);
                 done = true;
             });
             waitsFor(function () { return done; }, null, 200);
