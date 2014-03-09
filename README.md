@@ -34,6 +34,8 @@ Commonly used naming convention in node world is reversed in this library. Async
 * <a href="#readasyncpath-mode">readAsync(path, [mode])</a>
 * <a href="#removepath-options">remove(path, [options])</a>
 * <a href="#removeasyncpath-options">removeAsync(path, [options])</a>
+* <a href="#writepath-content">write(path, content)</a>
+* <a href="#writeasyncpath-content">writeAsync(path, content)</a>
 
 
 ###cwd([path])
@@ -280,6 +282,21 @@ jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 
 ###removeAsync(path, [options])
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
+
+
+###write(path, content)
+Writes content to file.
+
+**parameters:**  
+`path` path to file.  
+`content` data to be written. This could be `string`, `buffer`, `object` or `array` (if last two used, the data will be outputed into file as JSON).
+
+**returns:**  
+Recently used CWD context.
+
+
+###writeAsync(path, content)
+Asynchronous equivalent of `write()` method. The only difference is that it returns promise.
 
 
 #Matching paths .gitignore style
