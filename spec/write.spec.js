@@ -37,7 +37,7 @@ describe('read', function () {
             expect(content).toEqual(['abc', 123]);
         });
         
-        it('should return CWD context of containing folder', function () {
+        it('should return CWD context', function () {
             var jetContext = jetpack.write('file.txt', 'abc');
             expect(jetpack.cwd()).toBe(jetContext.cwd());
         });
@@ -91,7 +91,7 @@ describe('read', function () {
             waitsFor(function () { return done; }, null, 200);
         });
         
-        it('should return CWD context of containing folder', function () {
+        it('should return CWD context', function () {
             var done = false;
             jetpack.writeAsync('file.txt', 'abc')
             .then(function (jetContext) {
