@@ -76,9 +76,7 @@ Copies given file or directory.
 `options` (optional) additional options for customization. Is an `object` with possible fields:  
 * `overwrite` (default: `'no'`) mode to use if file already exists in destination location. Is a `string` with possible values:  
     * `'no'` don't allow to replace any file or directory in destination location.  
-    * `'yes'` replace every file already existing.  
-    * `'merge'` *(TODO, not implemented yet)*  
-    * `'ifNewer'` *(TODO, not implemented yet)*
+    * `'yes'` replace every file already existing.
 * `only` (`array` of masks) will copy **only** items matching any of specified masks. Mask is `string` with .gitignore-like notation (see section *"Matching paths .gitignore style"*).
 * `allBut` (`array` of masks) will copy **everything except** items matching any of specified masks. If `only` is specified this field is ignored.
 * `symlinks` *(TODO, not implemented yet)*
