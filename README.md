@@ -25,6 +25,8 @@ Commonly used naming convention in node world is reversed in this library. Async
 * <a href="#copyasyncfrom-to-options">copyAsync(from, to, [options])</a>
 * <a href="#dirpath-criteria">dir(path, [criteria])</a>
 * <a href="#dirasyncpath-criteria">dirAsync(path, [criteria])</a>
+* <a href="#existspath">exists(path)</a>
+* <a href="#existsasyncpath">existsAsync(path)</a>
 * <a href="#filepath-criteria">file(path, [criteria])</a>
 * <a href="#fileasyncpath-criteria">fileAsync(path, [criteria])</a>
 * <a href="#listpath-options">list(path, [options])</a>
@@ -138,6 +140,20 @@ jetpack
 
 ###dirAsync(path, [criteria])
 Asynchronous equivalent of `dir()` method. The only difference is that it returns promise.
+
+
+###exists(path)
+Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
+
+**returns:**  
+* `false` if path doesn't exist.
+* `"dir"` if path is a directory.
+* `"file"` if path is a file.
+* `"other"` if path exists, but is of different "type".
+
+
+###existsAsync(path)
+Asynchronous equivalent of `exists()` method. The only difference is that it returns promise.
 
 
 ###file(path, [criteria])
