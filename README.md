@@ -2,6 +2,8 @@
 
 Attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
 
+**Note:** This project is highly experimental (and breaking changes will inevitably occur). All comments or suggestions are welcome!
+
 ###Installation
 ```
 npm install fs-jetpack
