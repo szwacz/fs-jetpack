@@ -4,18 +4,18 @@
   "version": "0.3.0",
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
-    "minimatch": "0.2.x",
-    "q": "0.9.x"
+    "minimatch": "0.3.0",
+    "q": "1.0.1"
   },
   "devDependencies": {
-    "fs-extra": "0.7.x"
+    "fs-extra": "0.9.1"
   },
   "scripts": {
     "test": "jasmine-node spec"
   },
   "main": "main.js",
   "keywords": [
-    "fs", "file system", "mkdirp", "wrench", "fs-extra"
+    "fs", "file system", "mkdirp", "rimraf", "wrench", "fs-extra"
   ],
   "homepage": "https://github.com/szwacz/fs-jetpack",
   "repository": {
