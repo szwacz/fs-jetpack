@@ -4,11 +4,11 @@ describe('copy', function () {
     
     var fse = require('fs-extra');
     var pathUtil = require('path');
-    var utils = require('./specUtils');
+    var helper = require('./helper');
     var jetpack = require('..');
     
-    beforeEach(utils.beforeEach);
-    afterEach(utils.afterEach);
+    beforeEach(helper.beforeEach);
+    afterEach(helper.afterEach);
     
     describe('sync', function () {
         

@@ -2,7 +2,7 @@
 
 describe('pathMatcher', function () {
     
-    var matcher = require('../lib/internal/pathMatcher');
+    var matcher = require('../../lib/internal/pathMatcher');
     
     it("test matches", function () {
         var test = matcher.create('/', ['c.txt']);
