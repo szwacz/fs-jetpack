@@ -8,10 +8,11 @@
     "q": "1.0.1"
   },
   "devDependencies": {
+    "jasmine-node": "1.14.x",
     "fs-extra": "0.9.1"
   },
   "scripts": {
-    "test": "jasmine-node spec"
+    "test": "node_modules/.bin/jasmine-node spec"
   },
   "main": "main.js",
   "keywords": [
