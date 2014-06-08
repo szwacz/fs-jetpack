@@ -4,6 +4,9 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
+// 500ms is enough as default timeout
+jasmine.getEnv().defaultTimeoutInterval = 500;
+
 // CWD of this script when launched
 var originalCwd = process.cwd();
 // we are working on default temporary location for this OS
