@@ -37,7 +37,9 @@ describe('internal/file', function () {
         internalFile.write(path, buf);
         var content = internalFile.read(path, { returnAs: 'buf' });
         expect(Buffer.isBuffer(content)).toBe(true);
-        expect(content.toArray()).toEqual(bytes);
+        expect(content.length).toBe(bytes.length);
+        expect(content[0]).toBe(bytes[0]);
+        expect(content[2]).toBe(bytes[2]);
         
         // ASYNC
         internalFile.writeAsync(path, buf)
@@ -46,7 +48,9 @@ describe('internal/file', function () {
         })
         .then(function (content) {
             expect(Buffer.isBuffer(content)).toBe(true);
-            expect(content.toArray()).toEqual(bytes);
+            expect(content.length).toBe(bytes.length);
+            expect(content[0]).toBe(bytes[0]);
+            expect(content[2]).toBe(bytes[2]);
             done();
         });
     });
@@ -117,7 +121,52 @@ describe('internal/file', function () {
         var newPath = path + '.__new__';
         var bakPath = path + '.__bak__';
         
-        it('writes file safely', function (done) {
+        it("writes file safely if file doesn't exist", function (done) {
+            // SYNC
+            internalFile.write(path, 'abc', { safe: true });
+            
+            expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+            // after successful write old files should disappear
+            expect(fse.existsSync(newPath)).toBe(false);
+            expect(fse.existsSync(bakPath)).toBe(false);
+            
+            // ASYNC
+            internalFile.writeAsync(path, 'abc', { safe: true })
+            .then(function () {
+                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                // after successful write temp files should disappear
+                expect(fse.existsSync(newPath)).toBe(false);
+                expect(fse.existsSync(bakPath)).toBe(false);
+                done();
+            });
+        });
+        
+        it('writes file safely if file already exists', function (done) {
+            // SYNC
+            fse.writeFileSync(path, 'xyz');
+            
+            internalFile.write(path, 'abc', { safe: true });
+            
+            expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+            // after successful write temp files should disappear
+            expect(fse.existsSync(newPath)).toBe(false);
+            expect(fse.existsSync(bakPath)).toBe(false);
+            
+            // ASYNC
+            // the fact that files from previous, failed operation are already there should have no effect
+            fse.writeFileSync(path, 'xyz');
+            
+            internalFile.writeAsync(path, 'abc', { safe: true })
+            .then(function () {
+                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                // after successful write old files should disappear
+                expect(fse.existsSync(newPath)).toBe(false);
+                expect(fse.existsSync(bakPath)).toBe(false);
+                done();
+            });
+        });
+        
+        it('writes file safely after rubbish from unsuccessful previous write attempt', function (done) {
             // SYNC
             // the fact that files from previous, failed operation are already there should have no effect
             fse.writeFileSync(newPath, 'new');
@@ -125,10 +174,12 @@ describe('internal/file', function () {
             
             internalFile.write(path, 'abc', { safe: true });
             
-            expect(fse.readFileSync(path)).toBe('abc');
-            // after successful write old files should disappear
+            expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+            // NEW file should disappear after successful attempt.
             expect(fse.existsSync(newPath)).toBe(false);
-            expect(fse.existsSync(bakPath)).toBe(false);
+            // This file should stay there, the code didn't knew it is there, because it not renamed
+            // the MAIN file to BAK. It doesn't matter because correctly written MAIN file is there.
+            expect(fse.existsSync(bakPath)).toBe(true);
             
             // ASYNC
             // the fact that files from previous, failed operation are already there should have no effect
@@ -137,7 +188,39 @@ describe('internal/file', function () {
             
             internalFile.writeAsync(path, 'abc', { safe: true })
             .then(function () {
-                expect(fse.readFileSync(path)).toBe('abc');
+                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                // NEW file should disappear after successful attempt.
+                expect(fse.existsSync(newPath)).toBe(false);
+                // This file should stay there, the code didn't knew it is there, because it not renamed
+                // the MAIN file to BAK. It doesn't matter because correctly written MAIN file is there.
+                expect(fse.existsSync(bakPath)).toBe(false);
+                done();
+            });
+        });
+        
+        it('totally nuts case when all files are there', function (done) {
+            // SYNC
+            // NEW, BAK and MAIN files present, just for sake of argument ;)
+            fse.writeFileSync(path, 'xyz');
+            fse.writeFileSync(newPath, 'new');
+            fse.writeFileSync(bakPath, 'bak');
+            
+            internalFile.write(path, 'abc', { safe: true });
+            
+            expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+            // after successful write temp files should disappear
+            expect(fse.existsSync(newPath)).toBe(false);
+            expect(fse.existsSync(bakPath)).toBe(false);
+            
+            // ASYNC
+            // NEW, BAK and MAIN files present, just for sake of argument ;)
+            fse.writeFileSync(path, 'xyz');
+            fse.writeFileSync(newPath, 'new');
+            fse.writeFileSync(bakPath, 'bak');
+            
+            internalFile.writeAsync(path, 'abc', { safe: true })
+            .then(function () {
+                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
                 // after successful write old files should disappear
                 expect(fse.existsSync(newPath)).toBe(false);
                 expect(fse.existsSync(bakPath)).toBe(false);
@@ -179,14 +262,19 @@ describe('internal/file', function () {
         
         it("throws if neither of those two files exist", function (done) {
             // SYNC
-            expect(function () {
+            try {
                 internalFile.read(path, { safe: true });
-            }).toThrow("TODO");
+                throw 'To make sure this code will throw.';
+            } catch(err) {
+                if (err.code !== 'ENOENT') {
+                    throw 'Not that error!';
+                }
+            }
             
             // ASYNC
             internalFile.readAsync(path, { safe: true })
             .catch(function (err) {
-                expect(err).toEqual("TODO");
+                expect(err.code).toEqual("ENOENT");
                 done();
             });
         });
@@ -209,6 +297,24 @@ describe('internal/file', function () {
             .then(function () {
                 expect(fse.existsSync(path)).toBe(false);
                 expect(fse.existsSync(bakPath)).toBe(false);
+                done();
+            });
+        });
+        
+        it('absence of bak file in safe mode does not cause any error', function (done) {
+            // SYNC
+            fse.writeFileSync(path, 'abc');
+            
+            internalFile.remove(path, { safe: true });
+            
+            expect(fse.existsSync(path)).toBe(false);
+            
+            // ASYNC
+            fse.writeFileSync(path, 'abc');
+            
+            internalFile.removeAsync(path, { safe: true })
+            .then(function () {
+                expect(fse.existsSync(path)).toBe(false);
                 done();
             });
         });
