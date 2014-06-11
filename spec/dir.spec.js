@@ -10,20 +10,36 @@ describe('dir', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    describe('sync', function () {
+    it('makes sure dir exists', function (done) {
+        // SYNC
+        // dir does not exist on disk
+        jetpack.dir('dir_1');
+        expect(fse.existsSync('dir_1')).toBe(true);
         
-        it('should make sure dir exist', function () {
-            // dir does not exist on disk
-            expect(fse.existsSync('something')).toBe(false);
-            jetpack.dir('something');
-            expect(fse.existsSync('something')).toBe(true);
+        // dir exists on disk
+        fse.mkdirsSync('dir_2');
+        jetpack.dir('dir_2');
+        expect(fse.existsSync('dir_2')).toBe(true);
+        
+        //ASYNC
+        // dir does not exist on disk
+        jetpack.dirAsync('dir_3')
+        .then(function () {
+            expect(fse.existsSync('dir_1')).toBe(true);
             
             // dir exists on disk
-            fse.mkdirSync('other');
-            expect(fse.existsSync('other')).toBe(true);
-            jetpack.dir('other');
-            expect(fse.existsSync('other')).toBe(true);
+            fse.mkdirsSync('dir_4');
+            return jetpack.dirAsync('dir_4');
+        })
+        .then(function () {
+            expect(fse.existsSync('dir_2')).toBe(true);
+            done();
         });
+    });
+    
+    describe('sync', function () {
+        
+        
         
         it('should create many nested dirs if needed', function () {
             expect(fse.existsSync('something')).toBe(false);
@@ -142,25 +158,7 @@ describe('dir', function () {
     
     describe('async', function () {
         
-        it('should make sure dir exist', function () {
-            var done = false;
-             // dir does not exist on disk
-            expect(fse.existsSync('something')).toBe(false);
-            jetpack.dirAsync('something')
-            .then(function () {
-                expect(fse.existsSync('something')).toBe(true);
-                
-                // dir exists on disk
-                fse.mkdirSync('other');
-                expect(fse.existsSync('other')).toBe(true);
-                return jetpack.dirAsync('other');
-            })
-            .then(function () {
-                expect(fse.existsSync('other')).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
+        
         
         it('should create many nested dirs if needed', function () {
             var done = false;
