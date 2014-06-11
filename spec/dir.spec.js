@@ -259,10 +259,10 @@ describe('dir', function () {
                 expect(fse.statSync('a').mode.toString(8)).toBe('40700');
                 
                 // ASYNC
-                fse.mkdirSync('a', '700');
-                jetpack.dirAsync('a')
+                fse.mkdirSync('x', '700');
+                jetpack.dirAsync('x')
                 .then(function () {
-                    expect(fse.statSync('a').mode.toString(8)).toBe('40700');
+                    expect(fse.statSync('x').mode.toString(8)).toBe('40700');
                     done();
                 });
             });
