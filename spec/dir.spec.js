@@ -37,311 +37,238 @@ describe('dir', function () {
         });
     });
     
-    describe('sync', function () {
+    it('creates nested dirs if needed', function (done) {
+        // SYNC
+        jetpack.dir('a/b/c');
+        expect(fse.existsSync('a/b/c')).toBe(true);
         
-        
-        
-        it('should create many nested dirs if needed', function () {
-            expect(fse.existsSync('something')).toBe(false);
-            jetpack.dir('something/other');
-            expect(fse.existsSync('something')).toBe(true);
-            expect(fse.existsSync('something/other')).toBe(true);
+        // ASYNC
+        jetpack.dirAsync('x/y/z')
+        .then(function () {
+            expect(fse.existsSync('x/y/z')).toBe(true);
+            done();
         });
-        
-        it('should make sure dir does not exist', function () {
-            // dir does not exist on disk
-            expect(fse.existsSync('something')).toBe(false);
-            jetpack.dir('something', { exists: false });
-            expect(fse.existsSync('something')).toBe(false);
-            
-            // dir exists on disk
-            fse.mkdirSync('other');
-            expect(fse.existsSync('other')).toBe(true);
-            jetpack.dir('other', { exists: false });
-            expect(fse.existsSync('other')).toBe(false);
-        });
-        
-        it('should not bother about dir emptiness if not said so', function () {
-            fse.mkdirsSync('something/other');
-            expect(fse.existsSync('something/other')).toBe(true);
-            jetpack.dir('something');
-            expect(fse.existsSync('something/other')).toBe(true);
-        });
-        
-        it('should make sure dir is empty', function () {
-            fse.mkdirsSync('something/other');
-            expect(fse.existsSync('something/other')).toBe(true);
-            jetpack.dir('something', { empty: true });
-            expect(fse.existsSync('something/other')).toBe(false);
-        });
-        
-        it('*exists = false* takes precendence over *empty*', function () {
-            fse.mkdirsSync('something/other');
-            expect(fse.existsSync('something/other')).toBe(true);
-            jetpack.dir('something', { exists: false, empty: true });
-            expect(fse.existsSync('something')).toBe(false);
-        });
-        
-        it('if *exists = false* returned CWD context should refer to parent of given directory', function () {
-            var context = jetpack.dir('something', { exists: false });
-            expect(context.cwd()).toBe(process.cwd());
-        });
-        
-        it('if given path is file, should delete it and place dir instead', function () {
-            fse.writeFileSync('something', 'abc');
-            expect(fse.statSync('something').isFile()).toBe(true);
-            jetpack.dir('something');
-            expect(fse.statSync('something').isDirectory()).toBe(true);
-        });
-        
-        it('can chain dir calls, and should return new CWD context', function () {
-            var context = jetpack.dir('something');
-            expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'something'));
-            context = context.dir('else');
-            expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'something/else'));
-            expect(fse.existsSync('something/else')).toBe(true);
-        });
-        
-        if (process.platform === 'win32') {
-        
-            describe('windows specyfic', function () {
-                
-                it('specyfying mode should have no effect (throw no error)', function () {
-                    jetpack.dir('something', { mode: '511' });
-                });
-                
-            });
-                
-        } else {
-            
-            describe('*nix specyfic', function () {
-                
-                // tests assume umask is not greater than 022
-                
-                it('should set mode to created directory', function () {
-                    // mode as string
-                    expect(fse.existsSync('something')).toBe(false);
-                    jetpack.dir('something', { mode: '511' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40511');
-                    
-                    // mode as number
-                    expect(fse.existsSync('other')).toBe(false);
-                    jetpack.dir('other', { mode: parseInt('511', 8) });
-                    expect(fse.statSync('other').mode.toString(8)).toBe('40511');
-                });
-                
-                it('should set that mode to every created directory', function () {
-                    expect(fse.existsSync('something')).toBe(false);
-                    jetpack.dir('something/other', { mode: '711' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40711');
-                    expect(fse.statSync('something/other').mode.toString(8)).toBe('40711');
-                });
-                
-                it('should change mode of existing directory if not match', function () {
-                    fse.mkdirSync('something', '777');
-                    expect(fse.existsSync('something')).toBe(true);
-                    jetpack.dir('something', { mode: '511' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40511');
-                });
-                
-                it('should leave mode of directory intact if not specified', function () {
-                    fse.mkdirSync('something', '700');
-                    jetpack.dir('something');
-                    expect(fse.statSync('something').mode.toString(8)).toBe('40700');
-                });
-                
-            });
-            
-        }
-        
     });
     
-    describe('async', function () {
+    it('makes sure dir does not exist', function (done) {
+        // SYNC
+        // dir does not exist on disk
+        jetpack.dir('dir_1', { exists: false });
+        expect(fse.existsSync('dir_1')).toBe(false);
         
+        // dir exists on disk
+        fse.mkdirsSync('dir_2');
+        jetpack.dir('dir_2', { exists: false });
+        expect(fse.existsSync('dir_2')).toBe(false);
         
-        
-        it('should create many nested dirs if needed', function () {
-            var done = false;
-            expect(fse.existsSync('something')).toBe(false);
-            jetpack.dirAsync('something/other')
-            .then(function () {
-                expect(fse.existsSync('something')).toBe(true);
-                expect(fse.existsSync('something/other')).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should make sure dir does not exist', function () {
-            var done = false;
-            // dir does not exist on disk
-            expect(fse.existsSync('something')).toBe(false);
-            jetpack.dirAsync('something', { exists: false })
-            .then(function () {
-                expect(fse.existsSync('something')).toBe(false);
-                // dir exists on disk
-                fse.mkdirSync('other');
-                expect(fse.existsSync('other')).toBe(true);
-                return jetpack.dirAsync('other', { exists: false });
-            })
-            .then(function () {
-                expect(fse.existsSync('other')).toBe(false);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should not bother about dir emptiness if not said so', function () {
-            var done = false;
-            fse.mkdirsSync('something/other');
-            expect(fse.existsSync('something/other')).toBe(true);
-            jetpack.dirAsync('something')
-            .then(function () {
-                expect(fse.existsSync('something/other')).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should make sure dir is empty', function () {
-            var done = false;
-            fse.mkdirsSync('something/other');
-            expect(fse.existsSync('something/other')).toBe(true);
-            jetpack.dirAsync('something', { empty: true })
-            .then(function () {
-                expect(fse.existsSync('something/other')).toBe(false);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('*exists = false* takes precendence over *empty*', function () {
-            var done = false;
-            fse.mkdirsSync('something/other');
-            expect(fse.existsSync('something/other')).toBe(true);
-            jetpack.dirAsync('something', { exists: false, empty: true })
-            .then(function () {
-                expect(fse.existsSync('something')).toBe(false);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('if *exists = false* returned CWD context should refer to parent of given directory', function () {
-            var done = false;
-            jetpack.dirAsync('something', { exists: false })
-            .then(function (context) {
-                expect(context.cwd()).toBe(process.cwd());
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('if given path is file, should delete it and place dir instead', function () {
-            var done = false;
-            fse.writeFileSync('something', 'abc');
-            expect(fse.statSync('something').isFile()).toBe(true);
-            jetpack.dirAsync('something')
-            .then(function () {
-                expect(fse.statSync('something').isDirectory()).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('can chain dir calls, and should return new CWD context', function () {
-            var done = false;
-            jetpack.dirAsync('something')
-            .then(function (context) {
-                expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'something'));
-                return context.dirAsync('else');
-            })
-            .then(function (context) {
-                expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'something/else'));
-                expect(fse.existsSync('something/else')).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        if (process.platform === 'win32') {
-        
-            describe('windows specyfic', function () {
-                
-                it('specyfying mode should have no effect (throw no error)', function () {
-                    var done = false;
-                    jetpack.dirAsync('something', { mode: '511' })
-                    .then(function () {
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-            });
-                
-        } else {
+        // ASYNC
+        // dir does not exist on disk
+        jetpack.dirAsync('dir_3', { exists: false })
+        .then(function () {
+            expect(fse.existsSync('dir_3')).toBe(false);
             
-            describe('*nix specyfic', function () {
-                
-                // tests assume umask is not greater than 022
-                
-                it('should set mode to created directory', function () {
-                    var done = false;
-                    expect(fse.existsSync('something')).toBe(false);
-                    expect(fse.existsSync('other')).toBe(false);
-                    //mode as string
-                    jetpack.dirAsync('something', { mode: '511' })
-                    .then(function () {
-                        //mode as number
-                        return jetpack.dirAsync('other', { mode: parseInt('511', 8) });
-                    })
-                    .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40511');
-                        expect(fse.statSync('other').mode.toString(8)).toBe('40511');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-                it('should set that mode to every created directory (mode as number)', function () {
-                    var done = false;
-                    expect(fse.existsSync('something')).toBe(false);
-                    jetpack.dirAsync('something/other', { mode: '711' })
-                    .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40711');
-                        expect(fse.statSync('something/other').mode.toString(8)).toBe('40711');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-                it('should change mode of existing directory if not match', function () {
-                    var done = false;
-                    fse.mkdirSync('something', '777');
-                    expect(fse.existsSync('something')).toBe(true);
-                    jetpack.dirAsync('something', { mode: '511' })
-                    .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40511');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-                it('should leave mode of directory intact if not specified', function () {
-                    var done = false;
-                    fse.mkdirSync('something', '700');
-                    jetpack.dirAsync('something')
-                    .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('40700');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-            });
-            
-        }
-        
+            // dir exists on disk
+            fse.mkdirsSync('dir_4');
+            return jetpack.dirAsync('dir_4', { exists: false });
+        })
+        .then(function () {
+            expect(fse.existsSync('dir_4')).toBe(false);
+            done();
+        });
     });
+    
+    it('not bothers about dir emptiness if not specified', function (done) {
+        // SYNC
+        fse.mkdirsSync('a/b');
+        jetpack.dir('a');
+        expect(fse.existsSync('a/b')).toBe(true);
+        
+        // ASYNC
+        fse.mkdirsSync('x/y');
+        jetpack.dirAsync('x')
+        .then(function () {
+            expect(fse.existsSync('x/y')).toBe(true);
+            done();
+        });
+    });
+    
+    it('makes dir empty', function (done) {
+        // SYNC
+        fse.mkdirsSync('a/b');
+        jetpack.dir('a', { empty: true });
+        expect(fse.existsSync('a/b')).toBe(false);
+        
+        // ASYNC
+        fse.mkdirsSync('x/y');
+        jetpack.dirAsync('x', { empty: true })
+        .then(function () {
+            expect(fse.existsSync('x/y')).toBe(false);
+            done();
+        });
+    });
+    
+    it('EXISTS=false takes precendence over EMPTY', function (done) {
+        // SYNC
+        fse.mkdirsSync('a/b');
+        jetpack.dir('a', { exists: false, empty: true });
+        expect(fse.existsSync('a')).toBe(false);
+        
+        // ASYNC
+        fse.mkdirsSync('x/y');
+        jetpack.dirAsync('x', { exists: false, empty: true })
+        .then(function () {
+            expect(fse.existsSync('x')).toBe(false);
+            done();
+        })
+    });
+    
+    it('if EXISTS=false returned CWD context should refer to parent of given directory', function (done) {
+        // SYNC
+        fse.mkdirsSync('a/b');
+        var context = jetpack.dir('a', { exists: false });
+        expect(context.cwd()).toBe(process.cwd());
+        
+        // ASYNC
+        fse.mkdirsSync('a/b');
+        jetpack.dirAsync('a', { exists: false })
+        .then(function (context) {
+            expect(context.cwd()).toBe(process.cwd());
+            done()
+        });
+    });
+    
+    it('if given path is file, deletes it and places dir instead', function (done) {
+        // SYNC
+        fse.outputFileSync('a', 'abc');
+        jetpack.dir('a');
+        expect(fse.statSync('a').isDirectory()).toBe(true);
+        
+        // ASYNC
+        fse.outputFileSync('x', 'abc');
+        jetpack.dirAsync('x')
+        .then(function () {
+            expect(fse.statSync('x').isDirectory()).toBe(true);
+            done();
+        });
+    });
+    
+    it('can chain dir calls, and returns ajusted CWD context', function (done) {
+        // SYNC
+        var context = jetpack.dir('a');
+        expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'a'));
+        context = context.dir('b');
+        expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'a/b'));
+        expect(fse.existsSync('a/b')).toBe(true);
+        
+        // ASYNC
+        jetpack.dirAsync('x')
+        .then(function (context) {
+            expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'x'));
+            return context.dirAsync('y');
+        })
+        .then(function (context) {
+            expect(context.cwd()).toBe(pathUtil.resolve(process.cwd(), 'x/y'));
+            expect(fse.existsSync('x/y')).toBe(true);
+            done();
+        })
+    });
+    
+    
+    if (process.platform === 'win32') {
+    
+        describe('windows specyfic', function () {
+            
+            it('specyfying mode haves no effect (throws no error)', function (done) {
+                // SYNC
+                jetpack.dir('a', { mode: '511' });
+                
+                // ASYNC
+                jetpack.dirAsync('x', { mode: '511' })
+                .then(function () {
+                    done();
+                });
+            });
+            
+        });
+        
+    } else {
+        
+        describe('*nix specyfic', function () {
+            
+            // tests assume umask is not greater than 022
+            
+            it('sets mode to newly created directory', function (done) {
+                // SYNC
+                // mode as string
+                jetpack.dir('a', { mode: '511' });
+                expect(fse.statSync('a').mode.toString(8)).toBe('40511');
+                
+                // mode as number
+                jetpack.dir('b', { mode: parseInt('511', 8) });
+                expect(fse.statSync('b').mode.toString(8)).toBe('40511');
+                
+                // ASYNC
+                // mode as string
+                jetpack.dirAsync('x', { mode: '511' })
+                .then(function () {
+                    expect(fse.statSync('x').mode.toString(8)).toBe('40511');
+                    
+                    // mode as number
+                    return jetpack.dirAsync('y', { mode: parseInt('511', 8) });
+                })
+                .then(function () {
+                    expect(fse.statSync('y').mode.toString(8)).toBe('40511');
+                    done();
+                });
+            });
+            
+            it('sets that mode to every created directory', function (done) {
+                // SYNC
+                jetpack.dir('a/b', { mode: '711' });
+                expect(fse.statSync('a').mode.toString(8)).toBe('40711');
+                expect(fse.statSync('a/b').mode.toString(8)).toBe('40711');
+                
+                // ASYNC
+                jetpack.dirAsync('a/b', { mode: '711' })
+                .then(function () {
+                    expect(fse.statSync('a').mode.toString(8)).toBe('40711');
+                    expect(fse.statSync('a/b').mode.toString(8)).toBe('40711');
+                    done();
+                });
+            });
+            
+            it('changes mode of existing directory to desired', function (done) {
+                // SYNC
+                fse.mkdirSync('a', '777');
+                jetpack.dir('a', { mode: '511' });
+                expect(fse.statSync('a').mode.toString(8)).toBe('40511');
+                
+                // ASYNC
+                fse.mkdirSync('x', '777');
+                jetpack.dirAsync('x', { mode: '511' })
+                .then(function () {
+                    expect(fse.statSync('x').mode.toString(8)).toBe('40511');
+                    done();
+                });
+            });
+            
+            it('leaves mode of directory intact if not specified', function (done) {
+                // SYNC
+                fse.mkdirSync('a', '700');
+                jetpack.dir('a');
+                expect(fse.statSync('a').mode.toString(8)).toBe('40700');
+                
+                // ASYNC
+                fse.mkdirSync('a', '700');
+                jetpack.dirAsync('a')
+                .then(function () {
+                    expect(fse.statSync('a').mode.toString(8)).toBe('40700');
+                    done();
+                });
+            });
+            
+        });
+        
+    }
     
 });
