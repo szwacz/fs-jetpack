@@ -5,7 +5,7 @@ describe('cwd', function () {
     var pathUtil = require('path');
     var jetpack = require('..');
     
-    it('should have cwd same as process.cwd', function () {
+    it('returns the same path as process.cwd for main instance of jetpack', function () {
         expect(jetpack.cwd()).toBe(process.cwd());
     });
     
