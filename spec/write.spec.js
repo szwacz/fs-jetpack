@@ -10,97 +10,85 @@ describe('read', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    describe('sync', function () {
+    it('should write utf-8 string', function (done) {
+        // SYNC
+        jetpack.write('file.txt', 'ąśźń');
+        var content = fse.readFileSync('file.txt', 'utf8');
+        expect(content).toBe('ąśźń');
         
-        it('should write utf-8 string', function () {
-            jetpack.write('file.txt', 'ąśźń');
-            var content = fse.readFileSync('file.txt', { encoding: 'utf8' });
+        // ASYNC
+        jetpack.writeAsync('file.txt', 'ąśźń')
+        .then(function () {
+            var content = fse.readFileSync('file.txt', 'utf8');
             expect(content).toBe('ąśźń');
+            done();
         });
+    });
+    
+    it('should write Buffer', function (done) {
+        // SYNC
+        jetpack.write('file.txt', new Buffer([33]));
+        var content = fse.readFileSync('file.txt');
+        expect(Buffer.isBuffer(content)).toBe(true);
+        expect(content[0]).toBe(33);
+        expect(content.length).toBe(1);
         
-        it('should write Buffer', function () {
-            jetpack.write('file.txt', new Buffer([33]));
+        // ASYNC
+        jetpack.writeAsync('file.txt', new Buffer([33]))
+        .then(function () {
             var content = fse.readFileSync('file.txt');
             expect(Buffer.isBuffer(content)).toBe(true);
             expect(content[0]).toBe(33);
+            expect(content.length).toBe(1);
+            done();
         });
-        
-        it('should write object as JSON', function () {
-            jetpack.write('file.txt', { a: '123' });
-            var content = fse.readJSONSync('file.txt');
-            expect(content.a).toBe('123');
-        });
-        
-        it('should write array as JSON', function () {
-            jetpack.write('file.txt', ['abc', 123]);
-            var content = fse.readJSONSync('file.txt');
-            expect(content).toEqual(['abc', 123]);
-        });
-        
-        it('should return CWD context', function () {
-            var jetContext = jetpack.write('file.txt', 'abc');
-            expect(jetpack.cwd()).toBe(jetContext.cwd());
-        });
-        
     });
     
-    describe('async', function () {
+    it('should write object as JSON', function (done) {
+        var obj = { a: '123' };
         
-        it('should write utf-8 string', function () {
-            var done = false;
-            jetpack.writeAsync('file.txt', 'ąśźń')
-            .then(function () {
-                var content = fse.readFileSync('file.txt', { encoding: 'utf8' });
-                expect(content).toBe('ąśźń');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
+        // SYNC
+        jetpack.write('file.txt', obj);
+        var content = fse.readJSONSync('file.txt');
+        expect(content).toEqual(obj);
+        
+        // ASYNC
+        jetpack.writeAsync('file.txt', obj)
+        .then(function () {
+            var content = fse.readJSONSync('file.txt');
+            expect(content).toEqual(obj);
+            done();
         });
+    });
+    
+    it('should write array as JSON', function (done) {
+        var arr = ['abc', 123];
         
-        it('should write Buffer', function () {
-            var done = false;
-            jetpack.writeAsync('file.txt', new Buffer([33]))
-            .then(function () {
-                var content = fse.readFileSync('file.txt');
-                expect(Buffer.isBuffer(content)).toBe(true);
-                expect(content[0]).toBe(33);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
+        // SYNC
+        jetpack.write('file.txt', arr);
+        var content = fse.readJSONSync('file.txt');
+        expect(content).toEqual(arr);
+        
+        // ASYNC
+        jetpack.writeAsync('file.txt', arr)
+        .then(function () {
+            var content = fse.readJSONSync('file.txt');
+            expect(content).toEqual(arr);
+            done();
         });
+    });
+    
+    it('should return CWD context', function (done) {
+        // SYNC
+        var jetContext = jetpack.write('file.txt', 'abc');
+        expect(jetpack.cwd()).toBe(jetContext.cwd());
         
-        it('should write object as JSON', function () {
-            var done = false;
-            jetpack.writeAsync('file.txt', { a: '123' })
-            .then(function () {
-                var content = fse.readJSONSync('file.txt');
-                expect(content.a).toBe('123');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
+        // ASYNC
+        jetpack.writeAsync('file.txt', 'abc')
+        .then(function (jetContext) {
+            expect(jetpack.cwd()).toBe(jetContext.cwd());
+            done();
         });
-        
-        it('should write array as JSON', function () {
-            var done = false;
-            jetpack.writeAsync('file.txt', ['abc', 123])
-            .then(function () {
-                var content = fse.readJSONSync('file.txt');
-                expect(content).toEqual(['abc', 123]);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should return CWD context', function () {
-            var done = false;
-            jetpack.writeAsync('file.txt', 'abc')
-            .then(function (jetContext) {
-                expect(jetpack.cwd()).toBe(jetContext.cwd());
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
     });
     
 });
