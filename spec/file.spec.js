@@ -10,395 +10,321 @@ describe('file', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    describe('sync', function () {
+    it('makes sure file exists', function (done) {
+        // SYNC
+        jetpack.file('file_1.txt');
+        expect(fse.existsSync('file_1.txt')).toBe(true);
         
-        it('should make sure file exist', function () {
-            expect(fse.existsSync('something.txt')).toBe(false);
-            jetpack.file('something.txt');
-            expect(fse.existsSync('something.txt')).toBe(true);
+        // ASYNC
+        jetpack.fileAsync('file_2.txt')
+        .then(function () {
+            expect(fse.existsSync('file_2.txt')).toBe(true);
+            done();
         });
+    });
+    
+    it('makes sure file does not exist', function (done) {
+        // SYNC
+        // file does not exist on disk
+        jetpack.file('file_1.txt', { exists: false });
+        expect(fse.existsSync('file_1.txt')).toBe(false);
         
-        it('should make sure file does not exist', function () {
-            // file does not exist on disk
-            expect(fse.existsSync('something.txt')).toBe(false);
-            jetpack.file('something.txt', { exists: false });
-            expect(fse.existsSync('something.txt')).toBe(false);
+        // file exists on disk
+        fse.outputFileSync('file_1.txt', 'abc');
+        jetpack.file('file_1.txt', { exists: false });
+        expect(fse.existsSync('file_1.txt')).toBe(false);
+        
+        // ASYNC
+        // file does not exist on disk
+        jetpack.fileAsync('file_2.txt', { exists: false })
+        .then(function () {
+            expect(fse.existsSync('file_2.txt')).toBe(false);
             
             // file exists on disk
-            fse.writeFileSync('something.txt', 'abc');
-            jetpack.file('something.txt', { exists: false });
-            expect(fse.existsSync('something.txt')).toBe(false);
+            fse.outputFileSync('file_2.txt', 'abc');
+            return jetpack.fileAsync('file_2.txt', { exists: false });
+        })
+        .then(function () {
+            expect(fse.existsSync('file_2.txt')).toBe(false);
+            done();
         });
+    });
+    
+    it('not bothers about file emptiness if not explicitly specified', function (done) {
+        fse.outputFileSync('file.txt', 'abc');
         
-        it('should not bother about file emptiness if not said so', function () {
-            fse.writeFileSync('something.txt', 'abc');
-            jetpack.file('something.txt');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
+        // SYNC
+        jetpack.file('file.txt');
+        expect(fse.readFileSync('file.txt', 'utf8')).toBe('abc');
+        
+        // ASYNC
+        jetpack.fileAsync('file.txt')
+        .then(function () {
+            expect(fse.readFileSync('file.txt', 'utf8')).toBe('abc');
+            done();
         });
+    });
+    
+    it('makes sure file is empty if specified', function (done) {
+        // SYNC
+        fse.outputFileSync('file_1.txt', 'abc');
+        expect(fse.readFileSync('file_1.txt', 'utf8')).toBe('abc');
+        jetpack.file('file_1.txt', { empty: true });
+        expect(fse.readFileSync('file_1.txt', 'utf8')).toBe('');
         
-        it('should make sure file is empty', function () {
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.file('something.txt', { empty: true });
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
+        // ASYNC
+        fse.outputFileSync('file_2.txt', 'abc');
+        expect(fse.readFileSync('file_2.txt', 'utf8')).toBe('abc');
+        jetpack.fileAsync('file_2.txt', { empty: true })
+        .then(function () {
+            expect(fse.readFileSync('file_2.txt', 'utf8')).toBe('');
+            done();
         });
+    });
+    
+    it('if given path is directory, should delete it and place file instead', function (done) {
+        // SYNC
+        fse.outputFileSync('a/b/c.txt', 'abc'); // create nested directories to be sure we can delete non-empty dir
+        jetpack.file('a');
+        expect(fse.statSync('a').isFile()).toBe(true);
         
-        it('if given path is directory, should delete it and place file instead', function () {
-            // create nested directories to be sure we can delete non-empty dir
-            fse.mkdirsSync('something/other');
-            expect(fse.statSync('something').isDirectory()).toBe(true);
-            jetpack.file('something');
-            expect(fse.statSync('something').isFile()).toBe(true);
+        // ASYNC
+        fse.outputFileSync('x/y/z.txt', 'abc'); // create nested directories to be sure we can delete non-empty dir
+        jetpack.fileAsync('x')
+        .then(function () {
+            expect(fse.statSync('x').isFile()).toBe(true);
+            done();
         });
+    });
+    
+    it("if directory for file doesn't exist create it too", function (done) {
+        // SYNC
+        jetpack.file('a/b.txt');
+        expect(fse.existsSync('a/b.txt')).toBe(true);
         
-        it("if directory for file doesn't exist create it too", function () {
-            expect(fse.existsSync('new_dir')).toBe(false);
-            jetpack.file('new_dir/something.txt');
-            expect(fse.existsSync('new_dir/something.txt')).toBe(true);
+        // ASYNC
+        jetpack.fileAsync('x/y.txt')
+        .then(function () {
+            expect(fse.existsSync('x/y.txt')).toBe(true);
+            done();
         });
+    });
+    
+    it("sets file content from string", function (done) {
+        // SYNC
+        jetpack.file('file_1.txt', { content: 'abc' });
+        expect(fse.readFileSync('file_1.txt', 'utf8')).toBe('abc');
         
-        it("should set file content", function () {
-            // content as string
-            jetpack.file('file.txt', { content: '123' });
-            expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
-            
-            // content as buffer
-            jetpack.file('file.txt', { content: new Buffer('123') });
-            expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
-            
-            // content as JSON object
-            jetpack.file('file.txt', { content: { a: "abc", b: 123 } });
-            var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
-            expect(data).toEqual({ a: "abc", b: 123 });
-            
-            // content as JSON array
-            jetpack.file('file.txt', { content: ["abc", 123] });
-            var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
-            expect(data).toEqual(["abc", 123]);
+        // ASYNC
+        jetpack.fileAsync('file_2.txt', { content: 'abc' })
+        .then(function () {
+            expect(fse.readFileSync('file_2.txt', 'utf8')).toBe('abc');
+            done();
         });
+    });
+    
+    it("sets file content from buffer", function (done) {
+        // SYNC
+        jetpack.file('file_1.txt', { content: new Buffer([11, 22]) });
+        var buf = fse.readFileSync('file_1.txt');
+        expect(buf[0]).toBe(11);
+        expect(buf[1]).toBe(22);
         
-        it("should set content of already existing file", function () {
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.file('something.txt', { content: '123' });
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
+        // ASYNC
+        jetpack.fileAsync('file_2.txt', { content: new Buffer([11, 22]) })
+        .then(function () {
+            var buf = fse.readFileSync('file_2.txt');
+            expect(buf[0]).toBe(11);
+            expect(buf[1]).toBe(22);
+            done();
         });
+    });
+    
+    it("sets file content from object (json)", function (done) {
+        var obj = { a: "abc", b: 123 };
         
-        it('*exists = false* should take precedence over *empty* and *content*', function () {
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.file('something.txt', { exists: false, empty: true, content: '123' });
-            expect(fse.existsSync('something.txt')).toBe(false);
+        // SYNC
+        jetpack.file('file_1.txt', { content: obj });
+        var data = JSON.parse(fse.readFileSync('file_1.txt', 'utf8'));
+        expect(data).toEqual(obj);
+        
+        // ASYNC
+        jetpack.fileAsync('file_2.txt', { content: obj })
+        .then(function () {
+            var data = JSON.parse(fse.readFileSync('file_1.txt', 'utf8'));
+            expect(data).toEqual(obj);
+            done();
         });
+    });
+    
+    it("replaces content of already existing file", function (done) {
+        // SYNC
+        fse.writeFileSync('file_1.txt', 'abc');
+        jetpack.file('file_1.txt', { content: '123' });
+        expect(fse.readFileSync('file_1.txt', 'utf8')).toBe('123');
         
-        it('*empty = true* should take precedence over *content*', function () {
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.file('something.txt', { empty: true, content: '123' });
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
+        // ASYNC
+        fse.writeFileSync('file_2.txt', 'abc');
+        jetpack.fileAsync('file_2.txt', { content: '123' })
+        .then(function() {
+            expect(fse.readFileSync('file_2.txt', 'utf8')).toBe('123');
+            done();
         });
+    });
+    
+    it('return CWD context', function (done) {
+        // SYNC
+        var context = jetpack.file('file.txt');
+        expect(context.cwd()).toBe(jetpack.cwd());
         
-        it('should return CWD context', function () {
-            var context = jetpack.file('something.txt');
+        // SYNC
+        jetpack.fileAsync('file.txt')
+        .then(function (context) {
             expect(context.cwd()).toBe(jetpack.cwd());
+            done();
+        });
+    });
+    
+    describe('optional params importance hierarchy', function () {
+        
+        it('EXISTS=false takes precedence over EMPTY and CONTENT', function (done) {
+            // SYNC
+            fse.writeFileSync('file_1.txt', 'abc');
+            jetpack.file('file_1.txt', { exists: false, empty: true, content: '123' });
+            expect(fse.existsSync('file_1.txt')).toBe(false);
+            
+            // ASYNC
+            fse.writeFileSync('file_2.txt', 'abc');
+            jetpack.fileAsync('file_2.txt', { exists: false, empty: true, content: '123' })
+            .then(function () {
+                expect(fse.existsSync('file_2.txt')).toBe(false);
+                done();
+            });
         });
         
-        if (process.platform === 'win32') {
-        
-            describe('windows specyfic', function () {
-                
-                it('specyfying mode should have no effect (throw no error)', function () {
-                    jetpack.file('something.txt', { mode: '511' });
-                });
-                
-            });
-                
-        } else {
+        it('EMPTY=true takes precedence over CONTENT', function (done) {
+            // SYNC
+            fse.writeFileSync('file_1.txt', 'abc');
+            jetpack.file('file_1.txt', { empty: true, content: '123' });
+            expect(fse.readFileSync('file_1.txt', 'utf8')).toBe('');
             
-            describe('*nix specyfic', function () {
-                
-                // tests assume umask is not greater than 022
-                
-                it('should set mode of created file', function () {
-                    // mode as string
-                    expect(fse.existsSync('something')).toBe(false);
-                    jetpack.file('something', { mode: '511' });
-                    expect(fse.statSync('something').mode.toString(8)).toBe('100511');
-                    
-                    // mode as number
-                    expect(fse.existsSync('other')).toBe(false);
-                    jetpack.file('other', { mode: parseInt('511', 8) });
-                    expect(fse.statSync('other').mode.toString(8)).toBe('100511');
-                });
-                
-                it('should change mode of existing file if not match', function () {
-                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
-                    expect(fse.existsSync('something.txt')).toBe(true);
-                    jetpack.file('something.txt', { mode: '511' });
-                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100511');
-                });
-                
-                it('should leave mode of file intact if not specified', function () {
-                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
-                    
-                    // ensure exists
-                    jetpack.file('something.txt');
-                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
-                    
-                    // make file empty
-                    jetpack.file('something.txt', { empty: true });
-                    expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
-                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
-                    
-                    // set file content
-                    jetpack.file('something.txt', { content: '123' });
-                    expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
-                    expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
-                });
-                
+            // ASYNC
+            fse.writeFileSync('file_2.txt', 'abc');
+            jetpack.fileAsync('file_2.txt', { empty: true, content: '123' })
+            .then(function () {
+                expect(fse.readFileSync('file_2.txt', 'utf8')).toBe('');
+                done();
             });
-            
-        }
+        });
         
     });
     
-    describe('async', function () {
+    if (process.platform === 'win32') {
         
-        it('should make sure file exist', function () {
-            var done = false;
-            expect(fse.existsSync('something.txt')).toBe(false);
-            jetpack.fileAsync('something.txt')
-            .then(function () {
-                expect(fse.existsSync('something.txt')).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should make sure file does not exist', function () {
-            var done = false;
+        describe('windows specyfic', function () {
             
-            // file does not exist on disk
-            expect(fse.existsSync('something.txt')).toBe(false);
-            jetpack.fileAsync('something.txt', { exists: false })
-            .then(function () {
-                expect(fse.existsSync('something.txt')).toBe(false);
+            it('specyfying mode should have no effect (throw no error)', function (done) {
+                // SYNC
+                jetpack.file('file_1.txt', { mode: '511' });
                 
-                // file exists on disk
-                fse.writeFileSync('something.txt', 'abc');
-                expect(fse.existsSync('something.txt')).toBe(true);
-                return jetpack.fileAsync('something.txt', { exists: false });
-            })
-            .then(function () {
-                expect(fse.existsSync('something.txt')).toBe(false);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should not bother about file emptiness if not said so', function () {
-            var done = false;
-            fse.writeFileSync('something.txt', 'abc');
-            jetpack.fileAsync('something.txt')
-            .then(function () {
-                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should make sure file is empty', function () {
-            var done = false;
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.fileAsync('something.txt', { empty: true })
-            .then(function () {
-                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('if given path is directory, should delete it and place file instead', function () {
-            var done = false;
-            // create nested directories to be sure we can delete non-empty dir
-            fse.mkdirsSync('something/else');
-            expect(fse.statSync('something').isDirectory()).toBe(true);
-            jetpack.fileAsync('something')
-            .then(function () {
-                expect(fse.statSync('something').isFile()).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it("if directory for file doesn't exist create it too", function () {
-            var done = false;
-            expect(fse.existsSync('new_dir')).toBe(false);
-            jetpack.fileAsync('new_dir/something.txt')
-            .then(function () {
-                expect(fse.existsSync('new_dir/something.txt')).toBe(true);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it("should set file content", function () {
-            var done = false;
-            // content as string
-            jetpack.fileAsync('file.txt', { content: '123' })
-            .then(function () {
-                expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
-                // content as buffer
-                return jetpack.fileAsync('file.txt', { content: new Buffer('123') });
-            })
-            .then(function () {
-                expect(fse.readFileSync('file.txt', { encoding: 'utf8' })).toBe('123');
-                // content as JSON object
-                return jetpack.fileAsync('file.txt', { content: { a: "abc", b: 123 } });
-            })
-            .then(function () {
-                var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
-                expect(data).toEqual({ a: "abc", b: 123 });
-                // content as JSON array
-                return jetpack.fileAsync('file.txt', { content: ["abc", 123] });
-            })
-            .then(function () {
-                var data = JSON.parse(fse.readFileSync('file.txt', { encoding: 'utf8' }));
-                expect(data).toEqual(["abc", 123]);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it("should set content of already existing file", function () {
-            var done = false;
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.fileAsync('something.txt', { content: '123' })
-            .then(function () {
-                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('*exists = false* should take precedence over *empty* and *content*', function () {
-            var done = false;
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.fileAsync('something.txt', { exists: false, empty: true, content: '123' })
-            .then(function () {
-                expect(fse.existsSync('something.txt')).toBe(false);
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('*empty = true* should take precedence over *content*', function () {
-            var done = false;
-            fse.writeFileSync('something.txt', 'abc');
-            expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('abc');
-            jetpack.fileAsync('something.txt', { empty: true, content: '123' })
-            .then(function () {
-                expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it('should return CWD context', function () {
-            var done = false;
-            jetpack.fileAsync('something.txt')
-            .then(function (context) {
-                expect(context.cwd()).toBe(jetpack.cwd());
-                done = true;
-            });
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        if (process.platform === 'win32') {
-        
-            describe('windows specyfic', function () {
-                
-                it('specyfying mode should have no effect (throw no error)', function () {
-                    var done = false;
-                    jetpack.fileAsync('something.txt', { mode: '511' })
-                    .then(function () {
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
+                // ASYNC
+                jetpack.fileAsync('file_2.txt', { mode: '511' })
+                .then(function () {
+                    done();
                 });
-                
             });
-                
-        } else {
             
-            describe('*nix specyfic', function () {
+        });
+        
+    } else {
+        
+        describe('*nix specyfic', function () {
+            
+            // tests assume umask is not greater than 022
+            
+            it('sets mode of created file', function (done) {
+                // SYNC
+                // mode as string
+                jetpack.file('file_1.txt', { mode: '511' });
+                expect(fse.statSync('file_1.txt').mode.toString(8)).toBe('100511');
                 
-                // tests assume umask is not greater than 022
+                // mode as number
+                jetpack.file('file_2.txt', { mode: parseInt('511', 8) });
+                expect(fse.statSync('file_2.txt').mode.toString(8)).toBe('100511');
                 
-                it('should set mode of created file', function () {
-                    var done = false;
-                    expect(fse.existsSync('something')).toBe(false);
-                    expect(fse.existsSync('other')).toBe(false);
-                    // mode as string
-                    jetpack.fileAsync('something', { mode: '511' })
-                    .then(function () {
-                        // mode as number
-                        return jetpack.fileAsync('other', { mode: parseInt('511', 8) });
-                    })
-                    .then(function () {
-                        expect(fse.statSync('something').mode.toString(8)).toBe('100511');
-                        expect(fse.statSync('other').mode.toString(8)).toBe('100511');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-                it('should change mode of existing file if not match', function () {
-                    var done = false;
-                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
-                    expect(fse.existsSync('something.txt')).toBe(true);
-                    jetpack.fileAsync('something.txt', { mode: '511' })
-                    .then(function () {
-                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100511');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
-                });
-                
-                it('should leave mode of file intact if not specified', function () {
-                    var done = false;
-                    fse.writeFileSync('something.txt', 'abc', { mode: '700' });
+                // AYNC
+                // mode as string
+                jetpack.fileAsync('file_3.txt', { mode: '511' })
+                .then(function () {
+                    expect(fse.statSync('file_3.txt').mode.toString(8)).toBe('100511');
                     
-                    // ensure exists
-                    jetpack.fileAsync('something.txt')
-                    .then(function () {
-                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
-                        
-                        // make file empty
-                        return jetpack.fileAsync('something.txt', { empty: true });
-                    })
-                    .then(function () {
-                        expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('');
-                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
-                        
-                        // set file content
-                        return jetpack.fileAsync('something.txt', { content: '123' });
-                    })
-                    .then(function () {
-                        expect(fse.readFileSync('something.txt', { encoding: 'utf8' })).toBe('123');
-                        expect(fse.statSync('something.txt').mode.toString(8)).toBe('100700');
-                        done = true;
-                    });
-                    waitsFor(function () { return done; }, null, 200);
+                    // mode as number
+                    return jetpack.fileAsync('file_4.txt', { mode: parseInt('511', 8) });
+                })
+                .then(function () {
+                    expect(fse.statSync('file_4.txt').mode.toString(8)).toBe('100511');
+                    done();
                 });
-                
             });
             
-        }
+            it("changes mode of existing file if doesn't match", function (done) {
+                // SYNC
+                fse.writeFileSync('file_1.txt', 'abc', { mode: '700' });
+                jetpack.file('file_1.txt', { mode: '511' });
+                expect(fse.statSync('file_1.txt').mode.toString(8)).toBe('100511');
+                
+                // ASYNC
+                fse.writeFileSync('file_2.txt', 'abc', { mode: '700' });
+                jetpack.fileAsync('file_2.txt', { mode: '511' })
+                .then(function () {
+                    expect(fse.statSync('file_2.txt').mode.toString(8)).toBe('100511');
+                    done();
+                });
+            });
+            
+            it('leaves mode of file intact if not explicitly specified', function (done) {
+                fse.writeFileSync('file.txt', 'abc', { mode: '700' });
+                
+                // SYNC
+                // ensure exists
+                jetpack.file('file.txt');
+                expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
+                
+                // make file empty
+                jetpack.file('file.txt', { empty: true });
+                expect(fse.readFileSync('file.txt', 'utf8')).toBe('');
+                expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
+                
+                // set file content
+                jetpack.file('file.txt', { content: '123' });
+                expect(fse.readFileSync('file.txt', 'utf8')).toBe('123');
+                expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
+                
+                // AYNC
+                // ensure exists
+                jetpack.fileAsync('file.txt')
+                .then(function () {
+                    expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
+                    
+                    // make file empty
+                    return jetpack.fileAsync('file.txt', { empty: true });
+                })
+                .then(function () {
+                    expect(fse.readFileSync('file.txt', 'utf8')).toBe('');
+                    expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
+                    
+                    // set file content
+                    jetpack.fileAsync('file.txt', { content: '123' });
+                })
+                .then(function () {
+                    expect(fse.readFileSync('file.txt', 'utf8')).toBe('123');
+                    expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
+                    done();
+                });
+            });
+            
+        });
         
-    });
+    }
     
 });
