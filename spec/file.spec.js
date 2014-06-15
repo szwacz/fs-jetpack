@@ -314,7 +314,7 @@ describe('file', function () {
                     expect(fse.statSync('file.txt').mode.toString(8)).toBe('100700');
                     
                     // set file content
-                    jetpack.fileAsync('file.txt', { content: '123' });
+                    return jetpack.fileAsync('file.txt', { content: '123' });
                 })
                 .then(function () {
                     expect(fse.readFileSync('file.txt', 'utf8')).toBe('123');
