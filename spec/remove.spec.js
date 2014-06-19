@@ -10,257 +10,200 @@ describe('remove', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    describe('sync', function () {
+    it("throws error if path already doesn't exist", function (done) {
+        // SYNC
+        try {
+            jetpack.remove('dir');
+            throw 'To make sure this code will throw.';
+        } catch(err) {
+            if (err.code !== 'ENOENT') {
+                throw 'Not that error!';
+            }
+        }
         
-        it("should throw error if path already doesn't exist", function () {
-            expect(fse.existsSync('a')).toBe(false);
-            expect(function () {
-                jetpack.remove('a');
-            }).toThrow();
+        // ASYNC
+        jetpack.removeAsync('dir')
+        .catch(function (err) {
+            expect(err.code).toEqual("ENOENT");
+            done();
         });
+    });
+    
+    it("should delete file", function (done) {
+        // SYNC
+        fse.outputFileSync('file.txt', 'abc');
+        jetpack.remove('file.txt');
+        expect(fse.existsSync('file.txt')).toBe(false);
         
-        it("should delete file", function () {
-            fse.writeFileSync('a.txt', 'abc');
-            expect(fse.existsSync('a.txt')).toBe(true);
-            
-            jetpack.remove('a.txt');
-            
-            expect(fse.existsSync('a.txt')).toBe(false);
+        // ASYNC
+        fse.outputFileSync('file.txt', 'abc');
+        jetpack.removeAsync('file.txt')
+        .then(function () {
+            expect(fse.existsSync('file.txt')).toBe(false);
+            done();
         });
+    });
+    
+    it("sets cwd() to directory which used to contain the removed item", function (done) {
+        var path = pathUtil.resolve('file.txt');
         
-        it("should cwd() to parent directory", function () {
-            var path = pathUtil.resolve('a.txt');
-            fse.writeFileSync('a.txt', 'abc');
-            
-            var context = jetpack.remove('a.txt');
-            
+        // SYNC
+        fse.writeFileSync(path, 'abc');
+        var context = jetpack.remove(path);
+        expect(context.cwd()).toBe(pathUtil.resolve(path, '..'));
+        
+        // ASYNC
+        fse.writeFileSync(path, 'abc');
+        jetpack.removeAsync(path)
+        .then(function (context) {
             expect(context.cwd()).toBe(pathUtil.resolve(path, '..'));
+            done();
         });
+    });
+    
+    it("removes directory with stuff inside", function (done) {
         
-        it("should delete directory with stuff inside", function () {
+        function prepareFiles() {
             fse.mkdirsSync('a/b/c');
-            fse.writeFileSync('a/f.txt', 'abc');
-            fse.writeFileSync('a/b/f.txt', '123');
-            expect(fse.existsSync('a/f.txt')).toBe(true);
-            expect(fse.existsSync('a/b/f.txt')).toBe(true);
-            
-            jetpack.remove('a');
-            
-            expect(fse.existsSync('a')).toBe(false);
-        });
+            fse.outputFileSync('a/f.txt', 'abc');
+            fse.outputFileSync('a/b/f.txt', '123');
+        }
         
-        describe('mask matching', function () {
+        // SYNC
+        prepareFiles();
+        jetpack.remove('a');
+        expect(fse.existsSync('a')).toBe(false);
+        
+        // ASYNC
+        prepareFiles();
+        jetpack.removeAsync('a')
+        .then(function () {
+            expect(fse.existsSync('a')).toBe(false);
+            done();
+        });
+    });
+    
+    describe('mask matching', function () {
+        
+        it("deletes ONLY", function (done) {
             
-            it("should delete *only*", function () {
+            function prepareFiles() {
+                fse.outputFileSync('a/f.txt', 'abc');
+                fse.outputFileSync('a/f.doc', 'abc');
+                fse.outputFileSync('a/b/f.txt', 'abc');
                 fse.mkdirsSync('a/b/tmp');
                 fse.mkdirsSync('a/tmp/c');
-                fse.writeFileSync('a/f.txt', 'abc');
-                fse.writeFileSync('a/f.doc', 'abc');
-                fse.writeFileSync('a/b/f.txt', 'abc');
-                
-                jetpack.remove('a', { only: ['*.txt', 'tmp'] });
-                
+            }
+            
+            function checkAfter() {
                 expect(fse.existsSync('a/b/tmp')).toBe(false);
                 expect(fse.existsSync('a/b')).toBe(true);
                 expect(fse.existsSync('a/tmp')).toBe(false);
                 expect(fse.existsSync('a/f.doc')).toBe(true);
                 expect(fse.existsSync('a/f.txt')).toBe(false);
                 expect(fse.existsSync('a/b/f.txt')).toBe(false);
-            });
+            }
             
-            it("should test *only* against root path", function () {
-                fse.mkdirSync('a');
-                
-                jetpack.remove('a', { only: ['a'] });
-                
+            // SYNC
+            prepareFiles();
+            jetpack.remove('a', { only: ['*.txt', 'tmp'] });
+            checkAfter();
+            
+            // ASYNC
+            prepareFiles();
+            jetpack.removeAsync('a', { only: ['*.txt', 'tmp'] })
+            .then(function () {
+                checkAfter();
+                done();
+            });
+        });
+        
+        it("tests ONLY also against root path", function (done) {
+            // SYNC
+            fse.mkdirSync('a');
+            jetpack.remove('a', { only: ['a'] });
+            expect(fse.existsSync('a')).toBe(false);
+            
+            // ASYNC
+            fse.mkdirSync('a');
+            jetpack.removeAsync('a', { only: ['a'] })
+            .then(function () {
                 expect(fse.existsSync('a')).toBe(false);
+                done();
             });
+        });
+        
+        it("deletes ALLBUT", function (done) {
             
-            it("should delete *allBut*", function () {
+            function prepareFiles() {
                 fse.mkdirsSync('a/b/tmp');
                 fse.mkdirsSync('a/tmp/c');
                 fse.writeFileSync('a/f.txt', 'abc');
                 fse.writeFileSync('a/f.doc', 'abc');
                 fse.writeFileSync('a/b/f.txt', 'abc');
-                
-                jetpack.remove('a', { allBut: ['*.txt', 'tmp'] });
-                
+            }
+            
+            function checkAfter() {
                 expect(fse.existsSync('a/b/tmp')).toBe(true);
                 expect(fse.existsSync('a/tmp/c')).toBe(true);
                 expect(fse.existsSync('a/f.doc')).toBe(false);
                 expect(fse.existsSync('a/f.txt')).toBe(true);
                 expect(fse.existsSync('a/b/f.txt')).toBe(true);
-            });
+            }
             
-            it("should test *allBut* agains root path", function () {
-                fse.mkdirSync('a');
-                
-                jetpack.remove('a', { allBut: ['a'] });
-                
+            // SYNC
+            prepareFiles();
+            jetpack.remove('a', { allBut: ['*.txt', 'tmp'] });
+            checkAfter();
+            
+            // ASYNC
+            prepareFiles();
+            jetpack.removeAsync('a', { allBut: ['*.txt', 'tmp'] })
+            .then(function () {
+                checkAfter();
+                done();
+            });
+        });
+        
+        it("tests ALLBUT also agains root path", function (done) {
+            fse.mkdirSync('a');
+            
+            // SYNC
+            jetpack.remove('a', { allBut: ['a'] });
+            expect(fse.existsSync('a')).toBe(true);
+            
+            // ASYNC
+            jetpack.removeAsync('a', { allBut: ['a'] })
+            .then(function () {
                 expect(fse.existsSync('a')).toBe(true);
+                done();
             });
+        });
+        
+        it("ONLY takes precedence over ALLBUT", function (done) {
             
-            it("*only* should take precedence over *allBut*", function () {
-                fse.mkdirSync('a');
-                fse.writeFileSync('a/f.txt', 'abc');
-                fse.writeFileSync('a/f.doc', 'abc');
-                
-                jetpack.remove('a', { only: ['f.doc'], allBut: ['f.txt'] });
-                
+            function prepareFiles() {
+                fse.outputFileSync('a/f.txt', 'abc');
+                fse.outputFileSync('a/f.doc', 'abc');
+            }
+            
+            function checkAfter() {
                 expect(fse.existsSync('a/f.txt')).toBe(true);
                 expect(fse.existsSync('a/f.doc')).toBe(false);
-            });
+            }
             
-        });
-        
-    });
-    
-    describe('async', function () {
-        
-        it("should throw error if path already doesn't exist", function () {
-            var done = false;
-            expect(fse.existsSync('a')).toBe(false);
+            // SYNC
+            prepareFiles();
+            jetpack.remove('a', { only: ['f.doc'], allBut: ['f.txt'] });
+            checkAfter();
             
-            jetpack.removeAsync('a')
-            .catch(function (err) {
-                done = true;
-            });
-            
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it("should delete file", function () {
-            var done = false;
-            fse.writeFileSync('a.txt', 'abc');
-            expect(fse.existsSync('a.txt')).toBe(true);
-            
-            jetpack.removeAsync('a.txt')
+            // ASYNC
+            prepareFiles();
+            jetpack.removeAsync('a', { only: ['f.doc'], allBut: ['f.txt'] })
             .then(function () {
-                expect(fse.existsSync('a.txt')).toBe(false);
-                done = true;
+                checkAfter();
+                done();
             });
-            
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it("should cwd() to parent directory", function () {
-            var done = false;
-            var path = pathUtil.resolve('a.txt');
-            fse.writeFileSync('a.txt', 'abc');
-            
-            jetpack.removeAsync('a.txt')
-            .then(function (context) {
-                expect(context.cwd()).toBe(pathUtil.resolve(path, '..'));
-                done = true;
-            });
-            
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        it("should delete directory with stuff inside", function () {
-            var done = false;
-            fse.mkdirsSync('a/b/c');
-            fse.writeFileSync('a/f.txt', 'abc');
-            fse.writeFileSync('a/b/f.txt', '123');
-            expect(fse.existsSync('a/f.txt')).toBe(true);
-            expect(fse.existsSync('a/b/f.txt')).toBe(true);
-            
-            jetpack.removeAsync('a')
-            .then(function () {
-                expect(fse.existsSync('a')).toBe(false);
-                done = true;
-            });
-            
-            waitsFor(function () { return done; }, null, 200);
-        });
-        
-        describe('mask matching', function () {
-            
-            it("should delete *only*", function () {
-                var done = false;
-                fse.mkdirsSync('a/b/tmp');
-                fse.mkdirsSync('a/tmp/c');
-                fse.writeFileSync('a/f.txt', 'abc');
-                fse.writeFileSync('a/f.doc', 'abc');
-                fse.writeFileSync('a/b/f.txt', 'abc');
-                
-                jetpack.removeAsync('a', { only: ['*.txt', 'tmp'] })
-                .then(function () {
-                    expect(fse.existsSync('a/b/tmp')).toBe(false);
-                    expect(fse.existsSync('a/b')).toBe(true);
-                    expect(fse.existsSync('a/tmp')).toBe(false);
-                    expect(fse.existsSync('a/f.doc')).toBe(true);
-                    expect(fse.existsSync('a/f.txt')).toBe(false);
-                    expect(fse.existsSync('a/b/f.txt')).toBe(false);
-                    done = true;
-                });
-                
-                waitsFor(function () { return done; }, null, 200);
-            });
-            
-            it("should test *only* against root path", function () {
-                var done = false;
-                fse.mkdirSync('a');
-                
-                jetpack.removeAsync('a', { only: ['a'] })
-                .then(function () {
-                    expect(fse.existsSync('a')).toBe(false);
-                    done = true;
-                });
-                
-                waitsFor(function () { return done; }, null, 200);
-            });
-            
-            it("should delete *allBut*", function () {
-                var done = false;
-                fse.mkdirsSync('a/b/tmp');
-                fse.mkdirsSync('a/tmp/c');
-                fse.writeFileSync('a/f.txt', 'abc');
-                fse.writeFileSync('a/f.doc', 'abc');
-                fse.writeFileSync('a/b/f.txt', 'abc');
-                
-                jetpack.removeAsync('a', { allBut: ['*.txt', 'tmp'] })
-                .then(function () {
-                    expect(fse.existsSync('a/b/tmp')).toBe(true);
-                    expect(fse.existsSync('a/tmp/c')).toBe(true);
-                    expect(fse.existsSync('a/f.doc')).toBe(false);
-                    expect(fse.existsSync('a/f.txt')).toBe(true);
-                    expect(fse.existsSync('a/b/f.txt')).toBe(true);
-                    done = true;
-                });
-                
-                waitsFor(function () { return done; }, null, 200);
-            });
-            
-            it("should test *allBut* agains root path", function () {
-                var done = false;
-                fse.mkdirSync('a');
-                
-                jetpack.removeAsync('a', { allBut: ['a'] })
-                .then(function () {
-                    expect(fse.existsSync('a')).toBe(true);
-                    done = true;
-                });
-                
-                waitsFor(function () { return done; }, null, 200);
-            });
-            
-            it("*only* should take precedence over *allBut*", function () {
-                var done = true;
-                fse.mkdirSync('a');
-                fse.writeFileSync('a/f.txt', 'abc');
-                fse.writeFileSync('a/f.doc', 'abc');
-                
-                jetpack.removeAsync('a', { only: ['f.doc'], allBut: ['f.txt'] })
-                .then(function () {
-                    expect(fse.existsSync('a/f.txt')).toBe(true);
-                    expect(fse.existsSync('a/f.doc')).toBe(false);
-                    done = true;
-                });
-                
-                waitsFor(function () { return done; }, null, 200);
-            });
-            
         });
         
     });
