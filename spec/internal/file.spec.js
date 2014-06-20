@@ -116,6 +116,19 @@ describe('internal/file', function () {
         });
     });
     
+    it("read returns null if file doesn't exist", function (done) {
+        // SYNC
+        var content = internalFile.read('nonexistent.txt');
+        expect(content).toBe(null);
+        
+        // ASYNC
+        internalFile.readAsync('nonexistent.txt')
+        .then(function (content) {
+            expect(content).toBe(null);
+            done();
+        });
+    });
+    
     describe('safe file operations', function () {
         
         var newPath = path + '.__new__';
@@ -260,21 +273,15 @@ describe('internal/file', function () {
             });
         });
         
-        it("throws if neither of those two files exist", function (done) {
+        it("returns null if neither of those two files exist", function (done) {
             // SYNC
-            try {
-                internalFile.read(path, { safe: true });
-                throw 'To make sure this code will throw.';
-            } catch(err) {
-                if (err.code !== 'ENOENT') {
-                    throw 'Not that error!';
-                }
-            }
+            var content = internalFile.read(path, { safe: true });
+            expect(content).toBe(null);
             
             // ASYNC
             internalFile.readAsync(path, { safe: true })
-            .catch(function (err) {
-                expect(err.code).toEqual("ENOENT");
+            .then(function (content) {
+                expect(content).toBe(null);
                 done();
             });
         });
