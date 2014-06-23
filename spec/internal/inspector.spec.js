@@ -125,30 +125,25 @@ describe('internal/inspector |', function () {
                     name: 'dir',
                     type: 'dir',
                     size: 7,
-                    // TODO blockSize
                     children: [
                         {
                             name: 'empty',
                             type: 'dir',
                             size: 0, // the directory is empty
-                            // TODO blockSize
                             children: []
                         },{
                             name: 'file.txt',
                             type: 'file',
-                            size: 3,
-                            // TODO blockSize
+                            size: 3
                         },{
                             name: 'subdir',
                             type: 'dir',
                             size: 4,
-                            // TODO blockSize
                             children: [
                                 {
                                     name: 'file.txt',
                                     type: 'file',
-                                    size: 4,
-                                    // TODO blockSize
+                                    size: 4
                                 }
                             ]
                         }
@@ -189,12 +184,6 @@ describe('internal/inspector |', function () {
                 done();
             });
         });
-        
-    });
-    
-    describe('symlinks', function () {
-        
-        // TODO
         
     });
     
