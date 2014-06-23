@@ -22,19 +22,21 @@ All asynchronous methods are promise based, and are using [Q library](https://gi
 Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish one from another.
 
 **Index**
-* <a href="#cwdpath">cwd([path])</a>
-* <a href="#copyfrom-to-options">copy(from, to, [options])</a>
-* <a href="#dirpath-criteria">dir(path, [criteria])</a>
-* <a href="#existspath">exists(path)</a>
-* <a href="#filepath-criteria">file(path, [criteria])</a>
-* <a href="#listpath-options">list(path, [options])</a>
-* <a href="#pathparts">path([parts...])</a>
-* <a href="#readpath-mode">read(path, [mode])</a>
-* <a href="#removepath-options">remove(path, [options])</a>
-* <a href="#writepath-content">write(path, content)</a>
+* [cwd([path])](#cwd)
+* [copy(from, to, [options])](#copy)
+* [dir(path, [criteria])](#dir)
+* [exists(path)](#exists)
+* [file(path, [criteria])](#file)
+* [inspect(path)](#inspect)
+* [list(path, [mode])](#list)
+* [path([parts...])](#path)
+* [read(path, [mode])](#read)
+* [remove(path, [options])](#remove)
+* [tree(path)](#tree)
+* [write(path, content)](#write)
 
 
-###cwd([path])
+### <a name="cwd"></a> cwd([path])
 Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
 
 **parameters:**  
@@ -63,7 +65,7 @@ console.log(jetParentParent.cwd()); // '/one'
 ```
 
 
-###copy(from, to, [options])
+### <a name="copy"></a> copy(from, to, [options])
 Copies given file or directory.
 
 **parameters:**  
@@ -92,11 +94,11 @@ jetpack.copy('/my_dir', '/somewhere/my_dir', { only: ['*.txt'] });
 jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 ```
 
-###copyAsync(from, to, [options])
+### copyAsync(from, to, [options])
 Asynchronous equivalent of `copy()` method. The only difference is that it returns promise.
 
 
-###dir(path, [criteria])
+### <a name="dir"></a> dir(path, [criteria])
 Ensures that directory meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
@@ -132,11 +134,11 @@ jetpack
 ```
 
 
-###dirAsync(path, [criteria])
+### dirAsync(path, [criteria])
 Asynchronous equivalent of `dir()` method. The only difference is that it returns promise.
 
 
-###exists(path)
+### <a name="exists"></a> exists(path)
 Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
 
 **returns:**  
@@ -146,11 +148,11 @@ Checks whether something exists on given `path`. This method returns values more
 * `"other"` if path exists, but is of different "type".
 
 
-###existsAsync(path)
+### existsAsync(path)
 Asynchronous equivalent of `exists()` method. The only difference is that it returns promise.
 
 
-###file(path, [criteria])
+### <a name="file"></a> file(path, [criteria])
 Ensures that file meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
@@ -177,53 +179,36 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-###fileAsync(path, [criteria])
+### fileAsync(path, [criteria])
 Asynchronous equivalent of `file()` method. The only difference is that it returns promise.
 
 
-###list(path, [options])
-Creates list of files inside given path (and more).
+### <a name="inspect"></a> inspect(path)
+TODO
+
+
+### inspectAsync(path)
+Asynchronous equivalent of `inspect()` method. The only difference is that it returns promise.
+
+
+### <a name="list"></a> list(path, [mode])
+Lists the contents of directory.
 
 **parameters:**  
-`path` path to file/directory to list.  
-`options` (optional) additional options for customization. Is an `object` with possible fields:
-* `includeRoot` (default: `false`) whether returned data should contain root directory (dir provided in `path`), or only its children.
-* `subDirs` (default: `false`) whether subdirectories should be also listed.
-* `symlinks` *(TODO, not implemented yet)*
+`path` path to directory you would like to list  
+`mode` (optional) the degree of accuracy you would like to get back. Possible values:
+* `'simple'` (default) returns just a list of filenames (the same as `fs.readdir()`)
+* `'inspect'` performs [inspect](#inspect) on every item, and returns array of those objects
 
 **returns:**  
-`array` of `objects` with most basic settings, and tree structure with more sophisticated settings.
-
-**examples:**
-```javascript
-jetpack.list('rootDir'); // will return array of objects
-
-jetpack.list('rootDir', { includeRoot: true, subDirs: true });
-// will return tree structure of this shape:
-{
-    name: 'rootDir', // there is one root object if includeRoot was set to true
-    type: 'dir',
-    path: '/myStuff/rootDir', // absolute path to this location
-    size: 150, // (in bytes) in case of directory this number is combined size of all children
-    parent: null, // this directory actually has parent, but it was not scanned, so is not reachable
-    children: [ // contains Array of all dirs and files inside this directory
-        {
-            name: 'myFile.txt',
-            type: 'file',
-            path: '/myStuff/rootDir/myFile.txt',
-            parent: [Object], // reference to parent object
-            size: 150
-        }
-    ]
-}
-```
+`Array` of `Strings` or inspect `Objects` depending on call properies.
 
 
-###listAsync(path, [options])
+### listAsync(path, [mode])
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
 
 
-###path([parts...])
+### <a name="path"></a> path([parts...])
 Returns path resolved to current CWD.
 
 **parameters:**  
@@ -241,7 +226,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ```
 
 
-###read(path, [mode])
+### <a name="read"></a> read(path, [mode])
 Reads content of file.
 
 **parameters:**  
@@ -255,11 +240,11 @@ Reads content of file.
 File content in specified format.
 
 
-###readAsync(path, [mode])
+### readAsync(path, [mode])
 Asynchronous equivalent of `read()` method. The only difference is that it returns promise.
 
 
-###remove(path, [options])
+### <a name="remove"></a> remove(path, [options])
 Deletes given path, no matter what it is (file or directory).
 
 **parameters:**  
@@ -288,11 +273,19 @@ jetpack.remove('my_app', { only: [ '*.log', 'temp' ] });
 jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 ```
 
-###removeAsync(path, [options])
+### removeAsync(path, [options])
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
 
 
-###write(path, content)
+### <a name="tree"></a> tree(path)
+TODO
+
+
+### treeAsync(path)
+Asynchronous equivalent of `tree()` method. The only difference is that it returns promise.
+
+
+### <a name="write"></a> write(path, content)
 Writes content to file.
 
 **parameters:**  
@@ -303,7 +296,7 @@ Writes content to file.
 Recently used CWD context.
 
 
-###writeAsync(path, content)
+### writeAsync(path, content)
 Asynchronous equivalent of `write()` method. The only difference is that it returns promise.
 
 
