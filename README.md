@@ -27,7 +27,7 @@ Commonly used naming convention in node world is reversed in this library. Async
 * <a href="#dirpath-criteria">dir(path, [criteria])</a>
 * <a href="#existspath">exists(path)</a>
 * <a href="#filepath-criteria">file(path, [criteria])</a>
-* <a href="#listpath-options">list(path, [options])</a>
+* <a href="#listpath-mode">list(path, [mode])</a>
 * <a href="#pathparts">path([parts...])</a>
 * <a href="#readpath-mode">read(path, [mode])</a>
 * <a href="#removepath-options">remove(path, [options])</a>
@@ -181,45 +181,23 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 Asynchronous equivalent of `file()` method. The only difference is that it returns promise.
 
 
-###list(path, [options])
-Creates list of files inside given path (and more).
+### <a name="inspect"></a> inspect(path, [mode])
+
+
+###list(path, [mode])
+Lists the contents of directory.
 
 **parameters:**  
-`path` path to file/directory to list.  
-`options` (optional) additional options for customization. Is an `object` with possible fields:
-* `includeRoot` (default: `false`) whether returned data should contain root directory (dir provided in `path`), or only its children.
-* `subDirs` (default: `false`) whether subdirectories should be also listed.
-* `symlinks` *(TODO, not implemented yet)*
+`path` path to directory you would like to list  
+`mode` (optional) the degree of accuracy you would like to get back. Possible values:
+* `'simple'` (default) returns just a list of filenames (the same as `fs.readdir()`)
+* `'inspect'` performs [inspect](#inspect) on every item, and returns array of those objects
 
 **returns:**  
-`array` of `objects` with most basic settings, and tree structure with more sophisticated settings.
-
-**examples:**
-```javascript
-jetpack.list('rootDir'); // will return array of objects
-
-jetpack.list('rootDir', { includeRoot: true, subDirs: true });
-// will return tree structure of this shape:
-{
-    name: 'rootDir', // there is one root object if includeRoot was set to true
-    type: 'dir',
-    path: '/myStuff/rootDir', // absolute path to this location
-    size: 150, // (in bytes) in case of directory this number is combined size of all children
-    parent: null, // this directory actually has parent, but it was not scanned, so is not reachable
-    children: [ // contains Array of all dirs and files inside this directory
-        {
-            name: 'myFile.txt',
-            type: 'file',
-            path: '/myStuff/rootDir/myFile.txt',
-            parent: [Object], // reference to parent object
-            size: 150
-        }
-    ]
-}
-```
+`Array` of `Strings` or inspect `Objects` depending on call properies.
 
 
-###listAsync(path, [options])
+###listAsync(path, [mode])
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
 
 
