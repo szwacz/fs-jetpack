@@ -22,19 +22,20 @@ All asynchronous methods are promise based, and are using [Q library](https://gi
 Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish one from another.
 
 **Index**
-* <a href="#cwdpath">cwd([path])</a>
-* <a href="#copyfrom-to-options">copy(from, to, [options])</a>
-* <a href="#dirpath-criteria">dir(path, [criteria])</a>
-* <a href="#existspath">exists(path)</a>
-* <a href="#filepath-criteria">file(path, [criteria])</a>
-* <a href="#listpath-mode">list(path, [mode])</a>
-* <a href="#pathparts">path([parts...])</a>
-* <a href="#readpath-mode">read(path, [mode])</a>
-* <a href="#removepath-options">remove(path, [options])</a>
-* <a href="#writepath-content">write(path, content)</a>
+* [cwd([path])](#cwd)
+* [copy(from, to, [options])](#copy)
+* [dir(path, [criteria])](#dir)
+* [exists(path)](#exists)
+* [file(path, [criteria])](#file)
+* [inspect(path)](#inspect)
+* [list(path, [mode])](#list)
+* [path([parts...])](#path)
+* [read(path, [mode])](#read)
+* [remove(path, [options])](#remove)
+* [write(path, content)](#write)
 
 
-###cwd([path])
+### <a name="cwd"></a> cwd([path])
 Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
 
 **parameters:**  
@@ -63,7 +64,7 @@ console.log(jetParentParent.cwd()); // '/one'
 ```
 
 
-###copy(from, to, [options])
+### <a name="copy"></a> copy(from, to, [options])
 Copies given file or directory.
 
 **parameters:**  
@@ -96,7 +97,7 @@ jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 Asynchronous equivalent of `copy()` method. The only difference is that it returns promise.
 
 
-###dir(path, [criteria])
+### <a name="dir"></a> dir(path, [criteria])
 Ensures that directory meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
@@ -136,7 +137,7 @@ jetpack
 Asynchronous equivalent of `dir()` method. The only difference is that it returns promise.
 
 
-###exists(path)
+### <a name="exists"></a> exists(path)
 Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
 
 **returns:**  
@@ -150,7 +151,7 @@ Checks whether something exists on given `path`. This method returns values more
 Asynchronous equivalent of `exists()` method. The only difference is that it returns promise.
 
 
-###file(path, [criteria])
+### <a name="file"></a> file(path, [criteria])
 Ensures that file meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
@@ -181,10 +182,10 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 Asynchronous equivalent of `file()` method. The only difference is that it returns promise.
 
 
-### <a name="inspect"></a> inspect(path, [mode])
+### <a name="inspect"></a> inspect(path)
 
 
-###list(path, [mode])
+### <a name="list"></a> list(path, [mode])
 Lists the contents of directory.
 
 **parameters:**  
@@ -201,7 +202,7 @@ Lists the contents of directory.
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
 
 
-###path([parts...])
+### <a name="path"></a> path([parts...])
 Returns path resolved to current CWD.
 
 **parameters:**  
@@ -219,7 +220,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ```
 
 
-###read(path, [mode])
+### <a name="read"></a> read(path, [mode])
 Reads content of file.
 
 **parameters:**  
@@ -237,7 +238,7 @@ File content in specified format.
 Asynchronous equivalent of `read()` method. The only difference is that it returns promise.
 
 
-###remove(path, [options])
+### <a name="remove"></a> remove(path, [options])
 Deletes given path, no matter what it is (file or directory).
 
 **parameters:**  
@@ -270,7 +271,7 @@ jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
 
 
-###write(path, content)
+### <a name="write"></a> write(path, content)
 Writes content to file.
 
 **parameters:**  
