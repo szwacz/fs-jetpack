@@ -32,6 +32,7 @@ Commonly used naming convention in node world is reversed in this library. Async
 * [path([parts...])](#path)
 * [read(path, [mode])](#read)
 * [remove(path, [options])](#remove)
+* [tree(path)](#tree)
 * [write(path, content)](#write)
 
 
@@ -93,7 +94,7 @@ jetpack.copy('/my_dir', '/somewhere/my_dir', { only: ['*.txt'] });
 jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 ```
 
-###copyAsync(from, to, [options])
+### copyAsync(from, to, [options])
 Asynchronous equivalent of `copy()` method. The only difference is that it returns promise.
 
 
@@ -133,7 +134,7 @@ jetpack
 ```
 
 
-###dirAsync(path, [criteria])
+### dirAsync(path, [criteria])
 Asynchronous equivalent of `dir()` method. The only difference is that it returns promise.
 
 
@@ -147,7 +148,7 @@ Checks whether something exists on given `path`. This method returns values more
 * `"other"` if path exists, but is of different "type".
 
 
-###existsAsync(path)
+### existsAsync(path)
 Asynchronous equivalent of `exists()` method. The only difference is that it returns promise.
 
 
@@ -178,11 +179,16 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-###fileAsync(path, [criteria])
+### fileAsync(path, [criteria])
 Asynchronous equivalent of `file()` method. The only difference is that it returns promise.
 
 
 ### <a name="inspect"></a> inspect(path)
+TODO
+
+
+### inspectAsync(path)
+Asynchronous equivalent of `inspect()` method. The only difference is that it returns promise.
 
 
 ### <a name="list"></a> list(path, [mode])
@@ -198,7 +204,7 @@ Lists the contents of directory.
 `Array` of `Strings` or inspect `Objects` depending on call properies.
 
 
-###listAsync(path, [mode])
+### listAsync(path, [mode])
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
 
 
@@ -234,7 +240,7 @@ Reads content of file.
 File content in specified format.
 
 
-###readAsync(path, [mode])
+### readAsync(path, [mode])
 Asynchronous equivalent of `read()` method. The only difference is that it returns promise.
 
 
@@ -267,8 +273,16 @@ jetpack.remove('my_app', { only: [ '*.log', 'temp' ] });
 jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 ```
 
-###removeAsync(path, [options])
+### removeAsync(path, [options])
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
+
+
+### <a name="tree"></a> tree(path)
+TODO
+
+
+### treeAsync(path)
+Asynchronous equivalent of `tree()` method. The only difference is that it returns promise.
 
 
 ### <a name="write"></a> write(path, content)
@@ -282,7 +296,7 @@ Writes content to file.
 Recently used CWD context.
 
 
-###writeAsync(path, content)
+### writeAsync(path, content)
 Asynchronous equivalent of `write()` method. The only difference is that it returns promise.
 
 
