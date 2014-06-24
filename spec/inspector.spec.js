@@ -1,11 +1,11 @@
 "use strict";
 
-describe('internal/inspector |', function () {
+describe('inspector |', function () {
     
     var fse = require('fs-extra');
     var pathUtil = require('path');
-    var helper = require('../helper');
-    var inspector = require('../../lib/internal/inspector');
+    var helper = require('./helper');
+    var inspector = require('../lib/inspector');
     
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
