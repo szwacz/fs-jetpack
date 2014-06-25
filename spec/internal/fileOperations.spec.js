@@ -129,6 +129,65 @@ describe('internal/fileOperations |', function () {
         });
     });
     
+    describe('append', function () {
+        
+        // TODO append should also allow to specify file mode
+        
+        it('appends String to file', function (done) {
+            // SYNC
+            fse.writeFileSync(path, 'abc');
+            internalFile.append(path, 'xyz');
+            expect(fse.readFileSync(path, 'utf8')).toBe('abcxyz');
+            
+            // ASYNC
+            fse.writeFileSync(path, 'abc');
+            internalFile.appendAsync(path, 'xyz')
+            .then(function () {
+                expect(fse.readFileSync(path, 'utf8')).toBe('abcxyz');
+                done();
+            });
+        });
+        
+        it('appends Buffer to file', function (done) {
+            
+            var expectations = function () {
+                var buf = fse.readFileSync(path);
+                expect(buf.length).toBe(2);
+                expect(buf[0]).toBe(11);
+                expect(buf[1]).toBe(22);
+            }
+            
+            // SYNC
+            fse.writeFileSync(path, new Buffer([11]));
+            internalFile.append(path, new Buffer([22]));
+            expectations();
+            
+            // ASYNC
+            fse.writeFileSync(path, new Buffer([11]));
+            internalFile.appendAsync(path, new Buffer([22]))
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+        
+        it("if file doesn't exist creates it", function (done) {
+            // SYNC
+            internalFile.append(path, 'xyz');
+            expect(fse.readFileSync(path, 'utf8')).toBe('xyz');
+            
+            fse.unlinkSync(path);
+            
+            // ASYNC
+            internalFile.appendAsync(path, 'xyz')
+            .then(function () {
+                expect(fse.readFileSync(path, 'utf8')).toBe('xyz');
+                done();
+            });
+        });
+        
+    });
+    
     describe('safe file operations', function () {
         
         var newPath = path + '.__new__';

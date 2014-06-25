@@ -22,6 +22,7 @@ All asynchronous methods are promise based, and are using [Q library](https://gi
 Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish one from another.
 
 **Index**
+* [append(path, data)](#append)
 * [cwd([path])](#cwd)
 * [copy(from, to, [options])](#copy)
 * [dir(path, [criteria])](#dir)
@@ -35,6 +36,9 @@ Commonly used naming convention in node world is reversed in this library. Async
 * [tree(path)](#tree)
 * [write(path, content)](#write)
 
+
+### <a name="append"></a> append(path, data)
+TODO
 
 ### <a name="cwd"></a> cwd([path])
 Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
