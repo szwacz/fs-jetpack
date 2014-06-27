@@ -36,12 +36,13 @@ Commonly used naming convention in node world is reversed in this library. Async
 * [write(path, content)](#write)
 
 
-### <a name="append"></a> append(path, data)
+## <a name="append"></a> append(path, data)
 and **appendAsync(path, data)**  
+
 TODO
 
 
-### <a name="cwd"></a> cwd([path])
+## <a name="cwd"></a> cwd([path])
 Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
 
 **parameters:**  
@@ -70,8 +71,9 @@ console.log(jetParentParent.cwd()); // '/one'
 ```
 
 
-### <a name="copy"></a> copy(from, to, [options])
+## <a name="copy"></a> copy(from, to, [options])
 and **copyAsync(from, to, [options])**  
+
 Copies given file or directory.
 
 **parameters:**  
@@ -101,7 +103,7 @@ jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 ```
 
 
-### <a name="dir"></a> dir(path, [criteria])
+## <a name="dir"></a> dir(path, [criteria])
 and **dirAsync(path, [criteria])**  
 
 Ensures that directory meets given criteria. If any criterium is not met it will be after this call.
@@ -139,7 +141,7 @@ jetpack
 ```
 
 
-### <a name="exists"></a> exists(path)
+## <a name="exists"></a> exists(path)
 and **existsAsync(path)**  
 
 Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
@@ -151,7 +153,7 @@ Checks whether something exists on given `path`. This method returns values more
 * `"other"` if path exists, but is of different "type".
 
 
-### <a name="file"></a> file(path, [criteria])
+## <a name="file"></a> file(path, [criteria])
 and **fileAsync(path, [criteria])**  
 
 Ensures that file meets given criteria. If any criterium is not met it will be after this call.
@@ -180,13 +182,13 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-### <a name="inspect"></a> inspect(path)
+## <a name="inspect"></a> inspect(path)
 and **inspectAsync(path)**  
 
 TODO
 
 
-### <a name="list"></a> list(path, [mode])
+## <a name="list"></a> list(path, [mode])
 and **listAsync(path, [mode])**  
 
 Lists the contents of directory.
@@ -201,13 +203,13 @@ Lists the contents of directory.
 `Array` of `Strings` or inspect `Objects` depending on call properies.
 
 
-### <a name="move"></a> move(from, to)
+## <a name="move"></a> move(from, to)
 and **moveAsync(from, to)**  
 
 TODO
 
 
-### <a name="path"></a> path([parts...])
+## <a name="path"></a> path([parts...])
 Returns path resolved to current CWD.
 
 **parameters:**  
@@ -225,7 +227,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ```
 
 
-### <a name="read"></a> read(path, [mode])
+## <a name="read"></a> read(path, [mode])
 and **readAsync(path, [mode])**  
 
 Reads content of file.
@@ -241,7 +243,7 @@ Reads content of file.
 File content in specified format.
 
 
-### <a name="remove"></a> remove(path, [options])
+## <a name="remove"></a> remove(path, [options])
 and **removeAsync(path, [options])**  
 
 Deletes given path, no matter what it is (file or directory).
@@ -273,19 +275,19 @@ jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 ```
 
 
-### <a name="rename"></a> rename(path, newName)
+## <a name="rename"></a> rename(path, newName)
 and **renameAsync(path, newName)**  
 
 TODO
 
 
-### <a name="tree"></a> tree(path)
+## <a name="tree"></a> tree(path)
 and **treeAsync(path)**  
 
 TODO
 
 
-### <a name="write"></a> write(path, content)
+## <a name="write"></a> write(path, content)
 and **writeAsync(path, content)**  
 
 Writes content to file.
