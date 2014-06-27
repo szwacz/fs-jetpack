@@ -13,9 +13,9 @@ npm install fs-jetpack
 var jetpack = requite('fs-jetpack');
 ```
 
-
 # API
-API has the same set of synchronous and asynchronous methods. All async methods are promise based (so no callbacks folks, [Q promises](https://github.com/kriskowal/q) instead).  
+API has the same set of synchronous and asynchronous methods. All async methods are promise based (so no callbacks folks, [Q promises](https://github.com/kriskowal/q) instead).
+
 Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish them.
 
 **Methods:**
@@ -37,6 +37,7 @@ Commonly used naming convention in node world is reversed in this library. Async
 
 
 ### <a name="append"></a> append(path, data)
+and **appendAsync(path, data)**  
 TODO
 
 
@@ -70,6 +71,7 @@ console.log(jetParentParent.cwd()); // '/one'
 
 
 ### <a name="copy"></a> copy(from, to, [options])
+and **copyAsync(from, to, [options])**  
 Copies given file or directory.
 
 **parameters:**  
@@ -98,11 +100,10 @@ jetpack.copy('/my_dir', '/somewhere/my_dir', { only: ['*.txt'] });
 jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 ```
 
-### copyAsync(from, to, [options])
-Asynchronous equivalent of `copy()` method. The only difference is that it returns promise.
-
 
 ### <a name="dir"></a> dir(path, [criteria])
+and **dirAsync(path, [criteria])**  
+
 Ensures that directory meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
@@ -138,11 +139,9 @@ jetpack
 ```
 
 
-### dirAsync(path, [criteria])
-Asynchronous equivalent of `dir()` method. The only difference is that it returns promise.
-
-
 ### <a name="exists"></a> exists(path)
+and **existsAsync(path)**  
+
 Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
 
 **returns:**  
@@ -152,11 +151,9 @@ Checks whether something exists on given `path`. This method returns values more
 * `"other"` if path exists, but is of different "type".
 
 
-### existsAsync(path)
-Asynchronous equivalent of `exists()` method. The only difference is that it returns promise.
-
-
 ### <a name="file"></a> file(path, [criteria])
+and **fileAsync(path, [criteria])**  
+
 Ensures that file meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
@@ -183,19 +180,15 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-### fileAsync(path, [criteria])
-Asynchronous equivalent of `file()` method. The only difference is that it returns promise.
-
-
 ### <a name="inspect"></a> inspect(path)
+and **inspectAsync(path)**  
+
 TODO
 
 
-### inspectAsync(path)
-Asynchronous equivalent of `inspect()` method. The only difference is that it returns promise.
-
-
 ### <a name="list"></a> list(path, [mode])
+and **listAsync(path, [mode])**  
+
 Lists the contents of directory.
 
 **parameters:**  
@@ -208,11 +201,9 @@ Lists the contents of directory.
 `Array` of `Strings` or inspect `Objects` depending on call properies.
 
 
-### listAsync(path, [mode])
-Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
-
-
 ### <a name="move"></a> move(from, to)
+and **moveAsync(from, to)**  
+
 TODO
 
 
@@ -235,6 +226,8 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 
 
 ### <a name="read"></a> read(path, [mode])
+and **readAsync(path, [mode])**  
+
 Reads content of file.
 
 **parameters:**  
@@ -248,11 +241,9 @@ Reads content of file.
 File content in specified format.
 
 
-### readAsync(path, [mode])
-Asynchronous equivalent of `read()` method. The only difference is that it returns promise.
-
-
 ### <a name="remove"></a> remove(path, [options])
+and **removeAsync(path, [options])**  
+
 Deletes given path, no matter what it is (file or directory).
 
 **parameters:**  
@@ -281,23 +272,22 @@ jetpack.remove('my_app', { only: [ '*.log', 'temp' ] });
 jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 ```
 
-### removeAsync(path, [options])
-Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
-
 
 ### <a name="rename"></a> rename(path, newName)
+and **renameAsync(path, newName)**  
+
 TODO
 
 
 ### <a name="tree"></a> tree(path)
+and **treeAsync(path)**  
+
 TODO
 
 
-### treeAsync(path)
-Asynchronous equivalent of `tree()` method. The only difference is that it returns promise.
-
-
 ### <a name="write"></a> write(path, content)
+and **writeAsync(path, content)**  
+
 Writes content to file.
 
 **parameters:**  
@@ -306,7 +296,3 @@ Writes content to file.
 
 **returns:**  
 Recently used CWD context.
-
-
-### writeAsync(path, content)
-Asynchronous equivalent of `write()` method. The only difference is that it returns promise.
