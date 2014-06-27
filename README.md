@@ -30,9 +30,11 @@ Commonly used naming convention in node world is reversed in this library. Async
 * [file(path, [criteria])](#file)
 * [inspect(path)](#inspect)
 * [list(path, [mode])](#list)
+* [move(from, to)](#move)
 * [path([parts...])](#path)
 * [read(path, [mode])](#read)
 * [remove(path, [options])](#remove)
+* [rename(from, to)](#rename)
 * [tree(path)](#tree)
 * [write(path, content)](#write)
 
@@ -212,6 +214,10 @@ Lists the contents of directory.
 Asynchronous equivalent of `list()` method. The only difference is that it returns promise.
 
 
+### <a name="move"></a> move(from, to)
+TODO
+
+
 ### <a name="path"></a> path([parts...])
 Returns path resolved to current CWD.
 
@@ -279,6 +285,10 @@ jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 
 ### removeAsync(path, [options])
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
+
+
+### <a name="rename"></a> rename(from, to)
+TODO
 
 
 ### <a name="tree"></a> tree(path)
