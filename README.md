@@ -1,27 +1,24 @@
-#fs-jetpack
+fs-jetpack
+==========
 
-Attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
+This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
 
-**Note:** This project is highly experimental (and breaking changes will inevitably occur). All comments or suggestions are welcome!
-
-###Installation
+### Installation
 ```
 npm install fs-jetpack
 ```
 
-###Usage
+### Usage
 ```javascript
 var jetpack = requite('fs-jetpack');
 ```
 
 
-#API
+# API
+API has the same set of synchronous and asynchronous methods. All async methods are promise based (so no callbacks folks, [Q promises](https://github.com/kriskowal/q) instead).  
+Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish them.
 
-All asynchronous methods are promise based, and are using [Q library](https://github.com/kriskowal/q) for that purpose.
-
-Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish one from another.
-
-**Index**
+**Methods:**
 * [append(path, data)](#append)
 * [cwd([path])](#cwd)
 * [copy(from, to, [options])](#copy)
@@ -34,13 +31,14 @@ Commonly used naming convention in node world is reversed in this library. Async
 * [path([parts...])](#path)
 * [read(path, [mode])](#read)
 * [remove(path, [options])](#remove)
-* [rename(from, to)](#rename)
+* [rename(path, newName)](#rename)
 * [tree(path)](#tree)
 * [write(path, content)](#write)
 
 
 ### <a name="append"></a> append(path, data)
 TODO
+
 
 ### <a name="cwd"></a> cwd([path])
 Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
@@ -287,7 +285,7 @@ jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 Asynchronous equivalent of `remove()` method. The only difference is that it returns promise.
 
 
-### <a name="rename"></a> rename(from, to)
+### <a name="rename"></a> rename(path, newName)
 TODO
 
 
@@ -312,63 +310,3 @@ Recently used CWD context.
 
 ### writeAsync(path, content)
 Asynchronous equivalent of `write()` method. The only difference is that it returns promise.
-
-
-#Matching paths .gitignore style
-
-For filtering options (`only` and `allBut` properties) this library uses notation familiar to you from .gitignore file (thanks to [minimatch](https://github.com/isaacs/minimatch)).
-
-Few examples:
-```javascript
-'work' // matches any item (file or dir) named "work", nevermind in which subdirectory it is
-'*.txt' // matches any .txt file, nevermind in which subdirectory it is
-'my_documents/*' // matches any file inside directory "my_documents"
-'logs/2013-*.log' // matches any log file from 2013
-'logs/2013-12-??.log' // matches any log file from december 2013
-'my_documents/**/work' // matches any item named "work" inside "my_documents" and its subdirs
-```
-
-
-#Chaining jetpack commands
-
-Because almost every jetpack method returns CWD context, you can chain commands together. What lets you operate on files in more declarative style, for example:
-```javascript
-/*
- We want to create file structure:
- my_stuff
- |- work
- |  |- hello.txt
- |- photos
- |  |- me.jpg
-*/
-
-// Synchronous way
-
-jetpack
-.dir('my_stuff')
-    .dir('work')
-        .file('hello.txt', { content: 'Hello world!' })
-        .cwd('..') // go back to parent directory
-    .dir('photos')
-        .file('me.jpg', { content: new Buffer('should be image bytes') });
-
-
-// Asynchronous way (unfortunately not that pretty)
-
-jetpack
-.dirAsync('my_stuff')
-    .then(function (context) {
-        return context.dirAsync('work');
-    })
-        .then(function (context) {
-            return context.fileAsync('hello.txt', { content: 'Hello world!' });
-        })
-    .then(function (context) {
-        return context.cwd('..').dirAsync('photos');
-    })
-        .then(function (context) {
-            return context.fileAsync('me.jpg', {
-                content: new Buffer('should be image bytes')
-            });
-        });
-```
