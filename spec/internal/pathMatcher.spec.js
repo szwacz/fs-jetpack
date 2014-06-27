@@ -10,7 +10,7 @@ describe('pathMatcher |', function () {
         expect(test('/b')).toBe(true);
     });
     
-    describe('different mask types:', function () {
+    describe('different mask types |', function () {
         
         it("without any slash", function () {
             // then just the last element on right has to match the mask
@@ -35,7 +35,7 @@ describe('pathMatcher |', function () {
         
     });
     
-    describe('exclude part of path from matching', function () {
+    describe('exclude part of path from matching |', function () {
         
         // if we are in dir "/a/b" and want to test contents inside
         // "b" then we have to exclude this "/a/b" part from matching,
@@ -77,7 +77,7 @@ describe('pathMatcher |', function () {
         
     });
     
-    describe('possible mask tokens', function () {
+    describe('possible mask tokens |', function () {
         
         it("*", function () {
             var test = matcher.create(['*']);
