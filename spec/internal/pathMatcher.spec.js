@@ -4,7 +4,7 @@ describe('pathMatcher |', function () {
     
     var matcher = require('../../lib/internal/pathMatcher');
     
-    it("can test agains many masks", function () {
+    it("can test against many masks", function () {
         var test = matcher.create(['a', 'b']);
         expect(test('/a')).toBe(true);
         expect(test('/b')).toBe(true);
