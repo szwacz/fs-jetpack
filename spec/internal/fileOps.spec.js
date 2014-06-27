@@ -135,6 +135,26 @@ describe('internal helper for file operations |', function () {
             });
         });
         
+        it("read throws if given path is directory", function (done) {
+            
+            fse.mkdirsSync('dir');
+            
+            // SYNC
+            try {
+                var content = internalFile.read('dir');
+                throw 'to make sure this code throws';
+            } catch (err) {
+                expect(err.code).toBe('EISDIR');
+            }
+            
+            // ASYNC
+            internalFile.readAsync('dir')
+            .catch(function (err) {
+                expect(err.code).toBe('EISDIR');
+                done();
+            });
+        });
+        
     });
     
     describe('append |', function () {
