@@ -5,7 +5,7 @@ describe('internal/fileOperations |', function () {
     var fse = require('fs-extra');
     var pathUtil = require('path');
     var helper = require('../helper');
-    var internalFile = require('../../lib/internal/fileOperations');
+    var internalFile = require('../../lib/internal/fileOps');
     
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
