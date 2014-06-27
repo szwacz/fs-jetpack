@@ -37,9 +37,16 @@ Commonly used naming convention in node world is reversed in this library. Async
 
 
 ## <a name="append"></a> append(path, data)
-and **appendAsync(path, data)**  
+**appendAsync(path, data)**
 
-TODO
+Appends given data to the end of file. If file doesn't exist, creates it.
+
+**parameters:**  
+`path` the path to file.  
+`data` data to add (could be `String` or `Buffer`).
+
+**returns:**  
+Nothing,
 
 
 ## <a name="cwd"></a> cwd([path])
