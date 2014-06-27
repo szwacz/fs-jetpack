@@ -37,7 +37,7 @@ Commonly used naming convention in node world is reversed in this library. Async
 
 
 ## <a name="append"></a> append(path, data)
-**appendAsync(path, data)**
+also **appendAsync(path, data)**
 
 Appends given data to the end of file. If file doesn't exist, creates it.
 
@@ -46,7 +46,7 @@ Appends given data to the end of file. If file doesn't exist, creates it.
 `data` data to add (could be `String` or `Buffer`).
 
 **returns:**  
-Nothing,
+Nothing.
 
 
 ## <a name="cwd"></a> cwd([path])
@@ -79,7 +79,7 @@ console.log(jetParentParent.cwd()); // '/one'
 
 
 ## <a name="copy"></a> copy(from, to, [options])
-and **copyAsync(from, to, [options])**  
+also **copyAsync(from, to, [options])**  
 
 Copies given file or directory.
 
@@ -111,7 +111,7 @@ jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 
 
 ## <a name="dir"></a> dir(path, [criteria])
-and **dirAsync(path, [criteria])**  
+also **dirAsync(path, [criteria])**  
 
 Ensures that directory meets given criteria. If any criterium is not met it will be after this call.
 
@@ -149,7 +149,7 @@ jetpack
 
 
 ## <a name="exists"></a> exists(path)
-and **existsAsync(path)**  
+also **existsAsync(path)**  
 
 Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
 
@@ -161,7 +161,7 @@ Checks whether something exists on given `path`. This method returns values more
 
 
 ## <a name="file"></a> file(path, [criteria])
-and **fileAsync(path, [criteria])**  
+also **fileAsync(path, [criteria])**  
 
 Ensures that file meets given criteria. If any criterium is not met it will be after this call.
 
@@ -190,13 +190,13 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 
 
 ## <a name="inspect"></a> inspect(path)
-and **inspectAsync(path)**  
+also **inspectAsync(path)**  
 
 TODO
 
 
 ## <a name="list"></a> list(path, [mode])
-and **listAsync(path, [mode])**  
+also **listAsync(path, [mode])**  
 
 Lists the contents of directory.
 
@@ -211,7 +211,7 @@ Lists the contents of directory.
 
 
 ## <a name="move"></a> move(from, to)
-and **moveAsync(from, to)**  
+also **moveAsync(from, to)**  
 
 TODO
 
@@ -235,7 +235,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 
 
 ## <a name="read"></a> read(path, [mode])
-and **readAsync(path, [mode])**  
+also **readAsync(path, [mode])**  
 
 Reads content of file.
 
@@ -251,7 +251,7 @@ File content in specified format.
 
 
 ## <a name="remove"></a> remove(path, [options])
-and **removeAsync(path, [options])**  
+also **removeAsync(path, [options])**  
 
 Deletes given path, no matter what it is (file or directory).
 
@@ -283,19 +283,19 @@ jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 
 
 ## <a name="rename"></a> rename(path, newName)
-and **renameAsync(path, newName)**  
+also **renameAsync(path, newName)**  
 
 TODO
 
 
 ## <a name="tree"></a> tree(path)
-and **treeAsync(path)**  
+also **treeAsync(path)**  
 
 TODO
 
 
 ## <a name="write"></a> write(path, content)
-and **writeAsync(path, content)**  
+also **writeAsync(path, content)**  
 
 Writes content to file.
 
