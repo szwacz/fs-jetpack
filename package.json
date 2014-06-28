@@ -5,6 +5,7 @@
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
     "minimatch": "0.3.0",
+    "mkdirp": "0.5.0",
     "q": "1.0.1"
   },
   "devDependencies": {
