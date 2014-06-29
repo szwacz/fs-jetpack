@@ -235,7 +235,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ## <a name="read"></a> read(path, [returnAs], [options])
 also **readAsync(path, [returnAs], [options])**  
 
-Reads content of file.
+Reads content of file. If file on given path doesn't exist this function returns `null` instead of throwing exception.
 
 **parameters:**  
 `path` path to file.  
@@ -249,7 +249,7 @@ Reads content of file.
 * `safe` if set to `true` the file will be read in ["safe mode"](#safe-mode).
 
 **returns:**  
-File content in specified format.
+File content in specified format, or `null` if file doesn't exist.
 
 
 ## <a name="remove"></a> remove(path, [options])
