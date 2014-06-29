@@ -232,8 +232,8 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ```
 
 
-## <a name="read"></a> read(path, [returnAs, options])
-also **readAsync(path, [returnAs])**  
+## <a name="read"></a> read(path, [returnAs], [options])
+also **readAsync(path, [returnAs], [options])**  
 
 Reads content of file.
 
@@ -244,6 +244,7 @@ Reads content of file.
 * `'buf'` content will be returned as Buffer.
 * `'json'` content will be returned as parsed JSON object.
 * `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into `Date` objects.
+
 `options` (optional) is an object with possible fields:
 * `safe` if set to `true` the file will be read in ["safe mode"](#safe-mode).
 
