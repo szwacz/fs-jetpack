@@ -1,7 +1,7 @@
 fs-jetpack
 ==========
 
-This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html).
+This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html), which is fun to use.
 
 ### Installation
 ```
@@ -79,14 +79,15 @@ jetpack.copy('my_dir', 'somewhere/my_dir', { allBut: ['my_dir/logs'] });
 
 
 ## <a name="cwd"></a> cwd([path])
-Returns Current Working Directory (CWD) path, or creates new jetpack object with different CWD.
+Returns Current Working Directory (CWD) for this instance of jetpack, or creates new jetpack object with given path as its internal CWD.
+**Note:** fs-jetpack never changes value of `process.cwd()`, the CWD we are talking about here is only internal value inside every jetpack object, and is completely separated from `process.cwd()`.
 
 **parameters:**  
-`path` (optional) path to become new CWD. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD.
+`path` (optional) path to become new CWD. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD of this jetpack object.
 
 **returns:**  
 If `path` not specified, returns CWD path of this jetpack object. For main instance of fs-jetpack it is always `process.cwd()`.  
-If `path` specified, returns new jetpack object (totally the same thing as main jetpack). The new object resolves paths according to its inner CWD, not the global one (`process.cwd()`).
+If `path` specified, returns new jetpack object (totally the same thing as main jetpack). The new object resolves paths according to its internal CWD, not the global one (`process.cwd()`).
 
 **examples:**
 ```javascript
@@ -304,16 +305,20 @@ Writes content to file.
 Recently used CWD context.
 
 
-# Nice tricks fs-jetpack can do for you
+# Nice tricks fs-jetpack knows
 
-## Files creation in declarative style
-
-TODO
-
-## <a name="matching-paths"></a> Matching paths with `only` and `allBut`
+### Every jetpack has its independent, internal CWD
 
 TODO
 
-## "Safe" file overwriting
+### Files creation in declarative style
+
+TODO
+
+### <a name="matching-paths"></a> Matching paths with `only` and `allBut`
+
+TODO
+
+### "Safe" file overwriting
 
 TODO
