@@ -4,7 +4,7 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
-// 500ms is enough as default timeout
+// default timeout for specs
 jasmine.getEnv().defaultTimeoutInterval = 500;
 
 // CWD of this script when launched
@@ -12,7 +12,13 @@ var originalCwd = process.cwd();
 // we are working on default temporary location for this OS
 var workingDir = pathUtil.join(os.tmpdir(), 'fs-jetpack-test');
 
-module.exports.workingDir = workingDir;
+var clearWorkingDir = function () {
+    fse.readdirSync('.').forEach(function (filename) {
+        fse.removeSync(filename);
+    });
+};
+
+module.exports.clearWorkingDir = clearWorkingDir;
 
 module.exports.beforeEach = function () {
     // delete working directory if exists

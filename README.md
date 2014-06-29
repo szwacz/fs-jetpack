@@ -20,8 +20,8 @@ Commonly used naming convention in node world is reversed in this library. Async
 
 **Methods:**
 * [append(path, data)](#append)
-* [cwd([path])](#cwd)
 * [copy(from, to, [options])](#copy)
+* [cwd([path])](#cwd)
 * [dir(path, [criteria])](#dir)
 * [exists(path)](#exists)
 * [file(path, [criteria])](#file)
@@ -47,6 +47,35 @@ Appends given data to the end of file. If file doesn't exist, creates it.
 
 **returns:**  
 Nothing.
+
+
+## <a name="copy"></a> copy(from, to, [options])
+also **copyAsync(from, to, [options])**  
+
+Copies given file or directory (with everything inside).
+
+**parameters:**  
+`from` path to location you want to copy.  
+`to` destination path where copy should be placed.  
+`options` (optional) additional options for customization. Is an `object` with possible fields:  
+* `overwrite` (default: `false`) Whether to overwrite destination path if it exists. If set to `true` for directories, source directory is merged with destination directory, so files in destination which are not present in source remain intact.
+* `only` (`Array` of patterns) will copy **only** items matching any of specified pattern. Pattern is a `String` of [.gitignore-like notation](#matching-paths).
+* `allBut` (`Array` of patterns) will copy **everything except** items matching any of specified pattern. Pattern is a `String` of [.gitignore-like notation](#matching-paths). If `only` was also specified this field is ignored.
+
+**returns:**  
+Nothing.
+
+**examples:**
+```javascript
+// copy file and replace it if already exists
+jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
+
+// copy only .jpg files inside my_dir
+jetpack.copy('my_dir', 'somewhere/my_dir', { only: ['*.jpg'] });
+
+// copy everything except "logs" directory inside my_dir
+jetpack.copy('my_dir', 'somewhere/my_dir', { allBut: ['my_dir/logs'] });
+```
 
 
 ## <a name="cwd"></a> cwd([path])
@@ -75,38 +104,6 @@ jetParent.dir('four'); // we just created directory '/one/two/four'
 // one CWD context can be used to create next CWD context
 var jetParentParent = jetpackContext.cwd('..');
 console.log(jetParentParent.cwd()); // '/one'
-```
-
-
-## <a name="copy"></a> copy(from, to, [options])
-also **copyAsync(from, to, [options])**  
-
-Copies given file or directory.
-
-**parameters:**  
-`from` path to location you want to copy.  
-`to` destination path where copy should be placed.  
-`options` (optional) additional options for customization. Is an `object` with possible fields:  
-* `overwrite` (default: `'no'`) mode to use if file already exists in destination location. Is a `string` with possible values:  
-    * `'no'` don't allow to replace any file or directory in destination location.  
-    * `'yes'` replace every file already existing.
-* `only` (`array` of masks) will copy **only** items matching any of specified masks. Mask is `string` with .gitignore-like notation (see section *"Matching paths .gitignore style"*).
-* `allBut` (`array` of masks) will copy **everything except** items matching any of specified masks. If `only` is specified this field is ignored.
-* `symlinks` *(TODO, not implemented yet)*
-
-**returns:**  
-Recently used CWD context.
-
-**examples:**
-```javascript
-// copy file and replace it if exists
-jetpack.copy('/my_file.txt', '/somwhere/my_file.txt', { overwrite: 'yes' });
-
-// copy only .txt files inside my_dir
-jetpack.copy('/my_dir', '/somewhere/my_dir', { only: ['*.txt'] });
-
-// copy everything except temp directory inside my_dir
-jetpack.copy('/my_dir', '/somewhere/my_dir', { allBut: ['my_dir/temp'] });
 ```
 
 
@@ -305,3 +302,18 @@ Writes content to file.
 
 **returns:**  
 Recently used CWD context.
+
+
+# Nice tricks fs-jetpack can do for you
+
+## Files creation in declarative style
+
+TODO
+
+## <a name="matching-paths"></a> Matching paths with `only` and `allBut`
+
+TODO
+
+## "Safe" file overwriting
+
+TODO
