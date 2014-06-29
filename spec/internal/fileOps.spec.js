@@ -12,151 +12,6 @@ describe('internal helper for file operations |', function () {
     
     var path = 'file.txt';
     
-    describe('read & write |', function () {
-        
-        it('writes and reads file as string', function (done) {
-            
-            var expectations = function (content) {
-                expect(content).toBe('abc');
-            };
-            
-            // SYNC
-            internalFile.write(path, 'abc');
-            var content = internalFile.read(path);
-            expectations(content);
-            
-            // ASYNC
-            internalFile.writeAsync(path, 'abc')
-            .then(function () {
-                return internalFile.readAsync(path)
-            })
-            .then(function (content) {
-                expectations(content);
-                done();
-            });
-        });
-        
-        it('writes and reads file as Buffer', function (done) {
-            
-            var bytes = [11, 22, 33];
-            var buf = new Buffer(bytes);
-            
-            var expectations = function (content) {
-                expect(Buffer.isBuffer(content)).toBe(true);
-                expect(content.length).toBe(bytes.length);
-                expect(content[0]).toBe(bytes[0]);
-                expect(content[2]).toBe(bytes[2]);
-            };
-            
-            // SYNC
-            internalFile.write(path, buf);
-            var content = internalFile.read(path, { returnAs: 'buf' });
-            expectations(content);
-            
-            // ASYNC
-            internalFile.writeAsync(path, buf)
-            .then(function () {
-                return internalFile.readAsync(path, { returnAs: 'buf' })
-            })
-            .then(function (content) {
-                expectations(content);
-                done();
-            });
-        });
-        
-        it('writes and reads file as JSON', function (done) {
-            
-            var obj = {
-                utf8: "ąćłźż"
-            };
-            
-            var expectations = function (content) {
-                expect(content).toEqual(obj);
-            };
-            
-            // SYNC
-            internalFile.write(path, obj);
-            var content = internalFile.read(path, { returnAs: 'json' });
-            expect(content).toEqual(obj);
-            
-            // ASYNC
-            internalFile.writeAsync(path, obj)
-            .then(function () {
-                return internalFile.readAsync(path, { returnAs: 'json' })
-            })
-            .then(function (content) {
-                expectations(content);
-                done();
-            });
-        });
-        
-        it('writes and reads file as JSON with Date parsing', function (done) {
-            
-            var obj = {
-                utf8: "ąćłźż",
-                date: new Date()
-            };
-            
-            var expectations = function (content) {
-                expect(content).toEqual(obj);
-            };
-            
-            // SYNC
-            internalFile.write(path, obj);
-            var content = internalFile.read(path, { returnAs: 'jsonWithDates' });
-            expectations(content);
-            
-            // ASYNC
-            internalFile.writeAsync(path, obj)
-            .then(function () {
-                return internalFile.readAsync(path, { returnAs: 'jsonWithDates' })
-            })
-            .then(function (content) {
-                expectations(content);
-                done();
-            });
-        });
-        
-        it("read returns null if file doesn't exist", function (done) {
-            
-            var expectations = function (content) {
-                expect(content).toBe(null);
-            };
-            
-            // SYNC
-            var content = internalFile.read('nonexistent.txt');
-            expectations(content);
-            
-            // ASYNC
-            internalFile.readAsync('nonexistent.txt')
-            .then(function (content) {
-                expectations(content);
-                done();
-            });
-        });
-        
-        it("read throws if given path is directory", function (done) {
-            
-            fse.mkdirsSync('dir');
-            
-            // SYNC
-            try {
-                var content = internalFile.read('dir');
-                throw 'to make sure this code throws';
-            } catch (err) {
-                expect(err.code).toBe('EISDIR');
-            }
-            
-            // ASYNC
-            internalFile.readAsync('dir')
-            .catch(function (err) {
-                expect(err.code).toBe('EISDIR');
-                done();
-            });
-        });
-        
-    });
-    
     describe('remove |', function () {
         
         it('removes a file', function (done) {
@@ -315,12 +170,12 @@ describe('internal helper for file operations |', function () {
             
             // SYNC
             preparations();
-            var content = internalFile.read(path, { safe: true });
+            var content = internalFile.read(path, 'utf8', { safe: true });
             expectations();
             
             // ASYNC
             preparations();
-            internalFile.readAsync(path, { safe: true })
+            internalFile.readAsync(path, 'utf8', { safe: true })
             .then(function (content) {
                 expectations();
                 done();
@@ -340,12 +195,12 @@ describe('internal helper for file operations |', function () {
             
             // SYNC
             preparations();
-            var content = internalFile.read(path, { safe: true });
+            var content = internalFile.read(path, 'utf8', { safe: true });
             expectations(content);
             
             // ASYNC
             preparations();
-            internalFile.readAsync(path, { safe: true })
+            internalFile.readAsync(path, 'utf8', { safe: true })
             .then(function (content) {
                 expectations(content);
                 done();
@@ -359,11 +214,11 @@ describe('internal helper for file operations |', function () {
             };
             
             // SYNC
-            var content = internalFile.read(path, { safe: true });
+            var content = internalFile.read(path, 'utf8', { safe: true });
             expectations(content);
             
             // ASYNC
-            internalFile.readAsync(path, { safe: true })
+            internalFile.readAsync(path, 'utf8', { safe: true })
             .then(function (content) {
                 expectations(content);
                 done();
