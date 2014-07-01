@@ -6,7 +6,8 @@
   "dependencies": {
     "minimatch": "0.3.0",
     "mkdirp": "0.5.0",
-    "q": "1.0.1"
+    "q": "1.0.1",
+    "rimraf": "2.2.8"
   },
   "devDependencies": {
     "jasmine-node": "1.14.x",
@@ -16,13 +17,10 @@
     "test": "node_modules/.bin/jasmine-node spec"
   },
   "main": "main.js",
-  "keywords": [
-    "fs", "file system", "mkdirp", "rimraf", "wrench", "fs-extra"
-  ],
   "homepage": "https://github.com/szwacz/fs-jetpack",
   "repository": {
     "type": "git",
     "url": "https://github.com/szwacz/fs-jetpack.git"
   },
-  "licence": "MIT"
+  "license": "MIT"
 }

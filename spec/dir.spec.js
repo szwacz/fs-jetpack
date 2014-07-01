@@ -122,7 +122,7 @@ describe('dir |', function () {
             };
             
             // SYNC
-             jetpack.dir('x', { exists: false });
+            jetpack.dir('x', { exists: false });
             expectations();
             
             // ASYNC
