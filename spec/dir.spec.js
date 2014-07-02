@@ -251,6 +251,8 @@ describe('dir |', function () {
                 // SYNC
                 jetpack.dir('x', { mode: '511' });
                 
+                helper.clearWorkingDir();
+                
                 // ASYNC
                 jetpack.dirAsync('x', { mode: '511' })
                 .then(function () {
