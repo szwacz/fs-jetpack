@@ -121,6 +121,24 @@ describe('read & write |', function () {
         });
     });
     
+    it("write can create nonexistent parent directories", function (done) {
+        
+        var expectations = function () {
+            expect(fse.readFileSync('a/b/c.txt', 'utf8')).toBe('abc');
+        };
+        
+        // SYNC
+        jetpack.write('a/b/c.txt', 'abc');
+        expectations();
+        
+        // ASYNC
+        jetpack.writeAsync('a/b/c.txt', 'abc')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+    
     it("read returns null if file doesn't exist", function (done) {
         
         var expectations = function (content) {

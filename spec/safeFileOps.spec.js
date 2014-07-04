@@ -10,7 +10,7 @@ describe('safe file operations |', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    var path = 'file.txt';
+    var path = 'dir/file.txt'; // Contains nonexistent directory, to make sure we can deal with it.
     var newPath = path + '.__new__';
     var bakPath = path + '.__bak__';
     
@@ -40,7 +40,7 @@ describe('safe file operations |', function () {
     it('writes file safely if file already exists', function (done) {
         
         var preparations = function () {
-            fse.writeFileSync(path, 'xyz');
+            fse.outputFileSync(path, 'xyz');
         };
         
         var expectations = function () {
@@ -68,8 +68,8 @@ describe('safe file operations |', function () {
         
         var preparations = function () {
             // the fact that files from previous, failed operation are already there should have no effect
-            fse.writeFileSync(newPath, 'new');
-            fse.writeFileSync(bakPath, 'bak');
+            fse.outputFileSync(newPath, 'new');
+            fse.outputFileSync(bakPath, 'bak');
         };
         
         var expectations = function () {
@@ -101,9 +101,9 @@ describe('safe file operations |', function () {
         
         var preparations = function () {
             // NEW, BAK and MAIN files present, just for sake of argument ;)
-            fse.writeFileSync(path, 'xyz');
-            fse.writeFileSync(newPath, 'new');
-            fse.writeFileSync(bakPath, 'bak');
+            fse.outputFileSync(path, 'xyz');
+            fse.outputFileSync(newPath, 'new');
+            fse.outputFileSync(bakPath, 'bak');
         };
         
         var expectations = function () {
@@ -130,7 +130,7 @@ describe('safe file operations |', function () {
     it("reads file from bak location if main file doesn't exist", function (done) {
         
         var preparations = function () {
-            fse.writeFileSync(bakPath, 'bak');
+            fse.outputFileSync(bakPath, 'bak');
         };
         
         var expectations = function () {
@@ -154,8 +154,8 @@ describe('safe file operations |', function () {
     it("reads file from main location if both files exist", function (done) {
         
         var preparations = function () {
-            fse.writeFileSync(path, 'abc');
-            fse.writeFileSync(bakPath, 'bak');
+            fse.outputFileSync(path, 'abc');
+            fse.outputFileSync(bakPath, 'bak');
         };
         
         var expectations = function (content) {
