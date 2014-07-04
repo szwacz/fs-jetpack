@@ -18,6 +18,8 @@ API has the same set of synchronous and asynchronous methods. All async methods 
 
 Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also with this approach all methods without word "Async" are synchronous so you can very easily distinguish them.
 
+Make ENOENT go away. Jetpack tries to say goodbye the most annoying file-access error: "ENOENT, no such file or directory", and does 2 things for that: 1. For wrte operations, if parent directories doesn't exist, just tries to create it. 2. For read operations if file or directory doesn't exist returns `null`.
+
 **Methods:**
 * [append(path, data)](#append)
 * [copy(from, to, [options])](#copy)
