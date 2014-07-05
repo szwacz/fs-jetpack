@@ -1,6 +1,6 @@
 "use strict";
 
-describe('pathMatcher |', function () {
+describe('matcher |', function () {
     
     var matcher = require('../../lib/utils/matcher');
     
@@ -140,6 +140,58 @@ describe('pathMatcher |', function () {
             expect(test('/#a')).toBe(true);
         });
         
+    });
+    
+    it("can mark tree branches", function () {
+        var tree = {
+            name: 'a',
+            type: 'dir',
+            children: [
+                {
+                    name: 'a',
+                    type: 'dir',
+                    children: [
+                        {
+                            name: 'a.txt',
+                            type: 'file',
+                        }
+                    ]
+                },{
+                    name: 'b.txt',
+                    type: 'file',
+                },{
+                    name: 'c',
+                    type: 'dir',
+                    children: [
+                        {
+                            name: 'a.txt',
+                            type: 'file',
+                        }
+                    ]
+                }
+            ]
+        };
+        var patterns = ['a/a', 'b.txt'];
+        
+        matcher.markTree(tree, patterns);
+        
+        expect(tree.matchPath).toBe('/a');
+        expect(tree.matches).toBe(false);
+        
+        expect(tree.children[0].matchPath).toBe('/a/a');
+        expect(tree.children[0].matches).toBe(true);
+        
+        expect(tree.children[0].children[0].matchPath).toBe('/a/a/a.txt');
+        expect(tree.children[0].children[0].matches).toBe(true);
+        
+        expect(tree.children[1].matchPath).toBe('/a/b.txt');
+        expect(tree.children[1].matches).toBe(true);
+        
+        expect(tree.children[2].matchPath).toBe('/a/c');
+        expect(tree.children[2].matches).toBe(false);
+        
+        expect(tree.children[2].children[0].matchPath).toBe('/a/c/a.txt');
+        expect(tree.children[2].children[0].matches).toBe(false);
     });
     
 });

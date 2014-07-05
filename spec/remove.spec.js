@@ -10,21 +10,13 @@ describe('remove', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    it("throws error if path already doesn't exist", function (done) {
+    it("doesn't throw if path already doesn't exist", function (done) {
         // SYNC
-        try {
-            jetpack.remove('dir');
-            throw 'To make sure this code will throw.';
-        } catch(err) {
-            if (err.code !== 'ENOENT') {
-                throw 'Not that error!';
-            }
-        }
+        jetpack.remove('dir');
         
         // ASYNC
         jetpack.removeAsync('dir')
-        .catch(function (err) {
-            expect(err.code).toEqual("ENOENT");
+        .then(function () {
             done();
         });
     });
@@ -63,19 +55,19 @@ describe('remove', function () {
     
     it("removes directory with stuff inside", function (done) {
         
-        function prepareFiles() {
+        function preparations() {
             fse.mkdirsSync('a/b/c');
             fse.outputFileSync('a/f.txt', 'abc');
             fse.outputFileSync('a/b/f.txt', '123');
         }
         
         // SYNC
-        prepareFiles();
+        preparations();
         jetpack.remove('a');
         expect(fse.existsSync('a')).toBe(false);
         
         // ASYNC
-        prepareFiles();
+        preparations();
         jetpack.removeAsync('a')
         .then(function () {
             expect(fse.existsSync('a')).toBe(false);
@@ -87,7 +79,7 @@ describe('remove', function () {
         
         it("deletes ONLY", function (done) {
             
-            function prepareFiles() {
+            function preparations() {
                 fse.outputFileSync('a/f.txt', 'abc');
                 fse.outputFileSync('a/f.doc', 'abc');
                 fse.outputFileSync('a/b/f.txt', 'abc');
@@ -95,7 +87,7 @@ describe('remove', function () {
                 fse.mkdirsSync('a/tmp/c');
             }
             
-            function checkAfter() {
+            function expectations() {
                 expect(fse.existsSync('a/b/tmp')).toBe(false);
                 expect(fse.existsSync('a/b')).toBe(true);
                 expect(fse.existsSync('a/tmp')).toBe(false);
@@ -105,15 +97,15 @@ describe('remove', function () {
             }
             
             // SYNC
-            prepareFiles();
+            preparations();
             jetpack.remove('a', { only: ['*.txt', 'tmp'] });
-            checkAfter();
+            expectations();
             
             // ASYNC
-            prepareFiles();
+            preparations();
             jetpack.removeAsync('a', { only: ['*.txt', 'tmp'] })
             .then(function () {
-                checkAfter();
+                expectations();
                 done();
             });
         });
@@ -135,32 +127,34 @@ describe('remove', function () {
         
         it("deletes ALLBUT", function (done) {
             
-            function prepareFiles() {
+            function preparations() {
                 fse.mkdirsSync('a/b/tmp');
                 fse.mkdirsSync('a/tmp/c');
                 fse.writeFileSync('a/f.txt', 'abc');
                 fse.writeFileSync('a/f.doc', 'abc');
                 fse.writeFileSync('a/b/f.txt', 'abc');
+                fse.mkdirsSync('a/x/y');
             }
             
-            function checkAfter() {
+            function expectations() {
                 expect(fse.existsSync('a/b/tmp')).toBe(true);
                 expect(fse.existsSync('a/tmp/c')).toBe(true);
                 expect(fse.existsSync('a/f.doc')).toBe(false);
                 expect(fse.existsSync('a/f.txt')).toBe(true);
                 expect(fse.existsSync('a/b/f.txt')).toBe(true);
+                expect(fse.existsSync('a/x')).toBe(false);
             }
             
             // SYNC
-            prepareFiles();
+            preparations();
             jetpack.remove('a', { allBut: ['*.txt', 'tmp'] });
-            checkAfter();
+            expectations();
             
             // ASYNC
-            prepareFiles();
+            preparations();
             jetpack.removeAsync('a', { allBut: ['*.txt', 'tmp'] })
             .then(function () {
-                checkAfter();
+                expectations();
                 done();
             });
         });
@@ -182,26 +176,26 @@ describe('remove', function () {
         
         it("ONLY takes precedence over ALLBUT", function (done) {
             
-            function prepareFiles() {
+            function preparations() {
                 fse.outputFileSync('a/f.txt', 'abc');
                 fse.outputFileSync('a/f.doc', 'abc');
             }
             
-            function checkAfter() {
+            function expectations() {
                 expect(fse.existsSync('a/f.txt')).toBe(true);
                 expect(fse.existsSync('a/f.doc')).toBe(false);
             }
             
             // SYNC
-            prepareFiles();
+            preparations();
             jetpack.remove('a', { only: ['f.doc'], allBut: ['f.txt'] });
-            checkAfter();
+            expectations();
             
             // ASYNC
-            prepareFiles();
+            preparations();
             jetpack.removeAsync('a', { only: ['f.doc'], allBut: ['f.txt'] })
             .then(function () {
-                checkAfter();
+                expectations();
                 done();
             });
         });
