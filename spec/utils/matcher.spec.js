@@ -2,7 +2,7 @@
 
 describe('pathMatcher |', function () {
     
-    var matcher = require('../../lib/internal/pathMatcher');
+    var matcher = require('../../lib/utils/matcher');
     
     it("can test against many masks", function () {
         var test = matcher.create(['a', 'b']);
