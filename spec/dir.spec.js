@@ -16,8 +16,6 @@ describe('dir |', function () {
             
             var expectations = function (jetpackContext) {
                 expect(fse.existsSync('x')).toBe(true);
-                // if exists==true returned jetpack context should have given path as CWD
-                expect(jetpackContext.cwd()).toBe(pathUtil.resolve('x'));
             };
             
             // SYNC
@@ -94,9 +92,6 @@ describe('dir |', function () {
             
             var expectations = function (jetpackContext) {
                 expect(fse.existsSync('x')).toBe(false);
-                // if exists==false returns null as CWD context, because
-                // returning context pointing to nonexistent directory is pointless
-                expect(jetpackContext).toBe(null);
             };
             
             // SYNC
@@ -241,6 +236,50 @@ describe('dir |', function () {
             expectations();
             done();
         });
+    });
+    
+    describe("returns", function () {
+        
+        it("returns jetack instance pointing on this directory if EXISTS=true", function (done) {
+            
+            var expectations = function (ret) {
+                expect(ret.cwd()).toBe(pathUtil.resolve('a'));
+            };
+            
+            // SYNC
+            var ret = jetpack.dir('a');
+            expectations(ret);
+            
+            helper.clearWorkingDir();
+            
+            // ASYNC
+            jetpack.dirAsync('a')
+            .then(function (ret) {
+                expectations(ret);
+                done();
+            });
+        });
+        
+        it("returns undefined if EXISTS=false", function (done) {
+            
+            var expectations = function (ret) {
+                expect(ret).toBe(undefined);
+            };
+            
+            // SYNC
+            var ret = jetpack.dir('a', { exists: false });
+            expectations(ret);
+            
+            helper.clearWorkingDir();
+            
+            // ASYNC
+            jetpack.dirAsync('a', { exists: false })
+            .then(function (ret) {
+                expectations(ret);
+                done();
+            });
+        });
+        
     });
     
     if (process.platform === 'win32') {

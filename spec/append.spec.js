@@ -29,6 +29,8 @@ describe('append |', function () {
         jetpack.append(path, 'xyz');
         expectations();
         
+        helper.clearWorkingDir();
+        
         // ASYNC
         preparations();
         jetpack.appendAsync(path, 'xyz')
@@ -56,6 +58,8 @@ describe('append |', function () {
         jetpack.append(path, new Buffer([22]));
         expectations();
         
+        helper.clearWorkingDir();
+        
         // ASYNC
         preparations();
         jetpack.appendAsync(path, new Buffer([22]))
@@ -75,7 +79,7 @@ describe('append |', function () {
         jetpack.append(path, 'xyz');
         expectations();
         
-        fse.unlinkSync(path);
+        helper.clearWorkingDir();
         
         // ASYNC
         jetpack.appendAsync(path, 'xyz')
@@ -97,12 +101,27 @@ describe('append |', function () {
         jetpack.append(path, 'xyz');
         expectations();
         
-        fse.removeSync('dir');
+        helper.clearWorkingDir();
         
         // ASYNC
         jetpack.appendAsync(path, 'xyz')
         .then(function () {
             expectations();
+            done();
+        });
+    });
+    
+    it("returns undefined", function (done) {
+        // SYNC
+        var ret = jetpack.append('file.txt', 'xyz');
+        expect(ret).toBe(undefined);
+        
+        helper.clearWorkingDir();
+        
+        // ASYNC
+        jetpack.appendAsync('file.txt', 'xyz')
+        .then(function (ret) {
+            expect(ret).toBe(undefined);
             done();
         });
     });

@@ -64,5 +64,27 @@ describe('move |', function () {
             done();
         });
     });
+    
+    it("returns undefined", function (done) {
+        
+        var preparations = function () {
+            fse.outputFileSync('file.txt', 'abc');
+        };
+        
+        // SYNC
+        preparations();
+        var ret = jetpack.move('file.txt', 'fiole.txt');
+        expect(ret).toBe(undefined);
+        
+        helper.clearWorkingDir();
+        
+        // ASYNC
+        preparations();
+        jetpack.moveAsync('file.txt', 'fiole.txt')
+        .then(function (ret) {
+            expect(ret).toBe(undefined);
+            done();
+        });
+    });
 
 });

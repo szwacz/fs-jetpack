@@ -36,23 +36,6 @@ describe('remove', function () {
         });
     });
     
-    it("sets cwd() to directory which used to contain the removed item", function (done) {
-        var path = pathUtil.resolve('file.txt');
-        
-        // SYNC
-        fse.writeFileSync(path, 'abc');
-        var context = jetpack.remove(path);
-        expect(context.cwd()).toBe(pathUtil.resolve(path, '..'));
-        
-        // ASYNC
-        fse.writeFileSync(path, 'abc');
-        jetpack.removeAsync(path)
-        .then(function (context) {
-            expect(context.cwd()).toBe(pathUtil.resolve(path, '..'));
-            done();
-        });
-    });
-    
     it("removes directory with stuff inside", function (done) {
         
         function preparations() {
@@ -71,6 +54,26 @@ describe('remove', function () {
         jetpack.removeAsync('a')
         .then(function () {
             expect(fse.existsSync('a')).toBe(false);
+            done();
+        });
+    });
+    
+    it("returns undefined", function (done) {
+        
+        var preparations = function () {
+            fse.outputFileSync('file.txt', 'abc');
+        };
+        
+        // SYNC
+        preparations();
+        var ret = jetpack.remove('file.txt');
+        expect(ret).toBe(undefined);
+        
+        // ASYNC
+        preparations();
+        jetpack.removeAsync('file.txt')
+        .then(function (context) {
+            expect(ret).toBe(undefined);
             done();
         });
     });

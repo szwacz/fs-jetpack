@@ -157,6 +157,19 @@ describe('read & write |', function () {
         });
     });
     
+    it("write returns undefined", function (done) {
+        // SYNC
+        var ret = jetpack.write('file.txt', 'abc');
+        expect(ret).toBe(undefined);
+        
+        // ASYNC
+        jetpack.writeAsync('file.txt', 'abc')
+        .then(function (ret) {
+            expect(ret).toBe(undefined);
+            done();
+        });
+    });
+    
     it("read throws if given path is directory", function (done) {
         
         fse.mkdirsSync('dir');

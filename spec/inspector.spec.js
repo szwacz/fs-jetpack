@@ -62,6 +62,19 @@ describe('inspector |', function () {
             });
         });
         
+        it("returns null if path doesn't exist", function (done) {
+            // SYNC
+            var data = inspector.inspect('nonexistent');
+            expect(data).toBe(null);
+            
+            // ASYNC
+            inspector.inspectAsync('nonexistent')
+            .then(function (data) {
+                expect(data).toBe(null);
+                done();
+            });
+        });
+        
     });
     
     describe('list', function () {
@@ -110,6 +123,19 @@ describe('inspector |', function () {
             inspector.listAsync('dir', 'inspect')
             .then(function (list) {
                 expectations(list);
+                done();
+            });
+        });
+        
+        it("returns null if path doesn't exist", function (done) {
+            // SYNC
+            var data = inspector.list('nonexistent');
+            expect(data).toBe(null);
+            
+            // ASYNC
+            inspector.listAsync('nonexistent')
+            .then(function (data) {
+                expect(data).toBe(null);
                 done();
             });
         });
@@ -181,6 +207,19 @@ describe('inspector |', function () {
             inspector.treeAsync('dir/file.txt')
             .then(function (tree) {
                 expectations(tree);
+                done();
+            });
+        });
+        
+        it("returns null if path doesn't exist", function (done) {
+            // SYNC
+            var data = inspector.tree('nonexistent');
+            expect(data).toBe(null);
+            
+            // ASYNC
+            inspector.treeAsync('nonexistent')
+            .then(function (data) {
+                expect(data).toBe(null);
                 done();
             });
         });

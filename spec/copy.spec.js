@@ -120,6 +120,28 @@ describe('copy |', function () {
         });
     });
     
+    it("returns undefined", function (done) {
+        
+        var preparations = function () {
+            fse.outputFileSync('a/f1.txt', 'abc');
+        };
+        
+        // SYNC
+        preparations();
+        var ret = jetpack.copy('a', 'dir/a');
+        expect(ret).toBe(undefined);
+        
+        helper.clearWorkingDir();
+        
+        // ASYNC
+        preparations();
+        jetpack.copyAsync('a', 'dir/a')
+        .then(function (ret) {
+            expect(ret).toBe(undefined);
+            done();
+        });
+    });
+    
     describe('overwriting behaviour', function () {
         
         it("does not overwrite by default", function (done) {
