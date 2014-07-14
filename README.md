@@ -1,7 +1,7 @@
 fs-jetpack
 ==========
 
-This is an attempt to make higher level API for node's [fs library](http://nodejs.org/api/fs.html), which will be fun to use.
+This is an attempt to make comprehensive, higher level API for node's [fs library](http://nodejs.org/api/fs.html), which will be fun to use (see ["Neat tricks fs-jetpack knows"](#how-fun) as a starter).
 
 ### Installation
 ```
@@ -14,11 +14,26 @@ var jetpack = requite('fs-jetpack');
 ```
 
 # API
-API has the same set of synchronous and asynchronous methods. All async methods are promise based (so no callbacks folks, [promises](https://github.com/kriskowal/q) instead). To see examples of usage go read [Nice tricks fs-jetpack knows](#how-fun).
+API has the same set of synchronous and asynchronous methods. All async methods are promise based (so no callbacks folks, [promises](https://github.com/kriskowal/q) instead).
 
-Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also it just feels right to me. Thanks to this convention when you see "Async" word you are 100% sure this method is returning promise, and when you don't see it, you are 100% sure this method retuns immediately (and possibly blocks).
+Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also it just feels right to me. When you see "Async" word you are 100% sure this method is returning promise, and when you don't see it, you are 100% sure this method retuns immediately (and possibly blocks).
 
-TODO examples of sync and async
+```javascript
+// Usage of blocking API
+try {
+    jetpack.dir('foo');
+} catch (err) {
+    // Something went wrong
+}
+
+// Usage of non-blocking API
+jetpack.dirAsync('foo')
+.then(function () {
+    // Done!
+}, function (err) {
+    // Something went wrong
+});
+```
 
 **Methods:**
 * [append(path, data)](#append)
@@ -41,11 +56,11 @@ TODO examples of sync and async
 ## <a name="append"></a> append(path, data)
 also **appendAsync(path, data)**
 
-Appends given data to the end of file. If file or any parent directory doesn't exist, creates them all.
+Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it (or them).
 
 **parameters:**  
 `path` the path to file.  
-`data` data to add (could be `String` or `Buffer`).
+`data` data to append (could be `String` or `Buffer`).
 
 **returns:**  
 Nothing.
@@ -58,11 +73,11 @@ Copies given file or directory (with everything inside).
 
 **parameters:**  
 `from` path to location you want to copy.  
-`to` destination path where copy should be placed.  
+`to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
-* `overwrite` (default: `false`) Whether to overwrite destination path if it exists. If set to `true` for directories, source directory is merged with destination directory, so files in destination which are not present in source remain intact.
-* `only` (`Array` of patterns) will copy **only** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more on that)](#matching-paths).
-* `allBut` (`Array` of patterns) will copy **everything except** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more on that)](#matching-paths). If `only` was also specified this field is ignored.
+* `overwrite` (default: `false`) Whether to overwrite destination path if it exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
+* `only` (`Array` of patterns) will copy **only** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more)](#matching-paths).
+* `allBut` (`Array` of patterns) will copy **everything except** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more)](#matching-paths). If `only` was also specified this field is ignored.
 
 **returns:**  
 Nothing.
@@ -124,7 +139,7 @@ Ensures that directory on given path meets given criteria. If any criterium is n
 
 **returns:**  
 New CWD context with directory specified in `path` as CWD.  
-Or **nothing** if `exists` was set to `false`.
+Or `undefined` if `exists` was set to `false`.
 
 **examples:**
 ```javascript
@@ -132,7 +147,7 @@ Or **nothing** if `exists` was set to `false`.
 jetpack.dir('new_dir');
 
 // Makes sure that directory does NOT exist
-var notExistsCwd = jetpack.dir('/my_stuff/some_dir', { exists: false });
+jetpack.dir('/my_stuff/some_dir', { exists: false });
 
 // Makes sure directory mode is 0700 and that it's empty
 jetpack.dir('empty_dir', { empty: true, mode: '700' });
@@ -171,7 +186,7 @@ Ensures that file meets given criteria. If any criterium is not met it will be a
 * `mode` ensures file has specified mode. If not set and file already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 **returns:**  
-Jetpack object you called this method on.
+Jetpack object you called this method on (self).
 
 **examples:**
 ```javascript
@@ -189,7 +204,7 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ## <a name="inspect"></a> inspect(path)
 also **inspectAsync(path)**  
 
-Inspects given path (this is replacement for fs.stat).
+Inspects given path (replacement for fs.stat).
 
 **parameters:**  
 `path` path to inspect.  
@@ -362,30 +377,96 @@ Writes data to file.
 Nothing.
 
 
-# <a name="how-fun"></a> Nice tricks fs-jetpack knows
+# <a name="how-fun"></a> Neat tricks fs-jetpack knows
 
 ### Every jetpack instance has its independent, internal CWD
-
-TODO
+So you can create many jetpack objects and work on directories in a little more object-oriented fashion.
 ```javascript
-var dir1 = jetpack.cwd('path/to/dir1');
-var dir2 = jetpack.cwd('path/to/different/dir2');
-dir1.copy('file.txt', dir2.path('file.txt'))
+var src = jetpack.cwd('path/to/source');
+var dest = jetpack.cwd('path/to/destination');
+src.copy('foo.txt', dest.path('bar.txt'));
 ```
 
 ### Files creation in declarative style
+You can create whole tree of directories and files in declarative style.
+```javascript
+// Synchronous style
+jetpack
+.dir('foo')
+    .file('foo.txt', { content: 'Hello...' })
+    .file('bar.txt', { content: '...world!' })
+    .cwd('..')
+.dir('bar')
+    .file('foo.txt', { content: 'Wazup?' });
 
-TODO
+// Asynchronous style (unfortunately not that pretty)
+jetpack
+.dirAsync('foo')
+    .then(function (dir) {
+        return dir.fileAsync('foo.txt', { content: 'Hello...' });
+    })
+    .then(function (dir) {
+        return dir.fileAsync('bar.txt', { content: '...world!' });
+.then(function (dir) {
+    return dir.cwd('..').dirAsync('bar');
+})
+.then(function (dir) {
+    dir.fileAsync('foo.txt', { content: 'Wazup?' });
+});
+```
 
-### Fights ENOENT for you as much as possible
-"ENOENT, no such file or directory" is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle as much as it can:
-1. For wrte/creation operations, if any of parent directories doesn't exist, just creates them as well.
-2. For read/inspect operations, if file or directory doesn't exist, returns `null` instead of throwing.
+### Hides ENOENT from you as much as possible
+*"ENOENT, no such file or directory"* is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle:
+1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.
+2. For read/inspect operations, if file or directory doesn't exist, `null` is returned instead of throwing.
 
-### <a name="matching-paths"></a> Matching paths with `only` and `allBut`
+### <a name="matching-paths"></a> Filtering things to copy/remove
+[Copy](#copy) and [remove](#remove) have option for blacklisting and whitelisting things inside directory which will be affected by the operation. For instance:
+```javascript
+// Let's assume we have folder structure:
+// foo
+// |- a.jpg
+// |- b.pdf
+// |- c.txt
+// |- bar
+//    |- a.pdf
 
-TODO
+jetpack.copy('foo', 'foo1', { allBut: ['*.pdf'] });
+// Will give us folder:
+// foo1
+// |- a.jpg
+// |- c.txt
+// |- bar
+
+jetpack.copy('foo', 'foo2', { only: ['*.pdf'] });
+// Will give us folder:
+// foo2
+// |- b.pdf
+// |- bar
+//    |- a.pdf
+```
 
 ### <a name="safe-mode"></a> "Safe" file overwriting
+It is not fully safe to just overwrite existing file with new content. If process will crash during the operation, you are basically srewed. The old file content is lost, because you overwritten it. And the new file is empty or written only partially. Fs-jetpack has built-in "safe mode", which helps you get rid of this issue. Under the hood it works as follows...
 
-TODO
+Let's assume there's already `file.txt` with content `Hello world!` on disk, and we want to update it to `Hello universe!`.
+```javascript
+jetpack.write('file.txt', { safe: true, content: 'Hello universe!' });
+```
+Above line will perform tasks as follows:
+1. Write `Hello universe!` to `file.txt.__new__` (so we didn't owerwrite the original file).
+2. Move `file.txt` (with `Hello world!`) to `file.txt.__bak__`, so it can serve as a backup.
+3. Move `file.txt.__new__` to `file.txt`, where we wanted it to be on the first place.
+4. Delete `file.txt.__bak__`, because it is no longer needed.
+Thanks to that the backup of old data is reachable all the time, until we are 100% sure the new data has been successfuly written to disk.
+
+For this to work, read operation have to be aware of the backup file.
+```javascript
+jetpack.read('file.txt', { safe: true });
+```
+Above read will do:
+1. Read `file.txt`
+2. If step 1 failed, try to read `file.txt.__bak__`.
+3. If step 2 failed as well, we are sure there is no such file.
+
+The whole process is performed automatically for you by simply adding `safe: true` to call options of [write](#write) and [read](#read) methods.
