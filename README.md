@@ -416,8 +416,8 @@ jetpack
 ```
 
 ### Hides ENOENT from you as much as possible
-*"ENOENT, no such file or directory"* is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle:
-1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.
+*"ENOENT, no such file or directory"* is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle:  
+1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist, `null` is returned instead of throwing.
 
 ### <a name="matching-paths"></a> Filtering things to copy/remove
@@ -453,20 +453,20 @@ Let's assume there's already `file.txt` with content `Hello world!` on disk, and
 ```javascript
 jetpack.write('file.txt', { safe: true, content: 'Hello universe!' });
 ```
-Above line will perform tasks as follows:
-1. Write `Hello universe!` to `file.txt.__new__` (so we didn't owerwrite the original file).
-2. Move `file.txt` (with `Hello world!`) to `file.txt.__bak__`, so it can serve as a backup.
-3. Move `file.txt.__new__` to `file.txt`, where we wanted it to be on the first place.
-4. Delete `file.txt.__bak__`, because it is no longer needed.
+Above line will perform tasks as follows:  
+1. Write `Hello universe!` to `file.txt.__new__` (so we didn't owerwrite the original file).  
+2. Move `file.txt` (with `Hello world!`) to `file.txt.__bak__`, so it can serve as a backup.  
+3. Move `file.txt.__new__` to `file.txt`, where we wanted it to be on the first place.  
+4. Delete `file.txt.__bak__`, because it is no longer needed.  
 Thanks to that the backup of old data is reachable all the time, until we are 100% sure the new data has been successfuly written to disk.
 
 For this to work, read operation have to be aware of the backup file.
 ```javascript
 jetpack.read('file.txt', { safe: true });
 ```
-Above read will do:
-1. Read `file.txt`
-2. If step 1 failed, try to read `file.txt.__bak__`.
+Above read will do:  
+1. Read `file.txt`  
+2. If step 1 failed, try to read `file.txt.__bak__`.  
 3. If step 2 failed as well, we are sure there is no such file.
 
 The whole process is performed automatically for you by simply adding `safe: true` to call options of [write](#write) and [read](#read) methods.
