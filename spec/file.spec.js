@@ -221,6 +221,34 @@ describe('file |', function () {
             });
         });
         
+        it('written JSON data can be indented', function (done) {
+            
+            var obj = { a: "abc", b: 123 };
+            
+            var expectations = function (content) {
+                var sizeA = fse.statSync('a.json').size;
+                var sizeB = fse.statSync('b.json').size;
+                expect(sizeB).toBeGreaterThan(sizeA);
+            };
+            
+            // SYNC
+            jetpack.file('a.json', { content: obj });
+            jetpack.file('b.json', { content: obj, jsonIndent: 4 });
+            expectations();
+            
+            helper.clearWorkingDir();
+            
+            // ASYNC
+            jetpack.fileAsync('a.json', { content: obj })
+            .then(function () {
+                return jetpack.fileAsync('b.json', { content: obj, jsonIndent: 4 });
+            })
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+        
         it("replaces content of already existing file", function (done) {
             
             var preparations = function () {

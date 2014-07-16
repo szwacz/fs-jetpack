@@ -25,6 +25,8 @@ describe('read & write |', function () {
         content = jetpack.read(path, 'utf8');
         expectations(content);
         
+        helper.clearWorkingDir();
+        
         // ASYNC
         jetpack.writeAsync(path, 'ąbć')
         .then(function () {
@@ -57,6 +59,8 @@ describe('read & write |', function () {
         var content = jetpack.read(path, 'buf');
         expectations(content);
         
+        helper.clearWorkingDir();
+        
         // ASYNC
         jetpack.writeAsync(path, buf)
         .then(function () {
@@ -74,14 +78,12 @@ describe('read & write |', function () {
             utf8: "ąćłźż"
         };
         
-        var expectations = function (content) {
-            expect(content).toEqual(obj);
-        };
-        
         // SYNC
         jetpack.write(path, obj);
         var content = jetpack.read(path, 'json');
         expect(content).toEqual(obj);
+        
+        helper.clearWorkingDir();
         
         // ASYNC
         jetpack.writeAsync(path, obj)
@@ -89,7 +91,37 @@ describe('read & write |', function () {
             return jetpack.readAsync(path, 'json')
         })
         .then(function (content) {
-            expectations(content);
+            expect(content).toEqual(obj);
+            done();
+        });
+    });
+    
+    it('written JSON data can be indented', function (done) {
+        
+        var obj = {
+            utf8: "ąćłźż"
+        };
+        
+        var expectations = function (content) {
+            var sizeA = fse.statSync('a.json').size;
+            var sizeB = fse.statSync('b.json').size;
+            expect(sizeB).toBeGreaterThan(sizeA);
+        };
+        
+        // SYNC
+        jetpack.write('a.json', obj);
+        jetpack.write('b.json', obj, { jsonIndent: 4 });
+        expectations();
+        
+        helper.clearWorkingDir();
+        
+        // ASYNC
+        jetpack.writeAsync('a.json', obj)
+        .then(function () {
+            return jetpack.writeAsync('b.json', obj, { jsonIndent: 4 });
+        })
+        .then(function () {
+            expectations();
             done();
         });
     });
