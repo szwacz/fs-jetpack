@@ -12,8 +12,6 @@ describe('append |', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
     
-    // TODO append should also allow to specify file mode
-    
     it('appends String to file', function (done) {
         
         var preparations = function () {
@@ -125,5 +123,33 @@ describe('append |', function () {
             done();
         });
     });
+    
+    if (process.platform !== 'win32') {
+        
+        describe('*nix specyfic |', function () {
+            
+            it('sets file mode on created file', function (done) {
+                
+                var expectations = function () {
+                    expect(fse.statSync('file.txt').mode.toString(8)).toBe('100711');
+                };
+                
+                // SYNC
+                jetpack.append('file.txt', 'abc', { mode: '711' });
+                expectations();
+                
+                helper.clearWorkingDir();
+                
+                // AYNC
+                jetpack.appendAsync('file.txt', 'abc', { mode: '711' })
+                .then(function () {
+                    expectations();
+                    done();
+                });
+            });
+            
+        });
+        
+    }
     
 });

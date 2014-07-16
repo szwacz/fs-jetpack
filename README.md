@@ -36,7 +36,7 @@ jetpack.dirAsync('foo')
 ```
 
 **Methods:**
-* [append(path, data)](#append)
+* [append(path, data, [options])](#append)
 * [copy(from, to, [options])](#copy)
 * [cwd([path])](#cwd)
 * [dir(path, [criteria])](#dir)
@@ -53,14 +53,16 @@ jetpack.dirAsync('foo')
 * [write(path, data)](#write)
 
 
-## <a name="append"></a> append(path, data)
-also **appendAsync(path, data)**
+## <a name="append"></a> append(path, data, [options])
+also **appendAsync(path, data, [options])**
 
 Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it (or them).
 
 **parameters:**  
 `path` the path to file.  
 `data` data to append (could be `String` or `Buffer`).
+`options` (optional) `Object` with possible fields:
+* `mode` if the file doesn't exist yet, will be created with given mode. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 **returns:**  
 Nothing.
