@@ -60,7 +60,7 @@ Appends given data to the end of file. If file (or any parent directory) doesn't
 
 **parameters:**  
 `path` the path to file.  
-`data` data to append (could be `String` or `Buffer`).
+`data` data to append (could be `String` or `Buffer`).  
 `options` (optional) `Object` with possible fields:
 * `mode` if the file doesn't exist yet, will be created with given mode. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
