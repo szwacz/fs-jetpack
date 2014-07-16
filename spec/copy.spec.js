@@ -352,4 +352,41 @@ describe('copy |', function () {
         
     });
     
+    if (process.platform !== 'win32') {
+        
+        describe('*nix specyfic |', function () {
+            
+            it('copies also file permissions', function (done) {
+                
+                var preparations = function () {
+                    fse.outputFileSync('a/b/c.txt', 'abc');
+                    fse.chmodSync('a/b', '700');
+                    fse.chmodSync('a/b/c.txt', '711');
+                };
+                
+                var expectations = function () {
+                    expect(fse.statSync('a1/b').mode.toString(8)).toBe('40700');
+                    expect(fse.statSync('a1/b/c.txt').mode.toString(8)).toBe('100711');
+                };
+                
+                // SYNC
+                preparations();
+                jetpack.copy('a', 'a1');
+                expectations();
+                
+                helper.clearWorkingDir();
+                
+                // AYNC
+                preparations();
+                jetpack.copyAsync('a', 'a1')
+                .then(function () {
+                    expectations();
+                    done();
+                });
+            });
+            
+        });
+        
+    }
+    
 });
