@@ -142,6 +142,23 @@ describe('copy |', function () {
         });
     });
     
+    it("throws if source path doesn't exist", function (done) {
+        // SYNC
+        try {
+            jetpack.copy('a', 'b', { allBut: ['c'] }); // allBut used because then jetpack code follows more comlicated path
+            throw "to make sure this code throws"
+        } catch (err) {
+            expect(err.code).toBe('ENOENT');
+        }
+        
+        // ASYNC
+        jetpack.copyAsync('a', 'b', { allBut: ['c'] })
+        .catch(function (err) {
+            expect(err.code).toBe('ENOENT');
+            done();
+        });
+    });
+    
     describe('overwriting behaviour', function () {
         
         it("does not overwrite by default", function (done) {
