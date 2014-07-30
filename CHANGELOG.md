@@ -1,3 +1,7 @@
+0.4.2 (in progress)
+-------------------
+* Added more telling error when path to copy() desn't exist.
+
 0.4.1 (2014-07-16)
 -------------------
 * `copy()` now copies also file permissions on unix systems.
