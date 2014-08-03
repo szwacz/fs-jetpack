@@ -78,8 +78,8 @@ Copies given file or directory (with everything inside).
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
 * `overwrite` (default: `false`) Whether to overwrite destination path if it exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
-* `only` (`Array` of patterns) will copy **only** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more)](#matching-paths).
-* `allBut` (`Array` of patterns) will copy **everything except** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more)](#matching-paths). If `only` was also specified this field is ignored.
+* `only` (`Array` of globs) will copy **only** items matching any of specified glob patterns [(read more)](#matching-paths).
+* `allBut` (`Array` of globs) will copy **everything except** items matching any of specified glob patterns [(read more)](#matching-paths). If `only` was also specified this field is ignored.
 
 **returns:**  
 Nothing.
@@ -298,8 +298,8 @@ Deletes given path, no matter what it is (file or directory).
 **parameters:**  
 `path` path to file or directory you want to remove.  
 `options` (optional) additional conditions to removal process. Is an object with possible fields:
-* `only` (`Array` of patterns) will delete **only** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more on that)](#matching-paths).
-* `allBut` (`Array` of patterns) will delete **everything except** items matching any of specified pattern. Pattern is a `String` of .gitignore-like notation [(read more on that)](#matching-paths). If `only` was also specified this field is ignored.
+* `only` (`Array` of globs) will delete **only** items matching any of specified glob patterns [(read more on that)](#matching-paths).
+* `allBut` (`Array` of globs) will delete **everything except** items matching any of specified glob patterns [(read more on that)](#matching-paths). If `only` was also specified this field is ignored.
 
 **returns:**  
 Nothing.
@@ -425,7 +425,7 @@ jetpack
 1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist, `null` is returned instead of throwing.
 
-### <a name="matching-paths"></a> Filtering things to copy/remove
+### <a name="matching-paths"></a> Filtering things to copy/remove with "globs"
 [Copy](#copy) and [remove](#remove) have option for blacklisting and whitelisting things inside directory which will be affected by the operation. For instance:
 ```javascript
 // Let's assume we have folder structure:
