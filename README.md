@@ -38,6 +38,8 @@ jetpack.dirAsync('foo')
 **Methods:**
 * [append(path, data, [options])](#append)
 * [copy(from, to, [options])](#copy)
+* [createReadStream(path, [options])](#create-read-stream)
+* [createWriteStream(path, [options])](#create-write-stream)
 * [cwd([path])](#cwd)
 * [dir(path, [criteria])](#dir)
 * [exists(path)](#exists)
@@ -95,6 +97,17 @@ jetpack.copy('my_dir', 'somewhere/my_dir', { only: ['*.jpg'] });
 // Copies everything except "logs" directory inside my_dir
 jetpack.copy('my_dir', 'somewhere/my_dir', { allBut: ['my_dir/logs'] });
 ```
+
+
+## <a name="create-read-stream"></a> createReadStream(path, [options])
+
+Just an alias to vanilla [fs.createReadStream](http://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options).
+
+
+## <a name="create-write-stream"></a> createWriteStream(path, [options])
+
+Just an alias to vanilla [fs.createWriteStream](http://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options).
+
 
 
 ## <a name="cwd"></a> cwd([path])
