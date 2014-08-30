@@ -282,7 +282,8 @@ Reads content of file. If file on given path doesn't exist returns `null` instea
 * `'utf8'` (default) content will be returned as UTF-8 String.
 * `'buf'` content will be returned as Buffer.
 * `'json'` content will be returned as parsed JSON object.
-* `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into Date objects.  
+* `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into Date objects.
+
 `options` (optional) is an object with possible fields:
 * `safe` if set to `true` the file will be read in ["safe mode"](#safe-mode).
 
@@ -377,6 +378,7 @@ Writes data to file.
 `content` data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputed into file as JSON).  
 `options` (optional) `Object` with possible fields:
 * `jsonIndent` (defaults to 0) if writing JSON data this tells how many spaces should one indentation have.
+* `safe` if set to `true` the file will be written in ["safe mode"](#safe-mode).
 
 **returns:**  
 Nothing.
