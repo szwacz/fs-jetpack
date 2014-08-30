@@ -5,7 +5,7 @@ describe('inspector |', function () {
     var fse = require('fs-extra');
     var pathUtil = require('path');
     var helper = require('./helper');
-    var inspector = require('../lib/inspector');
+    var jetpack = require('..');
     
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
@@ -30,11 +30,11 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var data = inspector.inspect('dir/file.txt');
+            var data = jetpack.inspect('dir/file.txt');
             expectations(data);
             
             // ASYNC
-            inspector.inspectAsync('dir/file.txt')
+            jetpack.inspectAsync('dir/file.txt')
             .then(function (data) {
                 expectations(data);
                 done();
@@ -51,11 +51,11 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var data = inspector.inspect('dir/empty');
+            var data = jetpack.inspect('dir/empty');
             expectations(data);
             
             // ASYNC
-            inspector.inspectAsync('dir/empty')
+            jetpack.inspectAsync('dir/empty')
             .then(function (data) {
                 expectations(data);
                 done();
@@ -64,11 +64,11 @@ describe('inspector |', function () {
         
         it("returns null if path doesn't exist", function (done) {
             // SYNC
-            var data = inspector.inspect('nonexistent');
+            var data = jetpack.inspect('nonexistent');
             expect(data).toBe(null);
             
             // ASYNC
-            inspector.inspectAsync('nonexistent')
+            jetpack.inspectAsync('nonexistent')
             .then(function (data) {
                 expect(data).toBe(null);
                 done();
@@ -86,11 +86,11 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var list = inspector.list('dir');
+            var list = jetpack.list('dir');
             expectations(list);
             
             // ASYNC
-            inspector.listAsync('dir')
+            jetpack.listAsync('dir')
             .then(function (list) {
                 expectations(list);
                 done();
@@ -116,11 +116,11 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var list = inspector.list('dir', 'inspect');
+            var list = jetpack.list('dir', 'inspect');
             expectations(list);
             
             // ASYNC
-            inspector.listAsync('dir', 'inspect')
+            jetpack.listAsync('dir', 'inspect')
             .then(function (list) {
                 expectations(list);
                 done();
@@ -129,11 +129,11 @@ describe('inspector |', function () {
         
         it("returns null if path doesn't exist", function (done) {
             // SYNC
-            var data = inspector.list('nonexistent');
+            var data = jetpack.list('nonexistent');
             expect(data).toBe(null);
             
             // ASYNC
-            inspector.listAsync('nonexistent')
+            jetpack.listAsync('nonexistent')
             .then(function (data) {
                 expect(data).toBe(null);
                 done();
@@ -178,11 +178,11 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var tree = inspector.tree('dir');
+            var tree = jetpack.inspectTree('dir');
             expectations(tree);
             
             // ASYNC
-            inspector.treeAsync('dir')
+            jetpack.inspectTreeAsync('dir')
             .then(function (tree) {
                 expectations(tree);
                 done();
@@ -200,11 +200,11 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var tree = inspector.tree('dir/file.txt');
+            var tree = jetpack.inspectTree('dir/file.txt');
             expectations(tree);
             
             // ASYNC
-            inspector.treeAsync('dir/file.txt')
+            jetpack.inspectTreeAsync('dir/file.txt')
             .then(function (tree) {
                 expectations(tree);
                 done();
@@ -213,11 +213,11 @@ describe('inspector |', function () {
         
         it("returns null if path doesn't exist", function (done) {
             // SYNC
-            var data = inspector.tree('nonexistent');
+            var data = jetpack.inspectTree('nonexistent');
             expect(data).toBe(null);
             
             // ASYNC
-            inspector.treeAsync('nonexistent')
+            jetpack.inspectTreeAsync('nonexistent')
             .then(function (data) {
                 expect(data).toBe(null);
                 done();

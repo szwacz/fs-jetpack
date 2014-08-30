@@ -1,5 +1,6 @@
-0.4.2 (in progress)
+0.5.0 (in progress)
 -------------------
+* **(breaking change)** Method `.tree()` renamed to `.inspectTree()`.
 * Added more telling error when path to copy() desn't exist.
 
 0.4.1 (2014-07-16)

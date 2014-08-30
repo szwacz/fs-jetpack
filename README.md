@@ -43,13 +43,13 @@ jetpack.dirAsync('foo')
 * [exists(path)](#exists)
 * [file(path, [criteria])](#file)
 * [inspect(path)](#inspect)
+* [inspectTree(path)](#inspect-tree)
 * [list(path, [mode])](#list)
 * [move(from, to)](#move)
 * [path(parts...)](#path)
 * [read(path, [returnAs], [options])](#read)
 * [remove(path, [options])](#remove)
 * [rename(path, newName)](#rename)
-* [tree(path)](#tree)
 * [write(path, data, [options])](#write)
 
 
@@ -225,6 +225,38 @@ Otherwise `Object` of structure:
 Yep, not so much for now. Will be extended in the future.
 
 
+## <a name="inspect-tree"></a> inspectTree(path)
+also **inspectTreeAsync(path)**  
+
+Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
+
+**parameters:**  
+`path` the path to inspect.  
+
+**returns:**  
+`null` if given path doesn't exist.
+Otherwise tree of inspect objects like:
+```javascript
+{
+    name: 'my_dir',
+    type: 'dir',
+    size: 123, // this is combined size of all items in this directory
+    children: [
+        {
+            name: 'empty',
+            type: 'dir',
+            size: 0, // the directory is empty
+            children: []
+        },{
+            name: 'file.txt',
+            type: 'file',
+            size: 123
+        }
+    ]
+}
+```
+
+
 ## <a name="list"></a> list(path, [mode])
 also **listAsync(path, [mode])**  
 
@@ -334,38 +366,6 @@ Renames given file or directory.
 
 **returns:**  
 Nothing.
-
-
-## <a name="tree"></a> tree(path)
-also **treeAsync(path)**  
-
-Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
-
-**parameters:**  
-`path` the path to inspect.  
-
-**returns:**  
-`null` if given path doesn't exist.
-Otherwise tree of inspect objects like:
-```javascript
-{
-    name: 'my_dir',
-    type: 'dir',
-    size: 123, // this is combined size of all items in this directory
-    children: [
-        {
-            name: 'empty',
-            type: 'dir',
-            size: 0, // the directory is empty
-            children: []
-        },{
-            name: 'file.txt',
-            type: 'file',
-            size: 123
-        }
-    ]
-}
-```
 
 
 ## <a name="write"></a> write(path, data, [options])
