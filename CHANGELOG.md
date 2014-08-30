@@ -2,7 +2,7 @@
 -------------------
 * **(breaking change)** Method `.tree()` renamed to `.inspectTree()`.
 * Added aliases to `fs.createReadStream` and `fs.createWriteStream`.
-* Added more telling error when path to copy() desn't exist.
+* Added more telling error when path to `.copy()` doesn't exist.
 
 0.4.1 (2014-07-16)
 -------------------
