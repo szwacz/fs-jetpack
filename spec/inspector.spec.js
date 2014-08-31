@@ -75,6 +75,52 @@ describe('inspector |', function () {
             });
         });
         
+        it('can output md5 checksum of a file', function (done) {
+            
+            function expectations(data) {
+                expect(data).toEqual({
+                    name: 'file.txt',
+                    type: 'file',
+                    size: 3,
+                    md5: '900150983cd24fb0d6963f7d28e17f72' // md5 of 'abc'
+                });
+            }
+            
+            // SYNC
+            var data = jetpack.inspect('dir/file.txt', { checksum: 'md5' });
+            expectations(data);
+            
+            // ASYNC
+            jetpack.inspectAsync('dir/file.txt', { checksum: 'md5' })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+        
+        it('can output sha1 checksum of a file', function (done) {
+            
+            function expectations(data) {
+                expect(data).toEqual({
+                    name: 'file.txt',
+                    type: 'file',
+                    size: 3,
+                    sha1: 'a9993e364706816aba3e25717850c26c9cd0d89d' // sha1 of 'abc'
+                });
+            }
+            
+            // SYNC
+            var data = jetpack.inspect('dir/file.txt', { checksum: 'sha1' });
+            expectations(data);
+            
+            // ASYNC
+            jetpack.inspectAsync('dir/file.txt', { checksum: 'sha1' })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+        
     });
     
     describe('list', function () {
@@ -142,7 +188,7 @@ describe('inspector |', function () {
         
     });
     
-    describe('tree', function () {
+    describe('inspectTree', function () {
         
         it('crawls a directory tree', function (done) {
             
@@ -183,6 +229,58 @@ describe('inspector |', function () {
             
             // ASYNC
             jetpack.inspectTreeAsync('dir')
+            .then(function (tree) {
+                expectations(tree);
+                done();
+            });
+        });
+        
+        it('can compute md5 checksum of whole tree', function (done) {
+            
+            function expectations(data) {
+                expect(data).toEqual({
+                    name: 'dir',
+                    type: 'dir',
+                    size: 7,
+                    md5: '0dc3266b245151cda5c56c7f62439202',
+                    // md5 of 'emptyfile.txt900150983cd24fb0d6963f7d28e17f72subdir11c68d9ad988ff4d98768193ab66a646'
+                    children: [
+                        {
+                            name: 'empty',
+                            type: 'dir',
+                            size: 0,
+                            md5: null, // empty directory can't have md5
+                            children: []
+                        },{
+                            name: 'file.txt',
+                            type: 'file',
+                            size: 3,
+                            md5: '900150983cd24fb0d6963f7d28e17f72' // md5 of 'abc'
+                        },{
+                            name: 'subdir',
+                            type: 'dir',
+                            size: 4,
+                            md5: '11c68d9ad988ff4d98768193ab66a646',
+                            // md5 of 'file.txt025e4da7edac35ede583f5e8d51aa7ec'
+                            children: [
+                                {
+                                    name: 'file.txt',
+                                    type: 'file',
+                                    size: 4,
+                                    md5: '025e4da7edac35ede583f5e8d51aa7ec' // md5 of 'defg'
+                                }
+                            ]
+                        }
+                    ]
+                });
+            }
+            
+            // SYNC
+            var tree = jetpack.inspectTree('dir', { checksum: 'md5' });
+            expectations(tree);
+            
+            // ASYNC
+            jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
             .then(function (tree) {
                 expectations(tree);
                 done();
