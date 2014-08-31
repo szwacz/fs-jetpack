@@ -1,7 +1,7 @@
-0.5.0 (in progress)
+0.5.0 (2014-08-31)
 -------------------
 * **(breaking change)** Method `tree()` renamed to `inspectTree()`.
-* **(breaking change)** Spec of parameters passed to `list()` has changed.
+* **(breaking change)** Parameters passed to `list()` has changed.
 * Methods `inspect()` and `inspectTree()` can calculate md5 and sha1 checksums.
 * Added aliases to `fs.createReadStream()` and `fs.createWriteStream()`.
 
