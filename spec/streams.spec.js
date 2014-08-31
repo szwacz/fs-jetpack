@@ -22,4 +22,16 @@ describe('streams |', function () {
         input.pipe(output);
     });
     
+    it("stream methods respect jetpack internal CWD", function (done) {
+        fse.outputFileSync('dir/a.txt', 'abc');
+        var dir = jetpack.cwd('dir');
+        var output = dir.createWriteStream('b.txt');
+        var input = dir.createReadStream('a.txt');
+        output.on('finish', function () {
+            expect(fse.readFileSync('dir/b.txt', 'utf8')).toBe('abc');
+            done();
+        });
+        input.pipe(output);
+    });
+    
 });
