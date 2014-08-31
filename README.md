@@ -44,8 +44,8 @@ jetpack.dirAsync('foo')
 * [dir(path, [criteria])](#dir)
 * [exists(path)](#exists)
 * [file(path, [criteria])](#file)
-* [inspect(path)](#inspect)
-* [inspectTree(path)](#inspect-tree)
+* [inspect(path, [options])](#inspect)
+* [inspectTree(path, [options])](#inspect-tree)
 * [list(path, [useInspect])](#list)
 * [move(from, to)](#move)
 * [path(parts...)](#path)
@@ -217,13 +217,15 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-## <a name="inspect"></a> inspect(path)
-also **inspectAsync(path)**  
+## <a name="inspect"></a> inspect(path, [options])
+also **inspectAsync(path, [options])**  
 
 Inspects given path (replacement for fs.stat).
 
 **parameters:**  
 `path` path to inspect.  
+`options` (optional). Possible values:
+* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'` or `'sha1'`. If given path is directory this field is ignored and omited.
 
 **returns:**
 `null` if given path doens't exist.  
@@ -232,19 +234,21 @@ Otherwise `Object` of structure:
 {
     name: "my_dir",
     type: "file", // possible values: "file", "dir"
-    size: 123 // size in bytes, this is returned only for files
+    size: 123, // size in bytes, this is returned only for files
+    md5: '900150983cd24fb0d6963f7d28e17f72' // (if checksum option was specified)
 }
 ```
-Yep, not so much for now. Will be extended in the future.
 
 
-## <a name="inspect-tree"></a> inspectTree(path)
-also **inspectTreeAsync(path)**  
+## <a name="inspect-tree"></a> inspectTree(path, [options])
+also **inspectTreeAsync(path, [options])**  
 
 Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
 
 **parameters:**  
 `path` the path to inspect.  
+`options` (optional). Possible values:
+* `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'` or `'sha1'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
 
 **returns:**  
 `null` if given path doesn't exist.
@@ -254,16 +258,21 @@ Otherwise tree of inspect objects like:
     name: 'my_dir',
     type: 'dir',
     size: 123, // this is combined size of all items in this directory
+    md5: '11c68d9ad988ff4d98768193ab66a646',
+    // checksum of this directory was calculated as:
+    // md5(child[0].name + child[0].md5 + child[1].name + child[1].md5)
     children: [
         {
             name: 'empty',
             type: 'dir',
             size: 0, // the directory is empty
+            md5: null, // can't calculate checksum of empty directory
             children: []
         },{
             name: 'file.txt',
             type: 'file',
-            size: 123
+            size: 123,
+            md5: '900150983cd24fb0d6963f7d28e17f72'
         }
     ]
 }
