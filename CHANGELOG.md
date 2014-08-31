@@ -1,8 +1,8 @@
 0.5.0 (in progress)
 -------------------
-* **(breaking change)** Method `.tree()` renamed to `.inspectTree()`.
-* Added aliases to `fs.createReadStream` and `fs.createWriteStream`.
-* Added more telling error when path to `.copy()` doesn't exist.
+* **(breaking change)** Method `tree()` renamed to `inspectTree()`.
+* Methods `inspect()` and `inspectTree()` can calculate md5 and sha1 checksums.
+* Added aliases to `fs.createReadStream()` and `fs.createWriteStream()`.
 
 0.4.1 (2014-07-16)
 -------------------
