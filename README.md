@@ -46,7 +46,7 @@ jetpack.dirAsync('foo')
 * [file(path, [criteria])](#file)
 * [inspect(path)](#inspect)
 * [inspectTree(path)](#inspect-tree)
-* [list(path, [mode])](#list)
+* [list(path, [useInspect])](#list)
 * [move(from, to)](#move)
 * [path(parts...)](#path)
 * [read(path, [returnAs], [options])](#read)
@@ -270,19 +270,20 @@ Otherwise tree of inspect objects like:
 ```
 
 
-## <a name="list"></a> list(path, [mode])
-also **listAsync(path, [mode])**  
+## <a name="list"></a> list(path, [useInspect])
+also **listAsync(path, [useInspect])**  
 
 Lists the contents of directory.
 
 **parameters:**  
 `path` path to directory you would like to list.  
-`mode` (optional) the degree of accuracy you would like to get back. Possible values:
-* `'simple'` (default) returns just a list of filenames (the same as `fs.readdir()`)
-* `'inspect'` performs [inspect](#inspect) on every item, and returns array of those objects
+`useInspect` (optional) the type of data this call should return. Possible values:
+* `false` (default) returns just a list of filenames (the same as `fs.readdir()`)
+* `true` performs [inspect](#inspect) on every item in directory, and returns array of those objects
+* `object` if object has been passed to this parameter, it is treated as `options` parameter for [inspect](#inspect) method, and will alter returned inspect objects
 
 **returns:**  
-Array of strings or objects depending on call properies.
+`Array` of strings or objects depending on call properies. Or `null` if given path doesn't exist.
 
 
 ## <a name="move"></a> move(from, to)
