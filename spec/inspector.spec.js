@@ -162,11 +162,42 @@ describe('inspector |', function () {
             }
             
             // SYNC
-            var list = jetpack.list('dir', 'inspect');
+            var list = jetpack.list('dir', true);
             expectations(list);
             
             // ASYNC
-            jetpack.listAsync('dir', 'inspect')
+            jetpack.listAsync('dir', true)
+            .then(function (list) {
+                expectations(list);
+                done();
+            });
+        });
+        
+        it('lists inspect objects with config', function (done) {
+            
+            function expectations(data) {
+                expect(data).toEqual([
+                    {
+                        name: 'empty',
+                        type: 'dir',
+                    },{
+                        name: 'file.txt',
+                        type: 'file',
+                        size: 3,
+                        md5: '900150983cd24fb0d6963f7d28e17f72' // md5 of 'abc'
+                    },{
+                        name: 'subdir',
+                        type: 'dir',
+                    }
+                ]);
+            }
+            
+            // SYNC
+            var list = jetpack.list('dir', { checksum: 'md5' });
+            expectations(list);
+            
+            // ASYNC
+            jetpack.listAsync('dir', { checksum: 'md5' })
             .then(function (list) {
                 expectations(list);
                 done();
