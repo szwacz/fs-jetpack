@@ -29,4 +29,9 @@ describe('cwd', function () {
         expect(jetCwd2.cwd()).toBe(pathUtil.resolve(process.cwd(), '../..'));
     });
     
+    it('cwd can join path parts', function () {
+        var jetCwd = jetpack.cwd('a', 'b', 'c');
+        expect(jetCwd.cwd()).toBe(pathUtil.resolve(process.cwd(), 'a', 'b', 'c'));
+    });
+    
 });
