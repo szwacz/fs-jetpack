@@ -13,6 +13,7 @@ describe('inspector |', function () {
     // prepare files and directories structure to test on
     beforeEach(function () {
         fse.mkdirsSync('dir/empty');
+        fse.outputFileSync('dir/empty.txt', '');
         fse.outputFileSync('dir/file.txt', 'abc');
         fse.outputFileSync('dir/subdir/file.txt', 'defg');
     });
@@ -128,7 +129,7 @@ describe('inspector |', function () {
         it('lists file names by default', function (done) {
             
             function expectations(data) {
-                expect(data).toEqual(['empty', 'file.txt', 'subdir']);
+                expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
             }
             
             // SYNC
@@ -150,6 +151,10 @@ describe('inspector |', function () {
                     {
                         name: 'empty',
                         type: 'dir',
+                    },{
+                        name: 'empty.txt',
+                        type: 'file',
+                        size: 0,
                     },{
                         name: 'file.txt',
                         type: 'file',
@@ -180,6 +185,11 @@ describe('inspector |', function () {
                     {
                         name: 'empty',
                         type: 'dir',
+                    },{
+                        name: 'empty.txt',
+                        type: 'file',
+                        size: 0,
+                        md5: null
                     },{
                         name: 'file.txt',
                         type: 'file',
@@ -235,6 +245,10 @@ describe('inspector |', function () {
                             size: 0, // the directory is empty
                             children: []
                         },{
+                            name: 'empty.txt',
+                            type: 'file',
+                            size: 0
+                        },{
                             name: 'file.txt',
                             type: 'file',
                             size: 3
@@ -273,8 +287,8 @@ describe('inspector |', function () {
                     name: 'dir',
                     type: 'dir',
                     size: 7,
-                    md5: '0dc3266b245151cda5c56c7f62439202',
-                    // md5 of 'emptyfile.txt900150983cd24fb0d6963f7d28e17f72subdir11c68d9ad988ff4d98768193ab66a646'
+                    md5: '12af23a5cc653373a081942b5e33ea61',
+                    // md5 of 'emptyempty.txtfile.txt900150983cd24fb0d6963f7d28e17f72subdir11c68d9ad988ff4d98768193ab66a646'
                     children: [
                         {
                             name: 'empty',
@@ -282,6 +296,11 @@ describe('inspector |', function () {
                             size: 0,
                             md5: null, // empty directory can't have md5
                             children: []
+                        },{
+                            name: 'empty.txt',
+                            type: 'file',
+                            size: 0,
+                            md5: null
                         },{
                             name: 'file.txt',
                             type: 'file',

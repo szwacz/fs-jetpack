@@ -1,3 +1,7 @@
+0.5.2 (2014-09-21)
+-------------------
+* `inspect()` checksum of empty file is now `null`.
+
 0.5.1 (2014-09-21)
 -------------------
 * `cwd()` accepts many arguments as path parts.
