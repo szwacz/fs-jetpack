@@ -40,7 +40,7 @@ jetpack.dirAsync('foo')
 * [copy(from, to, [options])](#copy)
 * [createReadStream(path, [options])](#create-read-stream)
 * [createWriteStream(path, [options])](#create-write-stream)
-* [cwd([path])](#cwd)
+* [cwd([path...])](#cwd)
 * [dir(path, [criteria])](#dir)
 * [exists(path)](#exists)
 * [file(path, [criteria])](#file)
@@ -110,12 +110,12 @@ Just an alias to vanilla [fs.createWriteStream](http://nodejs.org/api/fs.html#fs
 
 
 
-## <a name="cwd"></a> cwd([path])
+## <a name="cwd"></a> cwd([path...])
 Returns Current Working Directory (CWD) for this instance of jetpack, or creates new jetpack object with given path as its internal CWD.  
-**Note:** fs-jetpack never changes value of `process.cwd()`, the CWD we are talking about here is internal value inside every jetpack instance, and could be completely different than `process.cwd()`.
+**Note:** fs-jetpack never changes value of `process.cwd()`, the CWD we are talking about here is internal value inside every jetpack instance.
 
 **parameters:**  
-`path` (optional) path to become new CWD. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD of this jetpack instance.
+`path...` (optional) path (or many path parts) to become new CWD. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD of this jetpack instance.
 
 **returns:**  
 If `path` not specified, returns CWD path of this jetpack object. For main instance of fs-jetpack it is always `process.cwd()`.  
@@ -137,6 +137,10 @@ jetParent.dir('four'); // we just created directory '/one/two/four'
 // One CWD context can be used to create next CWD context.
 var jetParentParent = jetParent.cwd('..');
 console.log(jetParentParent.cwd()); // '/one'
+
+// When many parameters specified they are treated as parts of path to resolve
+var sillyCwd = jetpack.cwd('a', 'b', 'c');
+console.log(sillyCwd.cwd()); // '/one/two/three/a/b/c'
 ```
 
 

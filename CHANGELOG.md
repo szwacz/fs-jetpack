@@ -1,3 +1,7 @@
+0.5.1 (2014-09-21)
+-------------------
+* `cwd()` accepts many arguments as path parts.
+
 0.5.0 (2014-08-31)
 -------------------
 * **(breaking change)** Method `tree()` renamed to `inspectTree()`.
