@@ -481,11 +481,11 @@ jetpack.copy('foo', 'foo2', { only: ['*.pdf'] });
 ```
 
 ### <a name="safe-mode"></a> "Safe" file overwriting
-It is not fully safe to just overwrite existing file with new content. If process will crash during the operation, you are basically srewed. The old file content is lost, because you overwritten it. And the new file is empty or written only partially. Fs-jetpack has built-in "safe mode", which helps you get rid of this issue. Under the hood it works as follows...
+It is not fully safe to just overwrite existing file with new content. If your process crashes during this operation you are srewed. The old file content is lost, because you were writing to the same place new stuff, and the new stuff is lost totally or written only partially. Fs-jetpack has built-in "safe mode", which helps you deal with this issue. Under the hood it works as follows...
 
 Let's assume there's already `file.txt` with content `Hello world!` on disk, and we want to update it to `Hello universe!`.
 ```javascript
-jetpack.write('file.txt', { safe: true, content: 'Hello universe!' });
+jetpack.write('file.txt', 'Hello universe!', { safe: true });
 ```
 Above line will perform tasks as follows:  
 1. Write `Hello universe!` to `file.txt.__new__` (so we didn't owerwrite the original file).  
