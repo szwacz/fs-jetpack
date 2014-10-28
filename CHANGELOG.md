@@ -1,3 +1,7 @@
+0.5.3 (in progress)
+-------------------
+* `inspect()` can return file access/modify/change time and mode.
+
 0.5.2 (2014-09-21)
 -------------------
 * `inspect()` checksum of empty file is now `null`.

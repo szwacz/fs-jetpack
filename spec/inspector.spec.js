@@ -122,6 +122,24 @@ describe('inspector |', function () {
             });
         });
         
+        it('can output file mode', function (done) {
+            
+            function expectations(data) {
+                expect(typeof data.mode).toBe('number');
+            }
+            
+            // SYNC
+            var data = jetpack.inspect('dir/file.txt', { mode: true });
+            expectations(data);
+            
+            // ASYNC
+            jetpack.inspectAsync('dir/file.txt', { mode: true })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+        
         it('can output file times (ctime, mtime, atime)', function (done) {
             
             function expectations(data) {

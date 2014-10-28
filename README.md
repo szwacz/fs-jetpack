@@ -230,6 +230,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 `path` path to inspect.  
 `options` (optional). Possible values:
 * `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'` or `'sha1'`. If given path is directory this field is ignored.
+* `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
 
 **returns:**
@@ -242,6 +243,8 @@ Otherwise `Object` of structure:
     size: 123, // size in bytes, this is returned only for files
     // if checksum option was specified:
     md5: '900150983cd24fb0d6963f7d28e17f72',
+    // if mode option was set to true:
+    mode: 33204,
     // if times option was set to true:
     accessTime: [object Date],
     modifyTime: [object Date],
