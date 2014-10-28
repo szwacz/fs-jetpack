@@ -122,6 +122,26 @@ describe('inspector |', function () {
             });
         });
         
+        it('can output file times (ctime, mtime, atime)', function (done) {
+            
+            function expectations(data) {
+                expect(typeof data.accessTime.getTime).toBe('function');
+                expect(typeof data.modifyTime.getTime).toBe('function');
+                expect(typeof data.changeTime.getTime).toBe('function');
+            }
+            
+            // SYNC
+            var data = jetpack.inspect('dir/file.txt', { times: true });
+            expectations(data);
+            
+            // ASYNC
+            jetpack.inspectAsync('dir/file.txt', { times: true })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+        
     });
     
     describe('list', function () {

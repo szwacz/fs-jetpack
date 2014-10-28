@@ -224,12 +224,13 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ## <a name="inspect"></a> inspect(path, [options])
 also **inspectAsync(path, [options])**  
 
-Inspects given path (replacement for fs.stat).
+Inspects given path (replacement for `fs.stat`). Returned object by default contains only very basic, not platform-dependent properties (so you have something e.g. your unit tests can rely on), you can enable more properties through options object.
 
 **parameters:**  
 `path` path to inspect.  
 `options` (optional). Possible values:
-* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'` or `'sha1'`. If given path is directory this field is ignored and omited.
+* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'` or `'sha1'`. If given path is directory this field is ignored.
+* `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
 
 **returns:**
 `null` if given path doens't exist.  
@@ -239,7 +240,12 @@ Otherwise `Object` of structure:
     name: "my_dir",
     type: "file", // possible values: "file", "dir"
     size: 123, // size in bytes, this is returned only for files
-    md5: '900150983cd24fb0d6963f7d28e17f72' // (if checksum option was specified)
+    // if checksum option was specified:
+    md5: '900150983cd24fb0d6963f7d28e17f72',
+    // if times option was set to true:
+    accessTime: [object Date],
+    modifyTime: [object Date],
+    changeTime: [object Date]
 }
 ```
 
