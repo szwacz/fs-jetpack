@@ -1,4 +1,4 @@
-0.5.3 (in progress)
+0.5.3 (2015-01-06)
 -------------------
 * `inspect()` can return file access/modify/change time and mode.
 
