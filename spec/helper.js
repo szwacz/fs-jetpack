@@ -4,15 +4,16 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
-// default timeout for specs
+// Default timeout for specs
 jasmine.getEnv().defaultTimeoutInterval = 500;
 
-// CWD of this script when launched
 var originalCwd = process.cwd();
-// we are working on default temporary location for this OS
+// The directory we will be using as CWD for tests.
 var workingDir = pathUtil.join(os.tmpdir(), 'fs-jetpack-test');
 
 var clearWorkingDir = function () {
+    // Clear all contents, but don't remove the main directory
+    // (you can't because it is CWD).
     fse.readdirSync('.').forEach(function (filename) {
         fse.removeSync(filename);
     });
@@ -21,20 +22,23 @@ var clearWorkingDir = function () {
 module.exports.clearWorkingDir = clearWorkingDir;
 
 module.exports.beforeEach = function () {
-    // delete working directory if exists
+    // Create brand new working directory
     if (fse.existsSync(workingDir)) {
         fse.removeSync(workingDir);
     }
-    // create brand new
     fse.mkdirSync(workingDir);
+
     // change CWD to working directory
     process.chdir(workingDir);
+
+    // If CWD switch failed it is too dangerous to continue tests.
+    if (process.cwd() !== workingDir) {
+        throw "CWD switch failed!";
+    }
 };
 
 module.exports.afterEach = function () {
-    // restore original CWD (needed because you can't remove dir which is your CWD)
     process.chdir(originalCwd);
-    // delete working directory if exists
     if (fse.existsSync(workingDir)) {
         fse.removeSync(workingDir);
     }
