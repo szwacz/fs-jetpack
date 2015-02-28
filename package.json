@@ -10,11 +10,14 @@
     "rimraf": "2.2.8"
   },
   "devDependencies": {
+    "coveralls": "^2.11.2",
     "fs-extra": "0.9.1",
+    "istanbul": "^0.3.6",
     "jasmine": "^2.2.1"
   },
   "scripts": {
-    "test": "node_modules/.bin/jasmine"
+    "test": "node_modules/.bin/jasmine",
+    "coveralls": "node_modules/.bin/istanbul cover node_modules/.bin/jasmine && node_modules/.bin/coveralls < coverage/lcov.info"
   },
   "main": "main.js",
   "homepage": "https://github.com/szwacz/fs-jetpack",
