@@ -1,15 +1,15 @@
 "use strict";
 
 describe('inspector |', function () {
-    
+
     var fse = require('fs-extra');
     var pathUtil = require('path');
     var helper = require('./helper');
     var jetpack = require('..');
-    
+
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
-    
+
     // prepare files and directories structure to test on
     beforeEach(function () {
         fse.mkdirsSync('dir/empty');
@@ -17,11 +17,11 @@ describe('inspector |', function () {
         fse.outputFileSync('dir/file.txt', 'abc');
         fse.outputFileSync('dir/subdir/file.txt', 'defg');
     });
-    
+
     describe('inspect', function () {
-        
+
         it('can inspect a file', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -29,11 +29,11 @@ describe('inspector |', function () {
                     size: 3,
                 });
             }
-            
+
             // SYNC
             var data = jetpack.inspect('dir/file.txt');
             expectations(data);
-            
+
             // ASYNC
             jetpack.inspectAsync('dir/file.txt')
             .then(function (data) {
@@ -41,20 +41,20 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('can inspect a directory', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'empty',
                     type: 'dir',
                 });
             }
-            
+
             // SYNC
             var data = jetpack.inspect('dir/empty');
             expectations(data);
-            
+
             // ASYNC
             jetpack.inspectAsync('dir/empty')
             .then(function (data) {
@@ -62,12 +62,12 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it("returns null if path doesn't exist", function (done) {
             // SYNC
             var data = jetpack.inspect('nonexistent');
             expect(data).toBe(null);
-            
+
             // ASYNC
             jetpack.inspectAsync('nonexistent')
             .then(function (data) {
@@ -75,9 +75,9 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('can output md5 checksum of a file', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -86,11 +86,11 @@ describe('inspector |', function () {
                     md5: '900150983cd24fb0d6963f7d28e17f72' // md5 of 'abc'
                 });
             }
-            
+
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { checksum: 'md5' });
             expectations(data);
-            
+
             // ASYNC
             jetpack.inspectAsync('dir/file.txt', { checksum: 'md5' })
             .then(function (data) {
@@ -98,9 +98,9 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('can output sha1 checksum of a file', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -109,11 +109,11 @@ describe('inspector |', function () {
                     sha1: 'a9993e364706816aba3e25717850c26c9cd0d89d' // sha1 of 'abc'
                 });
             }
-            
+
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { checksum: 'sha1' });
             expectations(data);
-            
+
             // ASYNC
             jetpack.inspectAsync('dir/file.txt', { checksum: 'sha1' })
             .then(function (data) {
@@ -121,17 +121,17 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('can output file mode', function (done) {
-            
+
             function expectations(data) {
                 expect(typeof data.mode).toBe('number');
             }
-            
+
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { mode: true });
             expectations(data);
-            
+
             // ASYNC
             jetpack.inspectAsync('dir/file.txt', { mode: true })
             .then(function (data) {
@@ -139,19 +139,19 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('can output file times (ctime, mtime, atime)', function (done) {
-            
+
             function expectations(data) {
                 expect(typeof data.accessTime.getTime).toBe('function');
                 expect(typeof data.modifyTime.getTime).toBe('function');
                 expect(typeof data.changeTime.getTime).toBe('function');
             }
-            
+
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { times: true });
             expectations(data);
-            
+
             // ASYNC
             jetpack.inspectAsync('dir/file.txt', { times: true })
             .then(function (data) {
@@ -159,21 +159,21 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
     });
-    
+
     describe('list', function () {
-        
+
         it('lists file names by default', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
             }
-            
+
             // SYNC
             var list = jetpack.list('dir');
             expectations(list);
-            
+
             // ASYNC
             jetpack.listAsync('dir')
             .then(function (list) {
@@ -181,9 +181,9 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('lists inspect objects if that option specified', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual([
                     {
@@ -203,11 +203,11 @@ describe('inspector |', function () {
                     }
                 ]);
             }
-            
+
             // SYNC
             var list = jetpack.list('dir', true);
             expectations(list);
-            
+
             // ASYNC
             jetpack.listAsync('dir', true)
             .then(function (list) {
@@ -215,9 +215,9 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('lists inspect objects with config', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual([
                     {
@@ -239,11 +239,11 @@ describe('inspector |', function () {
                     }
                 ]);
             }
-            
+
             // SYNC
             var list = jetpack.list('dir', { checksum: 'md5' });
             expectations(list);
-            
+
             // ASYNC
             jetpack.listAsync('dir', { checksum: 'md5' })
             .then(function (list) {
@@ -251,12 +251,12 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it("returns null if path doesn't exist", function (done) {
             // SYNC
             var data = jetpack.list('nonexistent');
             expect(data).toBe(null);
-            
+
             // ASYNC
             jetpack.listAsync('nonexistent')
             .then(function (data) {
@@ -264,13 +264,13 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
     });
-    
+
     describe('inspectTree', function () {
-        
+
         it('crawls a directory tree', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'dir',
@@ -305,11 +305,11 @@ describe('inspector |', function () {
                     ]
                 });
             }
-            
+
             // SYNC
             var tree = jetpack.inspectTree('dir');
             expectations(tree);
-            
+
             // ASYNC
             jetpack.inspectTreeAsync('dir')
             .then(function (tree) {
@@ -317,9 +317,9 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('can compute md5 checksum of whole tree', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'dir',
@@ -362,11 +362,11 @@ describe('inspector |', function () {
                     ]
                 });
             }
-            
+
             // SYNC
             var tree = jetpack.inspectTree('dir', { checksum: 'md5' });
             expectations(tree);
-            
+
             // ASYNC
             jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
             .then(function (tree) {
@@ -374,9 +374,9 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it('if given path is a file still works OK', function (done) {
-            
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -384,11 +384,11 @@ describe('inspector |', function () {
                     size: 3
                 });
             }
-            
+
             // SYNC
             var tree = jetpack.inspectTree('dir/file.txt');
             expectations(tree);
-            
+
             // ASYNC
             jetpack.inspectTreeAsync('dir/file.txt')
             .then(function (tree) {
@@ -396,12 +396,12 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
         it("returns null if path doesn't exist", function (done) {
             // SYNC
             var data = jetpack.inspectTree('nonexistent');
             expect(data).toBe(null);
-            
+
             // ASYNC
             jetpack.inspectTreeAsync('nonexistent')
             .then(function (data) {
@@ -409,7 +409,7 @@ describe('inspector |', function () {
                 done();
             });
         });
-        
+
     });
-    
+
 });

@@ -14,7 +14,7 @@ describe('exists', function () {
         // SYNC
         var exists = jetpack.exists('file.txt');
         expect(exists).toBe(false);
-        
+
         // ASYNC
         jetpack.existsAsync('file.txt')
         .then(function (exists) {
@@ -25,11 +25,11 @@ describe('exists', function () {
 
     it("returns 'dir' if directory exists on given path", function (done) {
         fse.mkdirsSync('a');
-        
+
         // SYNC
         var exists = jetpack.exists('a');
         expect(exists).toBe('dir');
-        
+
         // ASYNC
         jetpack.existsAsync('a')
         .then(function (exists) {
@@ -40,11 +40,11 @@ describe('exists', function () {
 
     it("returns 'file' if file exists on given path", function (done) {
         fse.outputFileSync('text.txt', 'abc');
-        
+
         // SYNC
         var exists = jetpack.exists('text.txt');
         expect(exists).toBe('file');
-        
+
         // ASYNC
         jetpack.existsAsync('text.txt')
         .then(function (exists) {

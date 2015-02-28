@@ -9,10 +9,10 @@ describe('streams |', function () {
 
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
-    
+
     it("exposes vanilla stream methods", function (done) {
         fse.outputFileSync('a.txt', 'abc');
-        
+
         var output = jetpack.createWriteStream('b.txt');
         var input = jetpack.createReadStream('a.txt');
         output.on('finish', function () {
@@ -21,7 +21,7 @@ describe('streams |', function () {
         });
         input.pipe(output);
     });
-    
+
     it("stream methods respect jetpack internal CWD", function (done) {
         fse.outputFileSync('dir/a.txt', 'abc');
         var dir = jetpack.cwd('dir');
@@ -33,5 +33,5 @@ describe('streams |', function () {
         });
         input.pipe(output);
     });
-    
+
 });
