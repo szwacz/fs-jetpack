@@ -1,4 +1,4 @@
-fs-jetpack
+fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Coverage Status](https://coveralls.io/repos/szwacz/fs-jetpack/badge.svg)](https://coveralls.io/r/szwacz/fs-jetpack)
 ==========
 
 Motivation: node's [fs library](http://nodejs.org/api/fs.html) is very low level API, what makes it too often painful/inconvenient to use. This project is an attempt to build comprehensive, higher level API on top of that library. See ["Neat tricks fs-jetpack knows"](#how-fun) as a starter.
