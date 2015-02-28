@@ -228,20 +228,26 @@ describe('file |', function () {
             var expectations = function (content) {
                 var sizeA = fse.statSync('a.json').size;
                 var sizeB = fse.statSync('b.json').size;
+                var sizeC = fse.statSync('c.json').size;
                 expect(sizeB).toBeGreaterThan(sizeA);
+                expect(sizeC).toBeGreaterThan(sizeB);
             };
 
             // SYNC
-            jetpack.file('a.json', { content: obj });
-            jetpack.file('b.json', { content: obj, jsonIndent: 4 });
+            jetpack.file('a.json', { content: obj, jsonIndent: 0 });
+            jetpack.file('b.json', { content: obj }); // Default indent = 2
+            jetpack.file('c.json', { content: obj, jsonIndent: 4 });
             expectations();
 
             helper.clearWorkingDir();
 
             // ASYNC
-            jetpack.fileAsync('a.json', { content: obj })
+            jetpack.fileAsync('a.json', { content: obj, jsonIndent: 0 })
             .then(function () {
-                return jetpack.fileAsync('b.json', { content: obj, jsonIndent: 4 });
+                return jetpack.fileAsync('b.json', { content: obj }); // Default indent = 2
+            })
+            .then(function () {
+                return jetpack.fileAsync('c.json', { content: obj, jsonIndent: 4 });
             })
             .then(function () {
                 expectations();

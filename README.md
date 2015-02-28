@@ -202,7 +202,7 @@ Ensures that file meets given criteria. If any criterium is not met it will be a
 * `exists` (default: `true`) whether file should exist or not.
 * `empty` (default: `false`) whether file should be empty. If `exists = false` this field is ignored.
 * `content` (`String`, `Buffer`, `Object` or `Array`) sets file content. If `Object` or `Array` given to this parameter the output will be JSON. If `exists = false`, or `empty = true` this field is ignored.
-* `jsonIndent` (defaults to 0) if writing JSON data this tells how many spaces should one indentation have.
+* `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
 * `mode` ensures file has specified mode. If not set and file already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 **returns:**  
@@ -413,7 +413,7 @@ Writes data to file.
 `path` path to file.  
 `content` data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputed into file as JSON).  
 `options` (optional) `Object` with possible fields:
-* `jsonIndent` (defaults to 0) if writing JSON data this tells how many spaces should one indentation have.
+* `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
 * `safe` if set to `true` the file will be written in ["safe mode"](#safe-mode).
 
 **returns:**  

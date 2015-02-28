@@ -105,20 +105,26 @@ describe('read & write |', function () {
         var expectations = function (content) {
             var sizeA = fse.statSync('a.json').size;
             var sizeB = fse.statSync('b.json').size;
+            var sizeC = fse.statSync('c.json').size;
             expect(sizeB).toBeGreaterThan(sizeA);
+            expect(sizeC).toBeGreaterThan(sizeB);
         };
 
         // SYNC
-        jetpack.write('a.json', obj);
-        jetpack.write('b.json', obj, { jsonIndent: 4 });
+        jetpack.file('a.json', { content: obj, jsonIndent: 0 });
+        jetpack.file('b.json', { content: obj }); // Default indent = 2
+        jetpack.file('c.json', { content: obj, jsonIndent: 4 });
         expectations();
 
         helper.clearWorkingDir();
 
         // ASYNC
-        jetpack.writeAsync('a.json', obj)
+        jetpack.writeAsync('a.json', obj, { jsonIndent: 0 })
         .then(function () {
-            return jetpack.writeAsync('b.json', obj, { jsonIndent: 4 });
+            return jetpack.writeAsync('b.json', obj); // Default indent = 2
+        })
+        .then(function () {
+            return jetpack.writeAsync('c.json', obj, { jsonIndent: 4 });
         })
         .then(function () {
             expectations();

@@ -1,3 +1,7 @@
+0.6.0 (in progress)
+-------------------
+* **(could be breaking change)** Default jsonIndent changed form 0 to 2.
+
 0.5.3 (2015-01-06)
 -------------------
 * `inspect()` can return file access/modify/change time and mode.
