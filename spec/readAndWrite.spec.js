@@ -132,6 +132,35 @@ describe('read & write |', function () {
         });
     });
 
+    it('gives nice error message when JSON parsing failed', function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a.json', '{ "abc: 123 }'); // Malformed JSON
+        };
+
+        var expectations = function (err) {
+            expect(err.message).toContain('JSON parsing failed while reading');
+        };
+
+        // SYNC
+        preparations();
+        try {
+            jetpack.read('a.json', 'json');
+        } catch (err) {
+            expectations(err);
+        }
+
+        helper.clearWorkingDir();
+
+        // ASYNC
+        preparations();
+        jetpack.readAsync('a.json', 'json')
+        .catch(function (err) {
+            expectations(err);
+            done();
+        });
+    });
+
     it('writes and reads file as JSON with Date parsing', function (done) {
 
         var obj = {

@@ -1,6 +1,7 @@
 0.6.0 (in progress)
 -------------------
 * **(could be breaking change)** Default jsonIndent changed form 0 to 2.
+* More telling errors when `read()` JSON parsing failed.
 
 0.5.3 (2015-01-06)
 -------------------

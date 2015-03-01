@@ -4,6 +4,9 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
+// Additional matchers will be available in all tests.
+require('jasmine-expect');
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
 var originalCwd = process.cwd();
