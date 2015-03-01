@@ -111,9 +111,9 @@ describe('read & write |', function () {
         };
 
         // SYNC
-        jetpack.file('a.json', { content: obj, jsonIndent: 0 });
-        jetpack.file('b.json', { content: obj }); // Default indent = 2
-        jetpack.file('c.json', { content: obj, jsonIndent: 4 });
+        jetpack.write('a.json', obj, { jsonIndent: 0 });
+        jetpack.write('b.json', obj); // Default indent = 2
+        jetpack.write('c.json', obj, { jsonIndent: 4 });
         expectations();
 
         helper.clearWorkingDir();
