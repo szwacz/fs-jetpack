@@ -4,8 +4,7 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
-// Default timeout for specs
-jasmine.getEnv().defaultTimeoutInterval = 500;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
 var originalCwd = process.cwd();
 // The directory we will be using as CWD for tests.
