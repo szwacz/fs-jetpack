@@ -19,6 +19,9 @@ var clearWorkingDir = function () {
     fse.readdirSync('.').forEach(function (filename) {
         fse.removeSync(filename);
     });
+    if (fse.readdirSync('.').length > 0) {
+        throw "Clearing working directory failed!";
+    }
 };
 
 module.exports.clearWorkingDir = clearWorkingDir;
