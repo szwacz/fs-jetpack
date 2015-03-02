@@ -211,132 +211,216 @@ describe('copy |', function () {
 
     });
 
-    describe('mask matching', function () {
+    describe('filter what to copy |', function () {
 
-        it("copies ONLY", function (done) {
+        describe('ONLY |', function () {
 
-            var preparations = function () {
-                fse.outputFileSync('dir/f.txt', 'abc');
-                fse.outputFileSync('dir/f.doc', 'xyz');
-                fse.outputFileSync('dir/b/f.txt', '123');
-                fse.mkdirsSync('dir/a/b/c');
-                fse.mkdirsSync('dir/z');
-            };
+            it("copies only paths matching", function (done) {
 
-            var expectations = function () {
-                expect(fse.existsSync('copy/f.txt')).toBe(true);
-                expect(fse.existsSync('copy/f.doc')).toBe(false);
-                expect(fse.existsSync('copy/b/f.txt')).toBe(true);
-                expect(fse.existsSync('copy/a/b/c')).toBe(true);
-                expect(fse.existsSync('copy/z')).toBe(false);
-            };
+                var preparations = function () {
+                    fse.outputFileSync('dir/file.txt', '1');
+                    fse.outputFileSync('dir/file.md', 'm1');
+                    fse.outputFileSync('dir/a/file.txt', '2');
+                    fse.outputFileSync('dir/a/file.md', 'm2');
+                    fse.outputFileSync('dir/a/b/file.txt', '3');
+                    fse.outputFileSync('dir/a/b/file.md', 'm3');
+                };
 
-            // SYNC
-            preparations();
-            jetpack.copy('dir', 'copy', { only: ['*.txt', 'dir/a/b'] });
-            expectations();
+                var expectations = function () {
+                    expect(fse.existsSync('copy/file.txt')).toBe(true);
+                    expect(fse.existsSync('copy/file.md')).toBe(false);
+                    expect(fse.existsSync('copy/a/file.txt')).toBe(true);
+                    expect(fse.existsSync('copy/a/file.md')).toBe(false);
+                    expect(fse.existsSync('copy/a/b/file.txt')).toBe(true);
+                    expect(fse.existsSync('copy/a/b/file.md')).toBe(false);
+                };
 
-            helper.clearWorkingDir();
-
-            // ASYNC
-            preparations();
-            jetpack.copyAsync('dir', 'copy', { only: ['*.txt', 'dir/a/b'] })
-            .then(function () {
+                // SYNC
+                preparations();
+                jetpack.copy('dir', 'copy', { only: ['*.txt'] });
                 expectations();
-                done();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('dir', 'copy', { only: ['*.txt'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
             });
+
+            it("works also if match applied to root element of copied path", function (done) {
+
+                var preparations = function () {
+                    fse.outputFileSync('dir/a/file.txt', '1');
+                };
+
+                var expectations = function () {
+                    expect(fse.existsSync('copy/a/file.txt')).toBe(true);
+                };
+
+                // SYNC
+                preparations();
+                jetpack.copy('dir', 'copy', { only: ['dir'] });
+                expectations();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('dir', 'copy', { only: ['dir'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
+            });
+
+            it("works also if copying single file", function (done) {
+
+                var preparations = function () {
+                    fse.outputFileSync('a', '1');
+                };
+
+                var expectations = function () {
+                    expect(fse.existsSync('b')).toBe(false);
+                };
+
+                // SYNC
+                preparations();
+                jetpack.copy('a', 'b', { only: ['x'] });
+                expectations();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('a', 'b', { only: ['x'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
+            });
+
+            it('can copy empty directory', function (done) {
+
+                var preparations = function () {
+                    fse.mkdirsSync('dir/a/b');
+                };
+
+                var expectations = function () {
+                    expect(fse.existsSync('copy/a/b')).toBe(true);
+                };
+
+                // SYNC
+                preparations();
+                jetpack.copy('dir', 'copy', { only: ['b'] });
+                expectations();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('dir', 'copy', { only: ['b'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
+            });
+
         });
 
-        it("ONLY works also for files", function (done) {
+        describe('ALLBUT |', function () {
 
-            // this is not especially useful, but logical
-            // continuation of how this feature works on directories
+            it("doesn't copy paths matching", function (done) {
 
-            var preparations = function () {
-                fse.outputFileSync('a', '123');
-            };
+                var preparations = function () {
+                    fse.outputFileSync('dir/file.txt', '1');
+                    fse.outputFileSync('dir/file.md', 'm1');
+                    fse.outputFileSync('dir/a/file.txt', '2');
+                    fse.outputFileSync('dir/a/file.md', 'm2');
+                    fse.outputFileSync('dir/a/b/file.txt', '3');
+                    fse.outputFileSync('dir/a/b/file.md', 'm3');
+                };
 
-            var expectations = function () {
-                expect(fse.existsSync('b')).toBe(true);
-            };
+                var expectations = function () {
+                    expect(fse.existsSync('copy/file.txt')).toBe(true);
+                    expect(fse.existsSync('copy/file.md')).toBe(false);
+                    expect(fse.existsSync('copy/a/file.txt')).toBe(true);
+                    expect(fse.existsSync('copy/a/file.md')).toBe(false);
+                    expect(fse.existsSync('copy/a/b/file.txt')).toBe(true);
+                    expect(fse.existsSync('copy/a/b/file.md')).toBe(false);
+                };
 
-            // SYNC
-            preparations();
-            jetpack.copy('a', 'b', { only: ['a'] });
-            expectations();
-
-            helper.clearWorkingDir();
-
-            // ASYNC
-            preparations();
-            jetpack.copyAsync('a', 'b', { only: ['a'] })
-            .then(function () {
+                // SYNC
+                preparations();
+                jetpack.copy('dir', 'copy', { allBut: ['*.md'] });
                 expectations();
-                done();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('dir', 'copy', { allBut: ['*.md'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
             });
-        });
 
-        it("copies ALLBUT", function (done) {
+            it("works also if match applied to root element of copied path", function (done) {
 
-            var preparations = function () {
-                fse.outputFileSync('a/f.txt', 'abc');
-                fse.outputFileSync('a/f.doc', 'xyz');
-                fse.outputFileSync('a/b/f.txt', '123');
-                fse.mkdirsSync('a/b/c/d');
-                fse.mkdirsSync('a/c');
-            };
+                var preparations = function () {
+                    fse.outputFileSync('dir/a/file.txt', '1');
+                };
 
-            var expectations = function () {
-                expect(fse.existsSync('a1/f.txt')).toBe(false);
-                expect(fse.existsSync('a1/b/f.txt')).toBe(false);
-                expect(fse.existsSync('a1/b/c')).toBe(false);
-                expect(fse.existsSync('a1/c')).toBe(true);
-                expect(fse.existsSync('a1/f.doc')).toBe(true);
-            };
+                var expectations = function () {
+                    expect(fse.existsSync('copy')).toBe(false);
+                };
 
-            // SYNC
-            preparations();
-            jetpack.copy('a', 'a1', { allBut: ['*.txt', 'a/b/c'] });
-            expectations();
-
-            helper.clearWorkingDir();
-
-            // ASYNC
-            preparations();
-            jetpack.copyAsync('a', 'a1', { allBut: ['*.txt', 'a/b/c'] })
-            .then(function () {
+                // SYNC
+                preparations();
+                jetpack.copy('dir', 'copy', { allBut: ['dir'] });
                 expectations();
-                done();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('dir', 'copy', { allBut: ['dir'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
             });
-        });
 
-        it("ALLBUT works also for files", function () {
+            it("works also if copying single file", function (done) {
 
-            // this is not especially useful, but logical
-            // continuation of how this feature works on directories
+                var preparations = function () {
+                    fse.outputFileSync('a', '1');
+                };
 
-            var preparations = function () {
-                fse.outputFileSync('a', '123');
-            };
+                var expectations = function () {
+                    expect(fse.existsSync('b')).toBe(true);
+                };
 
-            var expectations = function () {
-                expect(fse.existsSync('b')).toBe(false);
-            };
-
-            // SYNC
-            preparations();
-            jetpack.copy('a', 'b', { allBut: ['a'] });
-            expectations();
-
-            helper.clearWorkingDir();
-
-            // ASYNC
-            preparations();
-            jetpack.copyAsync('a', 'b', { allBut: ['a'] })
-            .then(function () {
+                // SYNC
+                preparations();
+                jetpack.copy('a', 'b', { allBut: ['x'] });
                 expectations();
-                done();
+
+                helper.clearWorkingDir();
+
+                // ASYNC
+                preparations();
+                jetpack.copyAsync('a', 'b', { allBut: ['x'] })
+                .then(function () {
+                    expectations();
+                    done();
+                });
             });
+
         });
 
         it("ONLY takes precedence over ALLBUT", function () {
