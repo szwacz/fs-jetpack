@@ -19,6 +19,7 @@ var clearWorkingDir = function () {
     fse.readdirSync('.').forEach(function (filename) {
         fse.removeSync(filename);
     });
+
     if (fse.readdirSync('.').length > 0) {
         throw "Clearing working directory failed!";
     }
@@ -33,16 +34,17 @@ module.exports.beforeEach = function () {
     }
     fse.mkdirSync(workingDir);
 
-    // change CWD to working directory
+    // Set CWD there
     process.chdir(workingDir);
 
-    // If CWD switch failed it is too dangerous to continue tests.
-    if (process.cwd() !== workingDir) {
+    // Better to be safe than sorry
+    if (pathUtil.basename(process.cwd()) !== 'fs-jetpack-test') {
         throw "CWD switch failed!";
     }
 };
 
 module.exports.afterEach = function () {
+    // Switch CWD back where we were, and clean the clutter.
     process.chdir(originalCwd);
     if (fse.existsSync(workingDir)) {
         fse.removeSync(workingDir);
