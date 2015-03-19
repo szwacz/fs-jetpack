@@ -263,6 +263,7 @@ Calls [inspect](#inspect) recursively on given path so it creates tree of all di
 `path` the path to inspect.  
 `options` (optional). Possible values:
 * `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'` or `'sha1'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
+* `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
 
 **returns:**  
 `null` if given path doesn't exist.
@@ -272,6 +273,7 @@ Otherwise tree of inspect objects like:
     name: 'my_dir',
     type: 'dir',
     size: 123, // this is combined size of all items in this directory
+    relativePath: '.',
     md5: '11c68d9ad988ff4d98768193ab66a646',
     // checksum of this directory was calculated as:
     // md5(child[0].name + child[0].md5 + child[1].name + child[1].md5)
@@ -280,12 +282,14 @@ Otherwise tree of inspect objects like:
             name: 'empty',
             type: 'dir',
             size: 0, // the directory is empty
+            relativePath: './dir',
             md5: null, // can't calculate checksum of empty directory
             children: []
         },{
             name: 'file.txt',
             type: 'file',
             size: 123,
+            relativePath: './file.txt',
             md5: '900150983cd24fb0d6963f7d28e17f72'
         }
     ]

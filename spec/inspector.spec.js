@@ -472,6 +472,51 @@ describe('inspector |', function () {
             });
         });
 
+        it('can output relative path for every tree node', function (done) {
+
+            function preparations() {
+                fse.outputFileSync('dir/subdir/file.txt', 'defg');
+            }
+
+            function expectations(data) {
+                expect(data).toEqual({
+                    name: 'dir',
+                    type: 'dir',
+                    size: 4,
+                    relativePath: '.',
+                    children: [
+                        {
+                            name: 'subdir',
+                            type: 'dir',
+                            size: 4,
+                            relativePath: './subdir',
+                            children: [
+                                {
+                                    name: 'file.txt',
+                                    type: 'file',
+                                    size: 4,
+                                    relativePath: './subdir/file.txt'
+                                }
+                            ]
+                        }
+                    ]
+                });
+            }
+
+            preparations();
+
+            // SYNC
+            var tree = jetpack.inspectTree('dir', { relativePath: true });
+            expectations(tree);
+
+            // ASYNC
+            jetpack.inspectTreeAsync('dir', { relativePath: true })
+            .then(function (tree) {
+                expectations(tree);
+                done();
+            });
+        });
+
         it('if given path is a file still works OK', function (done) {
 
             function preparations() {
