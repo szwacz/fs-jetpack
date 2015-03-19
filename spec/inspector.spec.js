@@ -10,17 +10,13 @@ describe('inspector |', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
 
-    // prepare files and directories structure to test on
-    beforeEach(function () {
-        fse.mkdirsSync('dir/empty');
-        fse.outputFileSync('dir/empty.txt', '');
-        fse.outputFileSync('dir/file.txt', 'abc');
-        fse.outputFileSync('dir/subdir/file.txt', 'defg');
-    });
-
     describe('inspect', function () {
 
         it('can inspect a file', function (done) {
+
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
 
             function expectations(data) {
                 expect(data).toEqual({
@@ -29,6 +25,8 @@ describe('inspector |', function () {
                     size: 3,
                 });
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/file.txt');
@@ -44,12 +42,18 @@ describe('inspector |', function () {
 
         it('can inspect a directory', function (done) {
 
+            function preparations() {
+                fse.mkdirsSync('dir/empty');
+            }
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'empty',
                     type: 'dir',
                 });
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/empty');
@@ -78,6 +82,10 @@ describe('inspector |', function () {
 
         it('can output md5 checksum of a file', function (done) {
 
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -86,6 +94,8 @@ describe('inspector |', function () {
                     md5: '900150983cd24fb0d6963f7d28e17f72' // md5 of 'abc'
                 });
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { checksum: 'md5' });
@@ -101,6 +111,10 @@ describe('inspector |', function () {
 
         it('can output sha1 checksum of a file', function (done) {
 
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -109,6 +123,8 @@ describe('inspector |', function () {
                     sha1: 'a9993e364706816aba3e25717850c26c9cd0d89d' // sha1 of 'abc'
                 });
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { checksum: 'sha1' });
@@ -124,9 +140,15 @@ describe('inspector |', function () {
 
         it('can output file mode', function (done) {
 
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
             function expectations(data) {
                 expect(typeof data.mode).toBe('number');
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { mode: true });
@@ -142,11 +164,17 @@ describe('inspector |', function () {
 
         it('can output file times (ctime, mtime, atime)', function (done) {
 
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
             function expectations(data) {
                 expect(typeof data.accessTime.getTime).toBe('function');
                 expect(typeof data.modifyTime.getTime).toBe('function');
                 expect(typeof data.changeTime.getTime).toBe('function');
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { times: true });
@@ -162,9 +190,15 @@ describe('inspector |', function () {
 
         it('can output absolute path', function (done) {
 
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
             function expectations(data) {
                 expect(data.absolutePath).toBe(jetpack.path('dir/file.txt'));
             }
+
+            preparations();
 
             // SYNC
             var data = jetpack.inspect('dir/file.txt', { absolutePath: true });
@@ -184,9 +218,18 @@ describe('inspector |', function () {
 
         it('lists file names by default', function (done) {
 
+            function preparations() {
+                fse.mkdirsSync('dir/empty');
+                fse.outputFileSync('dir/empty.txt', '');
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.outputFileSync('dir/subdir/file.txt', 'defg');
+            }
+
             function expectations(data) {
                 expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
             }
+
+            preparations();
 
             // SYNC
             var list = jetpack.list('dir');
@@ -201,6 +244,13 @@ describe('inspector |', function () {
         });
 
         it('lists inspect objects if that option specified', function (done) {
+
+            function preparations() {
+                fse.mkdirsSync('dir/empty');
+                fse.outputFileSync('dir/empty.txt', '');
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.outputFileSync('dir/subdir/file.txt', 'defg');
+            }
 
             function expectations(data) {
                 expect(data).toEqual([
@@ -222,6 +272,8 @@ describe('inspector |', function () {
                 ]);
             }
 
+            preparations();
+
             // SYNC
             var list = jetpack.list('dir', true);
             expectations(list);
@@ -235,6 +287,13 @@ describe('inspector |', function () {
         });
 
         it('lists inspect objects with config', function (done) {
+
+            function preparations() {
+                fse.mkdirsSync('dir/empty');
+                fse.outputFileSync('dir/empty.txt', '');
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.outputFileSync('dir/subdir/file.txt', 'defg');
+            }
 
             function expectations(data) {
                 expect(data).toEqual([
@@ -257,6 +316,8 @@ describe('inspector |', function () {
                     }
                 ]);
             }
+
+            preparations();
 
             // SYNC
             var list = jetpack.list('dir', { checksum: 'md5' });
@@ -288,6 +349,13 @@ describe('inspector |', function () {
     describe('inspectTree', function () {
 
         it('crawls a directory tree', function (done) {
+
+            function preparations() {
+                fse.mkdirsSync('dir/empty');
+                fse.outputFileSync('dir/empty.txt', '');
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.outputFileSync('dir/subdir/file.txt', 'defg');
+            }
 
             function expectations(data) {
                 expect(data).toEqual({
@@ -324,6 +392,8 @@ describe('inspector |', function () {
                 });
             }
 
+            preparations();
+
             // SYNC
             var tree = jetpack.inspectTree('dir');
             expectations(tree);
@@ -337,6 +407,13 @@ describe('inspector |', function () {
         });
 
         it('can compute md5 checksum of whole tree', function (done) {
+
+            function preparations() {
+                fse.mkdirsSync('dir/empty');
+                fse.outputFileSync('dir/empty.txt', '');
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.outputFileSync('dir/subdir/file.txt', 'defg');
+            }
 
             function expectations(data) {
                 expect(data).toEqual({
@@ -381,6 +458,8 @@ describe('inspector |', function () {
                 });
             }
 
+            preparations();
+
             // SYNC
             var tree = jetpack.inspectTree('dir', { checksum: 'md5' });
             expectations(tree);
@@ -395,6 +474,10 @@ describe('inspector |', function () {
 
         it('if given path is a file still works OK', function (done) {
 
+            function preparations() {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
             function expectations(data) {
                 expect(data).toEqual({
                     name: 'file.txt',
@@ -402,6 +485,8 @@ describe('inspector |', function () {
                     size: 3
                 });
             }
+
+            preparations();
 
             // SYNC
             var tree = jetpack.inspectTree('dir/file.txt');
