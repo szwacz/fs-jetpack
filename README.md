@@ -232,6 +232,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 * `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'` or `'sha1'`. If given path is directory this field is ignored.
 * `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
+* `absolutePath` (dafault `false`) if set to `true` will add absolute path to this resource.
 
 **returns:**
 `null` if given path doens't exist.  

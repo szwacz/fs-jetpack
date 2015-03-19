@@ -160,6 +160,24 @@ describe('inspector |', function () {
             });
         });
 
+        it('can output absolute path', function (done) {
+
+            function expectations(data) {
+                expect(data.absolutePath).toBe(jetpack.path('dir/file.txt'));
+            }
+
+            // SYNC
+            var data = jetpack.inspect('dir/file.txt', { absolutePath: true });
+            expectations(data);
+
+            // ASYNC
+            jetpack.inspectAsync('dir/file.txt', { absolutePath: true })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+
     });
 
     describe('list', function () {
