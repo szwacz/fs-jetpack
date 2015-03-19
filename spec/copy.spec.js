@@ -17,8 +17,8 @@ describe('copy |', function () {
         };
 
         var expectations = function () {
-            expect(fse.readFileSync('file.txt', 'utf8')).toBe('abc');
-            expect(fse.readFileSync('file_1.txt', 'utf8')).toBe('abc');
+            expect('file.txt').toBeFileWithContent('abc');
+            expect('file_1.txt').toBeFileWithContent('abc');
         };
 
         // SYNC
@@ -44,8 +44,8 @@ describe('copy |', function () {
         };
 
         var expectations = function () {
-            expect(fse.readFileSync('file.txt', 'utf8')).toBe('abc');
-            expect(fse.readFileSync('dir/dir/file.txt', 'utf8')).toBe('abc');
+            expect('file.txt').toBeFileWithContent('abc');
+            expect('dir/dir/file.txt').toBeFileWithContent('abc');
         };
 
         // SYNC
@@ -71,7 +71,7 @@ describe('copy |', function () {
         };
 
         var expectations = function () {
-            expect(fse.statSync('a/dir').isDirectory()).toBe(true);
+            expect('a/dir').toBeDirectory();
         };
 
         // SYNC
@@ -99,9 +99,9 @@ describe('copy |', function () {
         };
 
         var expectations = function () {
-            expect(fse.readFileSync('dir/a/f1.txt', 'utf8')).toBe('abc');
-            expect(fse.existsSync('dir/a/b/c')).toBe(true);
-            expect(fse.readFileSync('dir/a/b/f2.txt', 'utf8')).toBe('123');
+            expect('dir/a/f1.txt').toBeFileWithContent('abc');
+            expect('dir/a/b/c').toBeDirectory();
+            expect('dir/a/b/f2.txt').toBeFileWithContent('123');
         };
 
         // SYNC
@@ -189,8 +189,8 @@ describe('copy |', function () {
             };
 
             var expectations = function () {
-                expect(fse.readFileSync('a/file.txt', 'utf8')).toBe('abc');
-                expect(fse.readFileSync('b/file.txt', 'utf8')).toBe('abc');
+                expect('a/file.txt').toBeFileWithContent('abc');
+                expect('b/file.txt').toBeFileWithContent('abc');
             };
 
             // SYNC
@@ -227,12 +227,12 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('copy/file.txt')).toBe(true);
-                    expect(fse.existsSync('copy/file.md')).toBe(false);
-                    expect(fse.existsSync('copy/a/file.txt')).toBe(true);
-                    expect(fse.existsSync('copy/a/file.md')).toBe(false);
-                    expect(fse.existsSync('copy/a/b/file.txt')).toBe(true);
-                    expect(fse.existsSync('copy/a/b/file.md')).toBe(false);
+                    expect('copy/file.txt').toBeFileWithContent('1');
+                    expect('copy/file.md').not.toExist();
+                    expect('copy/a/file.txt').toBeFileWithContent('2');
+                    expect('copy/a/file.md').not.toExist();
+                    expect('copy/a/b/file.txt').toBeFileWithContent('3');
+                    expect('copy/a/b/file.md').not.toExist();
                 };
 
                 // SYNC
@@ -258,7 +258,7 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('copy/a/file.txt')).toBe(true);
+                    expect('copy/a/file.txt').toBeFileWithContent('1');
                 };
 
                 // SYNC
@@ -284,7 +284,7 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('b')).toBe(false);
+                    expect('b').not.toExist();
                 };
 
                 // SYNC
@@ -310,7 +310,7 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('copy/a/b')).toBe(true);
+                    expect('copy/a/b').toBeDirectory();
                 };
 
                 // SYNC
@@ -345,12 +345,12 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('copy/file.txt')).toBe(true);
-                    expect(fse.existsSync('copy/file.md')).toBe(false);
-                    expect(fse.existsSync('copy/a/file.txt')).toBe(true);
-                    expect(fse.existsSync('copy/a/file.md')).toBe(false);
-                    expect(fse.existsSync('copy/a/b/file.txt')).toBe(true);
-                    expect(fse.existsSync('copy/a/b/file.md')).toBe(false);
+                    expect('copy/file.txt').toBeFileWithContent('1');
+                    expect('copy/file.md').not.toExist();
+                    expect('copy/a/file.txt').toBeFileWithContent('2');
+                    expect('copy/a/file.md').not.toExist();
+                    expect('copy/a/b/file.txt').toBeFileWithContent('3');
+                    expect('copy/a/b/file.md').not.toExist();
                 };
 
                 // SYNC
@@ -376,7 +376,7 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('copy')).toBe(false);
+                    expect('copy').not.toExist();
                 };
 
                 // SYNC
@@ -402,7 +402,7 @@ describe('copy |', function () {
                 };
 
                 var expectations = function () {
-                    expect(fse.existsSync('b')).toBe(true);
+                    expect('b').toBeFileWithContent('1');
                 };
 
                 // SYNC
@@ -431,8 +431,8 @@ describe('copy |', function () {
             };
 
             var expectations = function () {
-                expect(fse.existsSync('copy/a.txt')).toBe(true);
-                expect(fse.existsSync('copy/b.txt')).toBe(false);
+                expect('copy/a.txt').toExist();
+                expect('copy/b.txt').not.toExist();
             };
 
             // SYNC

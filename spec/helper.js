@@ -4,8 +4,7 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
-// Additional matchers will be available in all tests.
-require('jasmine-expect');
+var customMatchers = require('./support/matchers');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
@@ -28,6 +27,8 @@ var clearWorkingDir = function () {
 module.exports.clearWorkingDir = clearWorkingDir;
 
 module.exports.beforeEach = function () {
+    jasmine.addMatchers(customMatchers);
+
     // Create brand new working directory
     if (fse.existsSync(workingDir)) {
         fse.removeSync(workingDir);
