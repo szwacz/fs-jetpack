@@ -1,7 +1,8 @@
 0.6.0 (in progress)
 -------------------
-* **(could be breaking change)** Default jsonIndent changed form 0 to 2.
-* More telling errors when `read()` JSON parsing failed.
+* **(breaking change)** Options `only`, `allBut` passed to `copy()` and `remove()` have been dropped, use option `matching` instead.
+* **(breaking change)** Default jsonIndent changed form 0 to 2.
+* More telling errors when `read()` failed while parsing JSON.
 
 0.5.3 (2015-01-06)
 -------------------

@@ -74,3 +74,28 @@ module.exports.toBeFileWithContent = function () {
         }
     }
 };
+
+module.exports.toHaveMode = function () {
+    return {
+        compare: function (path, expectedMode) {
+            var pass = true;
+            var message = 'File ' + path + ' should have mode ' + expectedMode;
+            try {
+                var mode = fs.statSync(path).mode.toString(8);
+                mode = mode.substring(mode.length - 3);
+                if (mode !== expectedMode) {
+                    pass = false;
+                    message = 'File ' + path + ' should have mode '
+                        + expectedMode + ' but has ' + mode;
+                }
+            } catch (err) {
+                pass = false;
+                message = 'File ' + path + ' should exist';
+            }
+            return {
+                pass: pass,
+                message: message
+            };
+        }
+    }
+};

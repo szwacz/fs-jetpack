@@ -80,8 +80,7 @@ Copies given file or directory (with everything inside).
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
 * `overwrite` (default: `false`) Whether to overwrite destination path if it exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
-* `only` (`Array` of globs) will copy **only** items matching any of specified glob patterns [(read more)](#matching-paths).
-* `allBut` (`Array` of globs) will copy **everything except** items matching any of specified glob patterns [(read more)](#matching-paths). If `only` was also specified this field is ignored.
+* `matching` (`Array` of globs) will copy **only** items matching any of specified glob patterns [(read more)](#matching-paths).
 
 **returns:**  
 Nothing.
@@ -93,9 +92,6 @@ jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
 
 // Copies only ".jpg" files from my_dir
 jetpack.copy('my_dir', 'somewhere/my_dir', { only: ['*.jpg'] });
-
-// Copies everything except "logs" directory inside my_dir
-jetpack.copy('my_dir', 'somewhere/my_dir', { allBut: ['my_dir/logs'] });
 ```
 
 
@@ -372,8 +368,7 @@ Deletes given path, no matter what it is (file or directory).
 **parameters:**  
 `path` path to file or directory you want to remove.  
 `options` (optional) additional conditions to removal process. Is an object with possible fields:
-* `only` (`Array` of globs) will delete **only** items matching any of specified glob patterns [(read more on that)](#matching-paths).
-* `allBut` (`Array` of globs) will delete **everything except** items matching any of specified glob patterns [(read more on that)](#matching-paths). If `only` was also specified this field is ignored.
+* `matching` (`Array` of globs) will delete **only** items matching any of specified glob patterns [(read more on that)](#matching-paths).
 
 **returns:**  
 Nothing.
@@ -389,10 +384,6 @@ jetpack.remove('my_work/important_stuff');
 // Will delete any ".log" file, and any folder or file named "temp" inside "my_app",
 // but will leave all other files intact.
 jetpack.remove('my_app', { only: [ '*.log', 'temp' ] });
-
-// Will delete everything inside "my_app" directory,
-// but will leave directory or file "my_app/user_data" intact.
-jetpack.remove('my_app', { allBut: [ 'my_app/user_data' ] });
 ```
 
 
