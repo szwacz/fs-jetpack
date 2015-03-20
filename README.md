@@ -360,15 +360,13 @@ Reads content of file. If file on given path doesn't exist returns `null` instea
 File content in specified format, or `null` if file doesn't exist.
 
 
-## <a name="remove"></a> remove(path, [options])
-also **removeAsync(path, [options])**  
+## <a name="remove"></a> remove(path)
+also **removeAsync(path)**  
 
 Deletes given path, no matter what it is (file or directory).
 
 **parameters:**  
 `path` path to file or directory you want to remove.  
-`options` (optional) additional conditions to removal process. Is an object with possible fields:
-* `matching` (`Array` of globs) will delete **only** items matching any of specified glob patterns [(read more on that)](#matching-paths).
 
 **returns:**  
 Nothing.
@@ -380,10 +378,6 @@ jetpack.remove('my_work/notes.txt');
 
 // Deletes directory "important_stuff" and everything inside
 jetpack.remove('my_work/important_stuff');
-
-// Will delete any ".log" file, and any folder or file named "temp" inside "my_app",
-// but will leave all other files intact.
-jetpack.remove('my_app', { only: [ '*.log', 'temp' ] });
 ```
 
 
