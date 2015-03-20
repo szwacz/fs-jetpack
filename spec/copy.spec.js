@@ -249,7 +249,7 @@ describe('copy |', function () {
             });
         });
 
-        xit("copies only paths matching and anchored to ./", function (done) {
+        it("copies only paths matching and anchored to ./", function (done) {
 
             var preparations = function () {
                 fse.outputFileSync('dir/file.txt', '1');

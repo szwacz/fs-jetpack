@@ -92,6 +92,9 @@ jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
 
 // Copies only ".jpg" files from my_dir
 jetpack.copy('my_dir', 'somewhere/my_dir', { only: ['*.jpg'] });
+
+// TODO
+jetpack.copy('my_dir', 'somewhere/my_dir', { matching: ['./a/b'] });
 ```
 
 
