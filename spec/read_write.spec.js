@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO refactor
-
 describe('read & write |', function () {
 
     var fse = require('fs-extra');
@@ -16,27 +14,31 @@ describe('read & write |', function () {
 
     it('writes and reads file as string', function (done) {
 
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
         var expectations = function (content) {
             expect(content).toBe('ąbć');
         };
 
         // SYNC
+        preparations();
         jetpack.write(path, 'ąbć');
         var content = jetpack.read(path); // defaults to 'utf8'
         expectations(content);
-        content = jetpack.read(path, 'utf8');
+        content = jetpack.read(path, 'utf8'); // explicitly said
         expectations(content);
 
-        helper.clearWorkingDir();
-
         // ASYNC
+        preparations();
         jetpack.writeAsync(path, 'ąbć')
         .then(function () {
-            return jetpack.readAsync(path) // defaults to 'utf8'
+            return jetpack.readAsync(path); // defaults to 'utf8'
         })
         .then(function (content) {
             expectations(content);
-            return jetpack.readAsync(path, 'utf8')
+            return jetpack.readAsync(path, 'utf8'); // explicitly said
         })
         .then(function (content) {
             expectations(content);
@@ -49,21 +51,26 @@ describe('read & write |', function () {
         var bytes = [11, 22, 33];
         var buf = new Buffer(bytes);
 
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
         var expectations = function (content) {
             expect(Buffer.isBuffer(content)).toBe(true);
             expect(content.length).toBe(bytes.length);
             expect(content[0]).toBe(bytes[0]);
+            expect(content[1]).toBe(bytes[1]);
             expect(content[2]).toBe(bytes[2]);
         };
 
         // SYNC
+        preparations();
         jetpack.write(path, buf);
         var content = jetpack.read(path, 'buf');
         expectations(content);
 
-        helper.clearWorkingDir();
-
         // ASYNC
+        preparations();
         jetpack.writeAsync(path, buf)
         .then(function () {
             return jetpack.readAsync(path, 'buf')
@@ -80,20 +87,28 @@ describe('read & write |', function () {
             utf8: "ąćłźż"
         };
 
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
+        var expectations = function () {
+            expect(content).toEqual(obj);
+        };
+
         // SYNC
+        preparations();
         jetpack.write(path, obj);
         var content = jetpack.read(path, 'json');
-        expect(content).toEqual(obj);
-
-        helper.clearWorkingDir();
+        expectations(content);
 
         // ASYNC
+        preparations();
         jetpack.writeAsync(path, obj)
         .then(function () {
             return jetpack.readAsync(path, 'json')
         })
         .then(function (content) {
-            expect(content).toEqual(obj);
+            expectations(content);
             done();
         });
     });
@@ -102,6 +117,10 @@ describe('read & write |', function () {
 
         var obj = {
             utf8: "ąćłźż"
+        };
+
+        var preparations = function () {
+            helper.clearWorkingDir();
         };
 
         var expectations = function (content) {
@@ -113,14 +132,14 @@ describe('read & write |', function () {
         };
 
         // SYNC
+        preparations();
         jetpack.write('a.json', obj, { jsonIndent: 0 });
         jetpack.write('b.json', obj); // Default indent = 2
         jetpack.write('c.json', obj, { jsonIndent: 4 });
         expectations();
 
-        helper.clearWorkingDir();
-
         // ASYNC
+        preparations();
         jetpack.writeAsync('a.json', obj, { jsonIndent: 0 })
         .then(function () {
             return jetpack.writeAsync('b.json', obj); // Default indent = 2
@@ -137,6 +156,7 @@ describe('read & write |', function () {
     it('gives nice error message when JSON parsing failed', function (done) {
 
         var preparations = function () {
+            helper.clearWorkingDir();
             fse.outputFileSync('a.json', '{ "abc: 123 }'); // Malformed JSON
         };
 
@@ -151,8 +171,6 @@ describe('read & write |', function () {
         } catch (err) {
             expectations(err);
         }
-
-        helper.clearWorkingDir();
 
         // ASYNC
         preparations();
@@ -170,16 +188,22 @@ describe('read & write |', function () {
             date: new Date()
         };
 
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
         var expectations = function (content) {
             expect(content).toEqual(obj);
         };
 
         // SYNC
+        preparations();
         jetpack.write(path, obj);
         var content = jetpack.read(path, 'jsonWithDates');
         expectations(content);
 
         // ASYNC
+        preparations();
         jetpack.writeAsync(path, obj)
         .then(function () {
             return jetpack.readAsync(path, 'jsonWithDates')
@@ -192,15 +216,21 @@ describe('read & write |', function () {
 
     it("write can create nonexistent parent directories", function (done) {
 
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
         var expectations = function () {
-            expect(fse.readFileSync('a/b/c.txt', 'utf8')).toBe('abc');
+            expect('a/b/c.txt').toBeFileWithContent('abc');
         };
 
         // SYNC
+        preparations();
         jetpack.write('a/b/c.txt', 'abc');
         expectations();
 
         // ASYNC
+        preparations();
         jetpack.writeAsync('a/b/c.txt', 'abc')
         .then(function () {
             expectations();
@@ -226,35 +256,30 @@ describe('read & write |', function () {
         });
     });
 
-    it("write returns undefined", function (done) {
-        // SYNC
-        var ret = jetpack.write('file.txt', 'abc');
-        expect(ret).toBe(undefined);
-
-        // ASYNC
-        jetpack.writeAsync('file.txt', 'abc')
-        .then(function (ret) {
-            expect(ret).toBe(undefined);
-            done();
-        });
-    });
-
     it("read throws if given path is directory", function (done) {
 
-        fse.mkdirsSync('dir');
+        var preparations = function () {
+            fse.mkdirsSync('dir');
+        };
+
+        var expectations = function (err) {
+            expect(err.code).toBe('EISDIR');
+        };
+
+        preparations();
 
         // SYNC
         try {
             var content = jetpack.read('dir');
             throw 'to make sure this code throws';
         } catch (err) {
-            expect(err.code).toBe('EISDIR');
+            expectations(err);
         }
 
         // ASYNC
         jetpack.readAsync('dir')
         .catch(function (err) {
-            expect(err.code).toBe('EISDIR');
+            expectations(err);
             done();
         });
     });
