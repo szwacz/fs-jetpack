@@ -195,7 +195,9 @@ describe('file |', function () {
 
             var expectations = function () {
                 var buf = fse.readFileSync('file');
-                expect(buf.toJSON()).toEqual([11, 22]);
+                expect(buf[0]).toBe(11);
+                expect(buf[1]).toBe(22);
+                expect(buf.length).toBe(2);
             };
 
             // SYNC
