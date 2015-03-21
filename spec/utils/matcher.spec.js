@@ -4,10 +4,17 @@ describe('matcher |', function () {
 
     var matcher = require('../../lib/utils/matcher');
 
-    it("can test against many masks", function () {
+    it("can test against one pattern passed as string", function () {
+        var test = matcher.create('a');
+        expect(test('/a')).toBe(true);
+        expect(test('/b')).toBe(false);
+    });
+
+    it("can test against many patterns passed as array", function () {
         var test = matcher.create(['a', 'b']);
         expect(test('/a')).toBe(true);
         expect(test('/b')).toBe(true);
+        expect(test('/c')).toBe(false);
     });
 
     describe('possible mask tokens |', function () {

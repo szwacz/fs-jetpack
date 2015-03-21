@@ -235,14 +235,14 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: ['*.txt'] });
+            jetpack.copy('dir', 'copy', { matching: '*.txt' });
             expectations();
 
             helper.clearWorkingDir();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: ['*.txt'] })
+            jetpack.copyAsync('dir', 'copy', { matching: '*.txt' })
             .then(function () {
                 expectations();
                 done();
@@ -265,14 +265,14 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: ['./a/*.txt'] });
+            jetpack.copy('dir', 'copy', { matching: './a/*.txt' });
             expectations();
 
             helper.clearWorkingDir();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: ['./a/*.txt'] })
+            jetpack.copyAsync('dir', 'copy', { matching: './a/*.txt' })
             .then(function () {
                 expectations();
                 done();
@@ -291,14 +291,14 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('a', 'b', { matching: ['x'] });
+            jetpack.copy('a', 'b', { matching: 'x' });
             expectations();
 
             helper.clearWorkingDir();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('a', 'b', { matching: ['x'] })
+            jetpack.copyAsync('a', 'b', { matching: 'x' })
             .then(function () {
                 expectations();
                 done();
@@ -317,14 +317,14 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: ['b'] });
+            jetpack.copy('dir', 'copy', { matching: 'b' });
             expectations();
 
             helper.clearWorkingDir();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: ['b'] })
+            jetpack.copyAsync('dir', 'copy', { matching: 'b' })
             .then(function () {
                 expectations();
                 done();

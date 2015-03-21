@@ -62,11 +62,11 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: ['./b/*.txt'] });
+        var found = jetpack.find('a', { matching: './b/*.txt' });
         expectations(found);
 
         // ASYNC
-        jetpack.findAsync('a', { matching: ['./b/*.txt'] })
+        jetpack.findAsync('a', { matching: './b/*.txt' })
         .then(function (found) {
             expectations(found);
             done();
@@ -89,11 +89,11 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('file.txt', { matching: ['*.txt'] });
+        var found = jetpack.find('file.txt', { matching: '*.txt' });
         expectations(found);
 
         // ASYNC
-        jetpack.findAsync('file.txt', { matching: ['*.txt'] })
+        jetpack.findAsync('file.txt', { matching: '*.txt' })
         .then(function (found) {
             expectations(found);
             done();
