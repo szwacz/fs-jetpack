@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO refactor
-
 describe('rename |', function () {
 
     var fse = require('fs-extra');
@@ -15,20 +13,19 @@ describe('rename |', function () {
     it("renames file", function (done) {
 
         var preparations = function () {
+            helper.clearWorkingDir();
             fse.outputFileSync('a/b.txt', 'abc');
         };
 
         var expectations = function () {
-            expect(fse.existsSync('a/b.txt')).toBe(false);
-            expect(fse.readFileSync('a/x.txt', 'utf8')).toBe('abc');
+            expect('a/b.txt').not.toExist();
+            expect('a/x.txt').toBeFileWithContent('abc');
         };
 
         // SYNC
         preparations();
         jetpack.rename('a/b.txt', 'x.txt');
         expectations();
-
-        helper.clearWorkingDir();
 
         // ASYNC
         preparations();
@@ -42,12 +39,13 @@ describe('rename |', function () {
     it("renames directory", function (done) {
 
         var preparations = function () {
+            helper.clearWorkingDir();
             fse.outputFileSync('a/b/c.txt', 'abc');
         };
 
         var expectations = function () {
-            expect(fse.existsSync('a/b')).toBe(false);
-            expect(fse.existsSync('a/x')).toBe(true);
+            expect('a/b').not.toExist();
+            expect('a/x').toBeDirectory();
         };
 
         // SYNC
@@ -55,35 +53,11 @@ describe('rename |', function () {
         jetpack.rename('a/b', 'x');
         expectations();
 
-        helper.clearWorkingDir();
-
         // ASYNC
         preparations();
         jetpack.renameAsync('a/b', 'x')
         .then(function () {
             expectations();
-            done();
-        });
-    });
-
-    it("returns undefined", function (done) {
-
-        var preparations = function () {
-            fse.outputFileSync('file.txt', 'abc');
-        };
-
-        // SYNC
-        preparations();
-        var ret = jetpack.rename('file.txt', 'fiole.txt');
-        expect(ret).toBe(undefined);
-
-        helper.clearWorkingDir();
-
-        // ASYNC
-        preparations();
-        jetpack.renameAsync('file.txt', 'fiole.txt')
-        .then(function (ret) {
-            expect(ret).toBe(undefined);
             done();
         });
     });
