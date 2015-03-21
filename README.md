@@ -44,6 +44,7 @@ jetpack.dirAsync('foo')
 * [dir(path, [criteria])](#dir)
 * [exists(path)](#exists)
 * [file(path, [criteria])](#file)
+* [find](#find)
 * [inspect(path, [options])](#inspect)
 * [inspectTree(path, [options])](#inspect-tree)
 * [list(path, [useInspect])](#list)
@@ -219,6 +220,11 @@ jetpack.file('not_something.txt', { exists: false });
 jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
+
+## <a name="find"></a> find(path, searchOptions)
+also **findAsync(path, searchOptions)**
+
+TODO
 
 ## <a name="inspect"></a> inspect(path, [options])
 also **inspectAsync(path, [options])**  
