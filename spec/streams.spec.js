@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO refactor
-
 describe('streams |', function () {
 
     var fse = require('fs-extra');
@@ -18,7 +16,7 @@ describe('streams |', function () {
         var output = jetpack.createWriteStream('b.txt');
         var input = jetpack.createReadStream('a.txt');
         output.on('finish', function () {
-            expect(fse.readFileSync('b.txt', 'utf8')).toBe('abc');
+            expect('b.txt').toBeFileWithContent('abc');
             done();
         });
         input.pipe(output);
@@ -26,11 +24,12 @@ describe('streams |', function () {
 
     it("stream methods respect jetpack internal CWD", function (done) {
         fse.outputFileSync('dir/a.txt', 'abc');
+
         var dir = jetpack.cwd('dir');
         var output = dir.createWriteStream('b.txt');
         var input = dir.createReadStream('a.txt');
         output.on('finish', function () {
-            expect(fse.readFileSync('dir/b.txt', 'utf8')).toBe('abc');
+            expect('dir/b.txt').toBeFileWithContent('abc');
             done();
         });
         input.pipe(output);

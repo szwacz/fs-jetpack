@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO refactor
-
 describe('remove', function () {
 
     var fse = require('fs-extra');
@@ -24,58 +22,53 @@ describe('remove', function () {
     });
 
     it("should delete file", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('file.txt', 'abc');
+        };
+
+        var expectations = function () {
+            expect('file.txt').not.toExist();
+        };
+
         // SYNC
-        fse.outputFileSync('file.txt', 'abc');
+        preparations();
         jetpack.remove('file.txt');
-        expect(fse.existsSync('file.txt')).toBe(false);
+        expectations();
 
         // ASYNC
-        fse.outputFileSync('file.txt', 'abc');
+        preparations();
         jetpack.removeAsync('file.txt')
         .then(function () {
-            expect(fse.existsSync('file.txt')).toBe(false);
+            expectations();
             done();
         });
     });
 
     it("removes directory with stuff inside", function (done) {
 
-        function preparations() {
+        var preparations = function () {
+            helper.clearWorkingDir();
             fse.mkdirsSync('a/b/c');
             fse.outputFileSync('a/f.txt', 'abc');
             fse.outputFileSync('a/b/f.txt', '123');
-        }
+        };
+
+        var expectations = function () {
+            expect('a').not.toExist();
+        };
 
         // SYNC
         preparations();
         jetpack.remove('a');
-        expect(fse.existsSync('a')).toBe(false);
+        expectations();
 
         // ASYNC
         preparations();
         jetpack.removeAsync('a')
         .then(function () {
-            expect(fse.existsSync('a')).toBe(false);
-            done();
-        });
-    });
-
-    it("returns undefined", function (done) {
-
-        var preparations = function () {
-            fse.outputFileSync('file.txt', 'abc');
-        };
-
-        // SYNC
-        preparations();
-        var ret = jetpack.remove('file.txt');
-        expect(ret).toBe(undefined);
-
-        // ASYNC
-        preparations();
-        jetpack.removeAsync('file.txt')
-        .then(function (context) {
-            expect(ret).toBe(undefined);
+            expectations();
             done();
         });
     });
