@@ -15,9 +15,13 @@ describe('path', function () {
         expect(jetpack.path('/blah')).toBe(pathUtil.resolve('/blah'));
     });
 
-    it('resolves to cwd value', function () {
-        var blah = pathUtil.join(jetpack.cwd(), 'blah');
-        expect(jetpack.path('blah')).toBe(blah);
+    it('resolves to cwd value of jetpack instance', function () {
+        var a = pathUtil.join(jetpack.cwd(), 'a');
+        expect(jetpack.path('a')).toBe(a);
+        // Create jetpack instance with other CWD
+        var jetpackSubdir = jetpack.cwd('subdir');
+        var b = pathUtil.join(jetpack.cwd(), 'subdir', 'b');
+        expect(jetpackSubdir.path('b')).toBe(b);
     });
 
     it('can take unlimited number of arguments as path parts', function () {

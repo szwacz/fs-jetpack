@@ -4,10 +4,8 @@ describe('append |', function () {
 
     var fse = require('fs-extra');
     var pathUtil = require('path');
-    var helper = require('./helper');
+    var helper = require('./support/spec_helper');
     var jetpack = require('..');
-
-    var path = 'file.txt';
 
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
@@ -15,23 +13,22 @@ describe('append |', function () {
     it('appends String to file', function (done) {
 
         var preparations = function () {
-            fse.writeFileSync(path, 'abc');
+            helper.clearWorkingDir();
+            fse.writeFileSync('file.txt', 'abc');
         };
 
         var expectations = function () {
-            expect(fse.readFileSync(path, 'utf8')).toBe('abcxyz');
+            expect('file.txt').toBeFileWithContent('abcxyz');
         };
 
         // SYNC
         preparations();
-        jetpack.append(path, 'xyz');
+        jetpack.append('file.txt', 'xyz');
         expectations();
-
-        helper.clearWorkingDir();
 
         // ASYNC
         preparations();
-        jetpack.appendAsync(path, 'xyz')
+        jetpack.appendAsync('file.txt', 'xyz')
         .then(function () {
             expectations();
             done();
@@ -41,26 +38,23 @@ describe('append |', function () {
     it('appends Buffer to file', function (done) {
 
         var preparations = function () {
-            fse.writeFileSync(path, new Buffer([11]));
+            helper.clearWorkingDir();
+            fse.writeFileSync('file.txt', new Buffer([11]));
         };
 
         var expectations = function () {
-            var buf = fse.readFileSync(path);
-            expect(buf.length).toBe(2);
-            expect(buf[0]).toBe(11);
-            expect(buf[1]).toBe(22);
+            var buf = fse.readFileSync('file.txt');
+            expect(buf.toJSON()).toEqual([11, 22]);
         };
 
         // SYNC
         preparations();
-        jetpack.append(path, new Buffer([22]));
+        jetpack.append('file.txt', new Buffer([22]));
         expectations();
-
-        helper.clearWorkingDir();
 
         // ASYNC
         preparations();
-        jetpack.appendAsync(path, new Buffer([22]))
+        jetpack.appendAsync('file.txt', new Buffer([22]))
         .then(function () {
             expectations();
             done();
@@ -69,18 +63,22 @@ describe('append |', function () {
 
     it("if file doesn't exist creates it", function (done) {
 
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
         var expectations = function () {
-            expect(fse.readFileSync(path, 'utf8')).toBe('xyz');
+            expect('file.txt').toBeFileWithContent('xyz');
         };
 
         // SYNC
-        jetpack.append(path, 'xyz');
+        preparations();
+        jetpack.append('file.txt', 'xyz');
         expectations();
 
-        helper.clearWorkingDir();
-
         // ASYNC
-        jetpack.appendAsync(path, 'xyz')
+        preparations();
+        jetpack.appendAsync('file.txt', 'xyz')
         .then(function () {
             expectations();
             done();
@@ -89,67 +87,54 @@ describe('append |', function () {
 
     it("if parent directory doesn't exist creates it as well", function (done) {
 
-        var path = 'dir/dir/file.txt';
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
 
         var expectations = function () {
-            expect(fse.readFileSync(path, 'utf8')).toBe('xyz');
+            expect('dir/dir/file.txt').toBeFileWithContent('xyz');
         };
 
         // SYNC
-        jetpack.append(path, 'xyz');
+        preparations();
+        jetpack.append('dir/dir/file.txt', 'xyz');
         expectations();
 
-        helper.clearWorkingDir();
-
         // ASYNC
-        jetpack.appendAsync(path, 'xyz')
+        preparations();
+        jetpack.appendAsync('dir/dir/file.txt', 'xyz')
         .then(function () {
             expectations();
             done();
         });
     });
 
-    it("returns undefined", function (done) {
-        // SYNC
-        var ret = jetpack.append('file.txt', 'xyz');
-        expect(ret).toBe(undefined);
+    describe('*nix specyfic |', function () {
 
-        helper.clearWorkingDir();
+        if (process.platform === 'win32') {
+            return;
+        }
 
-        // ASYNC
-        jetpack.appendAsync('file.txt', 'xyz')
-        .then(function (ret) {
-            expect(ret).toBe(undefined);
-            done();
-        });
-    });
+        it('sets file mode on created file', function (done) {
 
-    if (process.platform !== 'win32') {
+            var expectations = function () {
+                expect('file.txt').toHaveMode('711');
+            };
 
-        describe('*nix specyfic |', function () {
+            // SYNC
+            jetpack.append('file.txt', 'abc', { mode: '711' });
+            expectations();
 
-            it('sets file mode on created file', function (done) {
+            helper.clearWorkingDir();
 
-                var expectations = function () {
-                    expect(fse.statSync('file.txt').mode.toString(8)).toBe('100711');
-                };
-
-                // SYNC
-                jetpack.append('file.txt', 'abc', { mode: '711' });
+            // AYNC
+            jetpack.appendAsync('file.txt', 'abc', { mode: '711' })
+            .then(function () {
                 expectations();
-
-                helper.clearWorkingDir();
-
-                // AYNC
-                jetpack.appendAsync('file.txt', 'abc', { mode: '711' })
-                .then(function () {
-                    expectations();
-                    done();
-                });
+                done();
             });
-
         });
 
-    }
+    });
 
 });

@@ -4,13 +4,13 @@ describe('matcher |', function () {
 
     var matcher = require('../../lib/utils/matcher');
 
-    it("can test against one pattern passed as string", function () {
+    it("can test against one pattern passed as a string", function () {
         var test = matcher.create('a');
         expect(test('/a')).toBe(true);
         expect(test('/b')).toBe(false);
     });
 
-    it("can test against many patterns passed as array", function () {
+    it("can test against many patterns passed as an array", function () {
         var test = matcher.create(['a', 'b']);
         expect(test('/a')).toBe(true);
         expect(test('/b')).toBe(true);

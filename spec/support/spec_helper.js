@@ -4,7 +4,7 @@ var fse = require('fs-extra');
 var pathUtil = require('path');
 var os = require('os');
 
-var customMatchers = require('./support/matchers');
+var customMatchers = require('./jasmine_matchers');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 

@@ -4,7 +4,7 @@ describe('find |', function () {
 
     var fse = require('fs-extra');
     var pathUtil = require('path');
-    var helper = require('./helper');
+    var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
     beforeEach(helper.beforeEach);

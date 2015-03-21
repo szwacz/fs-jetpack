@@ -4,13 +4,13 @@ describe('exists', function () {
 
     var fse = require('fs-extra');
     var pathUtil = require('path');
-    var helper = require('./helper');
+    var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
 
-    it("returns false if file doesn't exist", function (done) {
+    it("returns false if file doesn't exist", function (done) {    
         // SYNC
         var exists = jetpack.exists('file.txt');
         expect(exists).toBe(false);
