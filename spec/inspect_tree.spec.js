@@ -10,11 +10,9 @@ describe('inspectTree |', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
 
-    it('crawls a directory tree', function (done) {
+    it('inspects whole tree of files', function (done) {
 
         var preparations = function () {
-            fse.mkdirsSync('dir/empty');
-            fse.outputFileSync('dir/empty.txt', '');
             fse.outputFileSync('dir/file.txt', 'abc');
             fse.outputFileSync('dir/subdir/file.txt', 'defg');
         }
@@ -26,15 +24,6 @@ describe('inspectTree |', function () {
                 size: 7,
                 children: [
                     {
-                        name: 'empty',
-                        type: 'dir',
-                        size: 0, // the directory is empty
-                        children: []
-                    },{
-                        name: 'empty.txt',
-                        type: 'file',
-                        size: 0
-                    },{
                         name: 'file.txt',
                         type: 'file',
                         size: 3
@@ -52,6 +41,44 @@ describe('inspectTree |', function () {
                     }
                 ]
             });
+        }
+
+        preparations();
+
+        // SYNC
+        var tree = jetpack.inspectTree('dir');
+        expectations(tree);
+
+        // ASYNC
+        jetpack.inspectTreeAsync('dir')
+        .then(function (tree) {
+            expectations(tree);
+            done();
+        });
+    });
+
+    it('can calculate size of a whole tree', function (done) {
+
+        var preparations = function () {
+            fse.mkdirsSync('dir/empty');
+            fse.outputFileSync('dir/empty.txt', '');
+            fse.outputFileSync('dir/file.txt', 'abc');
+            fse.outputFileSync('dir/subdir/file.txt', 'defg');
+        }
+
+        var expectations = function (data) {
+            // dir
+            expect(data.size).toBe(7);
+            // dir/empty
+            expect(data.children[0].size).toBe(0);
+            // dir/empty.txt
+            expect(data.children[1].size).toBe(0);
+            // dir/file.txt
+            expect(data.children[2].size).toBe(3);
+            // dir/subdir
+            expect(data.children[3].size).toBe(4);
+            // dir/subdir/file.txt
+            expect(data.children[3].children[0].size).toBe(4);
         }
 
         preparations();
@@ -135,28 +162,26 @@ describe('inspectTree |', function () {
         }
 
         var expectations = function (data) {
-            expect(data).toEqual({
+            // data will look like...
+            /*{
                 name: 'dir',
-                type: 'dir',
-                size: 4,
                 relativePath: '.',
                 children: [
                     {
                         name: 'subdir',
-                        type: 'dir',
-                        size: 4,
                         relativePath: './subdir',
                         children: [
                             {
                                 name: 'file.txt',
-                                type: 'file',
-                                size: 4,
                                 relativePath: './subdir/file.txt'
                             }
                         ]
                     }
                 ]
-            });
+            }*/
+            expect(data.relativePath).toBe('.');
+            expect(data.children[0].relativePath).toBe('./subdir');
+            expect(data.children[0].children[0].relativePath).toBe('./subdir/file.txt');
         }
 
         preparations();
@@ -195,6 +220,35 @@ describe('inspectTree |', function () {
 
         // ASYNC
         jetpack.inspectTreeAsync('dir/file.txt')
+        .then(function (tree) {
+            expectations(tree);
+            done();
+        });
+    });
+
+    it('deals ok with empty directory', function (done) {
+
+        var preparations = function () {
+            fse.mkdirsSync('empty');
+        }
+
+        var expectations = function (data) {
+            expect(data).toEqual({
+                name: 'empty',
+                type: 'dir',
+                size: 0,
+                children: []
+            });
+        }
+
+        preparations();
+
+        // SYNC
+        var tree = jetpack.inspectTree('empty');
+        expectations(tree);
+
+        // ASYNC
+        jetpack.inspectTreeAsync('empty')
         .then(function (tree) {
             expectations(tree);
             done();
