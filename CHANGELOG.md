@@ -1,5 +1,7 @@
 0.6.0 (in progress)
 -------------------
+* **(breaking change)** `safe` option for `write()` renamed to `atomic` (and uses new algorithm under the hood).
+* **(breaking change)** `safe` option for `read()` dropped (`atomic` while writing is enough).
 * **(breaking change)** In `copy()` options `only` and `allBut` have been replaced by option `matching`.
 * **(breaking change)** In `remove()` options `only` and `allBut` have been dropped (to do the same use `find()`, and then remove).
 * **(breaking change)** Default jsonIndent changed form 0 to 2.

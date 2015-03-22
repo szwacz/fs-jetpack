@@ -81,7 +81,7 @@ Copies given file or directory (with everything inside).
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
 * `overwrite` (default: `false`) Whether to overwrite destination path if it exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
-* `matching` (`String` or `Array`) will copy **only** items matching any of specified glob patterns [(read more)](#matching-paths).
+* `matching` (`String` or `Array`) will copy **only** items matching any of specified glob patterns
 
 **returns:**  
 Nothing.
@@ -349,8 +349,8 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ```
 
 
-## <a name="read"></a> read(path, [returnAs], [options])
-also **readAsync(path, [returnAs], [options])**  
+## <a name="read"></a> read(path, [returnAs])
+also **readAsync(path, [returnAs])**  
 
 Reads content of file. If file on given path doesn't exist returns `null` instead of throwing `ENOENT` error.
 
@@ -361,9 +361,6 @@ Reads content of file. If file on given path doesn't exist returns `null` instea
 * `'buf'` content will be returned as Buffer.
 * `'json'` content will be returned as parsed JSON object.
 * `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into Date objects.
-
-`options` (optional) is an object with possible fields:
-* `safe` if set to `true` the file will be read in ["safe mode"](#safe-mode).
 
 **returns:**  
 File content in specified format, or `null` if file doesn't exist.
@@ -413,7 +410,6 @@ Writes data to file.
 `content` data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputed into file as JSON).  
 `options` (optional) `Object` with possible fields:
 * `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
-* `safe` if set to `true` the file will be written in ["safe mode"](#safe-mode).
 
 **returns:**  
 Nothing.
@@ -461,54 +457,3 @@ jetpack
 *"ENOENT, no such file or directory"* is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle:  
 1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist, `null` is returned instead of throwing.
-
-### <a name="matching-paths"></a> Filtering things to copy/remove with "globs"
-[Copy](#copy) and [remove](#remove) have option for blacklisting and whitelisting things inside directory which will be affected by the operation. For instance:
-```javascript
-// Let's assume we have folder structure:
-// foo
-// |- a.jpg
-// |- b.pdf
-// |- c.txt
-// |- bar
-//    |- a.pdf
-
-jetpack.copy('foo', 'foo1', { allBut: ['*.pdf'] });
-// Will give us folder:
-// foo1
-// |- a.jpg
-// |- c.txt
-// |- bar
-
-jetpack.copy('foo', 'foo2', { only: ['*.pdf'] });
-// Will give us folder:
-// foo2
-// |- b.pdf
-// |- bar
-//    |- a.pdf
-```
-
-### <a name="safe-mode"></a> "Safe" file overwriting
-It is not fully safe to just overwrite existing file with new content. If your process crashes during this operation you are srewed. The old file content is lost, because you were writing to the same place new stuff, and the new stuff is lost totally or written only partially. Fs-jetpack has built-in "safe mode", which helps you deal with this issue. Under the hood it works as follows...
-
-Let's assume there's already `file.txt` with content `Hello world!` on disk, and we want to update it to `Hello universe!`.
-```javascript
-jetpack.write('file.txt', 'Hello universe!', { safe: true });
-```
-Above line will perform tasks as follows:  
-1. Write `Hello universe!` to `file.txt.__new__` (so we didn't owerwrite the original file).  
-2. Move `file.txt` (with `Hello world!`) to `file.txt.__bak__`, so it can serve as a backup.  
-3. Move `file.txt.__new__` to `file.txt`, where we wanted it to be on the first place.  
-4. Delete `file.txt.__bak__`, because it is no longer needed.  
-Thanks to that the backup of old data is reachable all the time, until we are 100% sure the new data has been successfuly written to disk.
-
-For this to work, read operation have to be aware of the backup file.
-```javascript
-jetpack.read('file.txt', { safe: true });
-```
-Above read will do:  
-1. Read `file.txt`  
-2. If step 1 failed, try to read `file.txt.__bak__`.  
-3. If step 2 failed as well, we are sure there is no such file.
-
-The whole process is performed automatically for you by simply adding `safe: true` to call options of [write](#write) and [read](#read) methods.
