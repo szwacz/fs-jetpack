@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO refactor
-
 describe('safe file operations |', function () {
 
     var fse = require('fs-extra');
@@ -20,20 +18,24 @@ describe('safe file operations |', function () {
 
         it("writes file safely", function (done) {
 
+            var preparations = function () {
+                helper.clearWorkingDir();
+            };
+
             var expectations = function () {
-                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                expect(path).toBeFileWithContent('abc');
                 // After successful write temp files shouldn't be present.
-                expect(fse.existsSync(newPath)).toBe(false);
-                expect(fse.existsSync(bakPath)).toBe(false);
+                expect(newPath).not.toExist();
+                expect(bakPath).not.toExist();
             };
 
             // SYNC
+            preparations();
             jetpack.write(path, 'abc', { safe: true });
             expectations();
 
-            helper.clearWorkingDir();
-
             // ASYNC
+            preparations();
             jetpack.writeAsync(path, 'abc', { safe: true })
             .then(function () {
                 expectations();
@@ -44,22 +46,21 @@ describe('safe file operations |', function () {
         it('overwrites file safely if it already exists', function (done) {
 
             var preparations = function () {
+                helper.clearWorkingDir();
                 fse.outputFileSync(path, 'xyz');
             };
 
             var expectations = function () {
-                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                expect(path).toBeFileWithContent('abc');
                 // After successful write temp files shouldn't be present.
-                expect(fse.existsSync(newPath)).toBe(false);
-                expect(fse.existsSync(bakPath)).toBe(false);
+                expect(newPath).not.toExist();
+                expect(bakPath).not.toExist();
             };
 
             // SYNC
             preparations();
             jetpack.write(path, 'abc', { safe: true });
             expectations();
-
-            helper.clearWorkingDir();
 
             // ASYNC
             preparations();
@@ -73,27 +74,26 @@ describe('safe file operations |', function () {
         it('deals ok with rubbish from unsuccessful previous write attempt', function (done) {
 
             var preparations = function () {
+                helper.clearWorkingDir();
                 // Simulate unsuccessful, interrupted safe write in the past.
                 fse.outputFileSync(newPath, 'new');
                 fse.outputFileSync(bakPath, 'bak');
             };
 
             var expectations = function () {
-                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                expect(path).toBeFileWithContent('abc');
                 // NEW file should disappear after successful attempt.
-                expect(fse.existsSync(newPath)).toBe(false);
+                expect(newPath).not.toExist();
                 // This file should stay there, the code didn't know it is there,
                 // because it not renamed the MAIN file to BAK. It doesn't matter
                 // because correctly written MAIN file is there.
-                expect(fse.existsSync(bakPath)).toBe(true);
+                expect(bakPath).toExist();
             };
 
             // SYNC
             preparations();
             jetpack.write(path, 'abc', { safe: true });
             expectations();
-
-            helper.clearWorkingDir();
 
             // ASYNC
             preparations();
@@ -107,6 +107,7 @@ describe('safe file operations |', function () {
         it('nuts case when all files are there', function (done) {
 
             var preparations = function () {
+                helper.clearWorkingDir();
                 // NEW, BAK and MAIN files present,
                 // just for the sake of argument.
                 fse.outputFileSync(path, 'xyz');
@@ -115,18 +116,16 @@ describe('safe file operations |', function () {
             };
 
             var expectations = function () {
-                expect(fse.readFileSync(path, { encoding: 'utf8' })).toBe('abc');
+                expect(path).toBeFileWithContent('abc');
                 // Mess should be cleaned.
-                expect(fse.existsSync(newPath)).toBe(false);
-                expect(fse.existsSync(bakPath)).toBe(false);
+                expect(newPath).not.toExist();
+                expect(bakPath).not.toExist();
             };
 
             // SYNC
             preparations();
             jetpack.write(path, 'abc', { safe: true });
             expectations();
-
-            helper.clearWorkingDir();
 
             // ASYNC
             preparations();
@@ -144,6 +143,7 @@ describe('safe file operations |', function () {
         it("reads file from bak location if main file doesn't exist", function (done) {
 
             var preparations = function () {
+                helper.clearWorkingDir();
                 fse.outputFileSync(bakPath, 'bak');
             };
 
@@ -155,8 +155,6 @@ describe('safe file operations |', function () {
             preparations();
             var content = jetpack.read(path, 'utf8', { safe: true });
             expectations();
-
-            helper.clearWorkingDir();
 
             // ASYNC
             preparations();
@@ -170,6 +168,7 @@ describe('safe file operations |', function () {
         it("reads file from main location if both files exist", function (done) {
 
             var preparations = function () {
+                helper.clearWorkingDir();
                 fse.outputFileSync(path, 'abc');
                 fse.outputFileSync(bakPath, 'bak');
             };
@@ -183,8 +182,6 @@ describe('safe file operations |', function () {
             var content = jetpack.read(path, 'utf8', { safe: true });
             expectations(content);
 
-            helper.clearWorkingDir();
-
             // ASYNC
             preparations();
             jetpack.readAsync(path, 'utf8', { safe: true })
@@ -196,17 +193,21 @@ describe('safe file operations |', function () {
 
         it("returns null if neither of those two files exist", function (done) {
 
+            var preparations = function () {
+                helper.clearWorkingDir();
+            };
+
             var expectations = function (content) {
                 expect(content).toBe(null);
             };
 
             // SYNC
+            preparations();
             var content = jetpack.read(path, 'utf8', { safe: true });
             expectations(content);
 
-            helper.clearWorkingDir();
-
             // ASYNC
+            preparations();
             jetpack.readAsync(path, 'utf8', { safe: true })
             .then(function (content) {
                 expectations(content);
