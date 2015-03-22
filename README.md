@@ -457,3 +457,6 @@ jetpack
 *"ENOENT, no such file or directory"* is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle:  
 1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist, `null` is returned instead of throwing.
+
+### JSON is a first class citizen
+TODO
