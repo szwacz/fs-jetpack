@@ -62,4 +62,32 @@ describe('rename |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('a/b/c.txt', 'abc');
+        };
+
+        var expectations = function () {
+            expect('a/b').not.toExist();
+            expect('a/x').toBeDirectory();
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.rename('b', 'x');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.renameAsync('b', 'x')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
 });

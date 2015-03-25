@@ -239,6 +239,32 @@ describe('dir |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
+        var expectations = function () {
+            expect('a/b').toBeDirectory();
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.dir('b');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.dirAsync('b')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
     describe("returns |", function () {
 
         it("returns jetack instance pointing on this directory if EXISTS == true", function (done) {

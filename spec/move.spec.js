@@ -63,4 +63,36 @@ describe('move |', function () {
         });
     });
 
+    xit("creates nonexistent directories in destination path", function (done) {
+        // TODO
+    });
+
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('a/b.txt', 'abc');
+        };
+
+        var expectations = function () {
+            expect('a/b.txt').not.toExist();
+            expect('a/x.txt').toBeFileWithContent('abc');
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.move('b.txt', 'x.txt');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.moveAsync('b.txt', 'x.txt')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
 });

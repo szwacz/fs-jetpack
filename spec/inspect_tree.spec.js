@@ -273,4 +273,30 @@ describe('inspectTree |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a/b.txt', 'abc');
+        };
+
+        var expectations = function (data) {
+            expect(data.name).toBe('b.txt');
+        };
+
+        preparations();
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        var data = jetContext.inspectTree('b.txt');
+        expectations(data);
+
+        // ASYNC
+        jetContext.inspectTreeAsync('b.txt')
+        .then(function (data) {
+            expectations(data);
+            done();
+        });
+    });
+
 });

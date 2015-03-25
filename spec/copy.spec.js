@@ -138,6 +138,34 @@ describe('copy |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('a/b.txt', 'abc');
+        };
+
+        var expectations = function () {
+            expect('a/b.txt').toBeFileWithContent('abc');
+            expect('a/x.txt').toBeFileWithContent('abc');
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.copy('b.txt', 'x.txt');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.copyAsync('b.txt', 'x.txt')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
     describe('overwriting behaviour', function () {
 
         it("does not overwrite by default", function (done) {

@@ -111,6 +111,33 @@ describe('append |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('a/b.txt', 'abc');
+        };
+
+        var expectations = function () {
+            expect('a/b.txt').toBeFileWithContent('abcxyz');
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.append('b.txt', 'xyz');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.appendAsync('b.txt', 'xyz')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
     describe('*nix specyfic |', function () {
 
         if (process.platform === 'win32') {

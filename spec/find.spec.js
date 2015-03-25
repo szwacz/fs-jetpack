@@ -100,4 +100,30 @@ describe('find |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a/b/c.txt', 'abc');
+        };
+
+        var expectations = function (data) {
+            expect(data[0].name).toBe('c.txt');
+        };
+
+        preparations();
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        var data = jetContext.find('b', { matching: '*.txt' });
+        expectations(data);
+
+        // ASYNC
+        jetContext.findAsync('b', { matching: '*.txt' })
+        .then(function (data) {
+            expectations(data);
+            done();
+        });
+    });
+
 });

@@ -369,6 +369,33 @@ describe('file |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
+        var expectations = function () {
+            expect('a/b.txt').toBeFileWithContent('');
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.file('b.txt');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.fileAsync('b.txt')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
+
     describe('parameters importance |', function () {
 
         it('EXISTS=false takes precedence over EMPTY and CONTENT', function (done) {

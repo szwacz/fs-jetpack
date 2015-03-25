@@ -202,4 +202,30 @@ describe('read |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a/file.txt', 'abc');
+        };
+
+        var expectations = function (data) {
+            expect(data).toBe('abc');
+        };
+
+        preparations();
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        var data = jetContext.read('file.txt');
+        expectations(data);
+
+        // ASYNC
+        jetContext.readAsync('file.txt')
+        .then(function (data) {
+            expectations(data);
+            done();
+        });
+    });
+
 });

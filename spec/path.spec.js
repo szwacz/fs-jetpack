@@ -15,7 +15,7 @@ describe('path', function () {
         expect(jetpack.path('/blah')).toBe(pathUtil.resolve('/blah'));
     });
 
-    it('resolves to cwd value of jetpack instance', function () {
+    it('resolves to CWD path of this jetpack instance', function () {
         var a = pathUtil.join(jetpack.cwd(), 'a');
         expect(jetpack.path('a')).toBe(a);
         // Create jetpack instance with other CWD

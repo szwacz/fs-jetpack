@@ -10,7 +10,7 @@ describe('exists', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
 
-    it("returns false if file doesn't exist", function (done) {    
+    it("returns false if file doesn't exist", function (done) {
         // SYNC
         var exists = jetpack.exists('file.txt');
         expect(exists).toBe(false);
@@ -47,6 +47,23 @@ describe('exists', function () {
 
         // ASYNC
         jetpack.existsAsync('text.txt')
+        .then(function (exists) {
+            expect(exists).toBe('file');
+            done();
+        });
+    });
+
+    it("respects internal CWD of jetpack instance", function (done) {
+        fse.outputFileSync('a/text.txt', 'abc');
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        var exists = jetContext.exists('text.txt');
+        expect(exists).toBe('file');
+
+        // ASYNC
+        jetContext.existsAsync('text.txt')
         .then(function (exists) {
             expect(exists).toBe('file');
             done();

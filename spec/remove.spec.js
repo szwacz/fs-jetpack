@@ -73,4 +73,32 @@ describe('remove', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('a/b/c.txt', '123');
+        };
+
+        var expectations = function () {
+            expect('a').toExist();
+            expect('a/b').not.toExist();
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.remove('b')
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.removeAsync('b')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
 });

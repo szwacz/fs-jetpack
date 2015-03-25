@@ -12,14 +12,14 @@ describe('list |', function () {
 
     it('lists file names by default', function (done) {
 
-        function preparations() {
+        var preparations = function () {
             fse.mkdirsSync('dir/empty');
             fse.outputFileSync('dir/empty.txt', '');
             fse.outputFileSync('dir/file.txt', 'abc');
             fse.outputFileSync('dir/subdir/file.txt', 'defg');
         }
 
-        function expectations(data) {
+        var expectations = function (data) {
             expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
         }
 
@@ -107,6 +107,38 @@ describe('list |', function () {
 
         // ASYNC
         jetpack.listAsync('nonexistent')
+        .then(function (data) {
+            expectations(data);
+            done();
+        });
+    });
+
+    xit("throws if given path is a file", function (done) {
+        // TODO
+    });
+
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a/b/c.txt', 'abc');
+        };
+
+        var expectations = function (data) {
+            expect(data).toEqual(['c.txt']);
+        };
+
+        preparations();
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        var data = jetContext.list('b');
+        expectations(data);
+
+        // ASYNC
+        preparations();
+        jetContext.listAsync('b')
         .then(function (data) {
             expectations(data);
             done();

@@ -185,4 +185,30 @@ describe('write |', function () {
         });
     });
 
+    it("respects internal CWD of jetpack instance", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
+
+        var expectations = function () {
+            expect('a/b/c.txt').toBeFileWithContent('abc');
+        };
+
+        var jetContext = jetpack.cwd('a');
+
+        // SYNC
+        preparations();
+        jetContext.write('b/c.txt', 'abc');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.writeAsync('b/c.txt', 'abc')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
 });
