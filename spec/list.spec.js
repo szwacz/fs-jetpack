@@ -113,8 +113,28 @@ describe('list |', function () {
         });
     });
 
-    xit("throws if given path is a file", function (done) {
-        // TODO
+    it("returns null if given path is a file", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('file.txt', 'abc');
+        };
+
+        var expectations = function (list) {
+            expect(list).toBe(null);
+        };
+
+        preparations();
+
+        // SYNC
+        var list = jetpack.list('file.txt');
+        expectations(list);
+
+        // ASYNC
+        jetpack.listAsync('file.txt')
+        .then(function (list) {
+            expectations(list);
+            done();
+        });
     });
 
     it("respects internal CWD of jetpack instance", function (done) {
