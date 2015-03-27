@@ -12,7 +12,7 @@ describe('file |', function () {
 
     describe('ensure file exists |', function () {
 
-        it("file doesn't exists before call", function (done) {
+        it("file doesn't exist before call", function (done) {
 
             var prepartions = function () {
                 helper.clearWorkingDir();
@@ -55,104 +55,6 @@ describe('file |', function () {
             // ASYNC
             preparations();
             jetpack.fileAsync('file.txt')
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-    });
-
-    describe('ensure file does not exist |', function () {
-
-        it('file already does not exist', function (done) {
-
-            var expectations = function () {
-                expect('file.txt').not.toExist();
-            };
-
-            // SYNC
-            jetpack.file('file.txt', { exists: false });
-            expectations();
-
-            // ASYNC
-            jetpack.fileAsync('file.txt', { exists: false })
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-        it('file already does not exist', function (done) {
-
-            var preparations = function () {
-                fse.outputFileSync('file.txt', 'abc');
-            };
-
-            var expectations = function () {
-                expect('file.txt').not.toExist();
-            };
-
-            // SYNC
-            preparations();
-            jetpack.file('file.txt', { exists: false });
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.fileAsync('file.txt', { exists: false })
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-    });
-
-    describe('ensures file empty |', function () {
-
-        it('not bothers about file emptiness if not explicitly specified', function (done) {
-
-            var preparations = function () {
-                fse.outputFileSync('file.txt', 'abc');
-            };
-
-            var expectations = function () {
-                expect('file.txt').toBeFileWithContent('abc');
-            };
-
-            // SYNC
-            preparations();
-            jetpack.file('file.txt');
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.fileAsync('file.txt')
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-        it('makes sure file is empty if specified', function (done) {
-
-            var preparations = function () {
-                fse.outputFileSync('file.txt', 'abc');
-            };
-
-            var expectations = function () {
-                expect('file.txt').toBeFileWithContent('');
-            };
-
-            // SYNC
-            preparations();
-            jetpack.file('file.txt', { empty: true });
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.fileAsync('file.txt', { empty: true })
             .then(function () {
                 expectations();
                 done();
@@ -393,61 +295,6 @@ describe('file |', function () {
             expectations();
             done();
         });
-    });
-
-
-    describe('parameters importance |', function () {
-
-        it('EXISTS=false takes precedence over EMPTY and CONTENT', function (done) {
-
-            var preparations = function () {
-                helper.clearWorkingDir();
-                fse.writeFileSync('file.txt', 'abc');
-            };
-
-            var expectations = function () {
-                expect('file.txt').not.toExist();
-            };
-
-            // SYNC
-            preparations();
-            jetpack.file('file.txt', { exists: false, empty: true, content: '123' });
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.fileAsync('file.txt', { exists: false, empty: true, content: '123' })
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-        it('EMPTY=true takes precedence over CONTENT', function (done) {
-
-            var preparations = function () {
-                helper.clearWorkingDir();
-                fse.writeFileSync('file.txt', 'abc');
-            };
-
-            var expectations = function () {
-                expect('file.txt').toBeFileWithContent('');
-            };
-
-            // SYNC
-            preparations();
-            jetpack.file('file.txt', { empty: true, content: '123' });
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.fileAsync('file.txt', { empty: true, content: '123' })
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
     });
 
     describe('windows specyfic |', function () {
