@@ -369,7 +369,7 @@ File content in specified format, or `null` if file doesn't exist.
 ## <a name="remove"></a> remove(path)
 also **removeAsync(path)**  
 
-Deletes given path, no matter what it is (file or directory).
+Deletes given path, no matter what it is (file or directory). If path already doesn't exist ends without throwing, so you can use it as 'ensure path doesn't exist'.
 
 **parameters:**  
 `path` path to file or directory you want to remove.  
