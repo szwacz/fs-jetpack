@@ -152,21 +152,16 @@ Ensures that directory on given path meets given criteria. If any criterium is n
 **parameters:**  
 `path` path to directory to examine.  
 `criteria` (optional) criteria to be met by the directory. Is an `Object` with possible fields:
-* `exists` (default: `true`) whether directory should exist or not. If set to `true` and `path` contains many nested, nonexistent directories all of them will be created.
-* `empty` (default: `false`) whether directory should be empty (no other files or directories inside). If set to `true` and directory contains any files or subdirectories all of them will be deleted. If `exists = false` this field is ignored.
+* `empty` (default: `false`) whether directory should be empty (no other files or directories inside). If set to `true` and directory contains any files or subdirectories all of them will be deleted.
 * `mode` ensures directory has specified mode. If not set and directory already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 **returns:**  
 New CWD context with directory specified in `path` as CWD.  
-Or `undefined` if `exists` was set to `false`.
 
 **examples:**
 ```javascript
 // Creates directory if doesn't exist
 jetpack.dir('new_dir');
-
-// Makes sure that directory does NOT exist
-jetpack.dir('/my_stuff/some_dir', { exists: false });
 
 // Makes sure directory mode is 0700 and that it's empty
 jetpack.dir('empty_dir', { empty: true, mode: '700' });

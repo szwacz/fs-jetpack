@@ -87,53 +87,6 @@ describe('dir |', function () {
 
     });
 
-    describe('ensures dir does not exist |', function () {
-
-        it("dir exists and it shouldn't", function (done) {
-
-            var preparations = function () {
-                helper.clearWorkingDir();
-                fse.mkdirsSync('x');
-            };
-
-            var expectations = function () {
-                expect('x').not.toExist();
-            };
-
-            // SYNC
-            preparations();
-            jetpack.dir('x', { exists: false });
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.dirAsync('x', { exists: false })
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-        it("dir already doesn't exist", function (done) {
-
-            var expectations = function () {
-                expect('x').not.toExist();
-            };
-
-            // SYNC
-            jetpack.dir('x', { exists: false });
-            expectations();
-
-            // ASYNC
-            jetpack.dirAsync('x', { exists: false })
-            .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-    });
-
     describe('ensures dir empty |', function () {
 
         it('not bothers about emptiness if not specified', function (done) {
@@ -189,31 +142,6 @@ describe('dir |', function () {
 
     });
 
-    it('EXISTS=false takes precendence over EMPTY', function (done) {
-
-        var preparations = function () {
-            helper.clearWorkingDir();
-            fse.outputFileSync('a/b/file.txt', 'abc');
-        };
-
-        var expectations = function () {
-            expect('a').not.toExist();
-        };
-
-        // SYNC
-        preparations();
-        jetpack.dir('a', { exists: false, empty: true });
-        expectations();
-
-        // ASYNC
-        preparations();
-        jetpack.dirAsync('a', { exists: false, empty: true })
-        .then(function () {
-            expectations();
-            done();
-        })
-    });
-
     it('if given path is file, deletes it and places dir instead', function (done) {
 
         var preparations = function () {
@@ -265,56 +193,28 @@ describe('dir |', function () {
         });
     });
 
-    describe("returns |", function () {
+    it("returns jetack instance pointing on this directory", function (done) {
 
-        it("returns jetack instance pointing on this directory if EXISTS == true", function (done) {
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
 
-            var preparations = function () {
-                helper.clearWorkingDir();
-            };
+        var expectations = function (ret) {
+            expect(ret.cwd()).toBe(pathUtil.resolve('a'));
+        };
 
-            var expectations = function (ret) {
-                expect(ret.cwd()).toBe(pathUtil.resolve('a'));
-            };
+        // SYNC
+        preparations();
+        var ret = jetpack.dir('a');
+        expectations(ret);
 
-            // SYNC
-            preparations();
-            var ret = jetpack.dir('a');
+        // ASYNC
+        preparations();
+        jetpack.dirAsync('a')
+        .then(function (ret) {
             expectations(ret);
-
-            // ASYNC
-            preparations();
-            jetpack.dirAsync('a')
-            .then(function (ret) {
-                expectations(ret);
-                done();
-            });
+            done();
         });
-
-        it("returns undefined if EXISTS == false", function (done) {
-
-            var preparations = function () {
-                helper.clearWorkingDir();
-            };
-
-            var expectations = function (ret) {
-                expect(ret).toBe(undefined);
-            };
-
-            // SYNC
-            preparations();
-            var ret = jetpack.dir('a', { exists: false });
-            expectations(ret);
-
-            // ASYNC
-            preparations();
-            jetpack.dirAsync('a', { exists: false })
-            .then(function (ret) {
-                expectations(ret);
-                done();
-            });
-        });
-
     });
 
     describe('windows specyfic |', function () {
