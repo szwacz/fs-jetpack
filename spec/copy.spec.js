@@ -116,10 +116,11 @@ describe('copy |', function () {
         });
     });
 
-    it("throws if source path doesn't exist", function (done) {
+    it("generates nice error if source path doesn't exist", function (done) {
 
         var expectations = function (err) {
             expect(err.code).toBe('ENOENT');
+            expect(err.message).toMatch(/^Path to copy doesn't exist/);
         };
 
         // SYNC
@@ -178,6 +179,7 @@ describe('copy |', function () {
 
             var expectations = function (err) {
                 expect(err.code).toBe('EEXIST');
+                expect(err.message).toMatch(/^Destination path already exists/);
             };
 
             // SYNC

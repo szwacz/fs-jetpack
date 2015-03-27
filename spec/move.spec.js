@@ -63,8 +63,53 @@ describe('move |', function () {
         });
     });
 
-    xit("creates nonexistent directories in destination path", function (done) {
-        // TODO
+    it("creates nonexistent directories for destination path", function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.outputFileSync('a.txt', 'abc');
+        };
+
+        var expectations = function () {
+            expect('a.txt').not.toExist();
+            expect('a/b/z.txt').toBeFileWithContent('abc');
+        };
+
+        // SYNC
+        preparations();
+        jetpack.move('a.txt', 'a/b/z.txt');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetpack.moveAsync('a.txt', 'a/b/z.txt')
+        .then(function () {
+            expectations();
+            done();
+        });
+    });
+
+    it("generates nice error when source path doesn't exist", function (done) {
+
+        var expectations = function (err) {
+            expect(err.code).toBe('ENOENT');
+            expect(err.message).toMatch(/^Path to move doesn't exist/);
+        };
+
+        // SYNC
+        try {
+            jetpack.move('a', 'b');
+            throw "to make sure this code throws"
+        } catch (err) {
+            expectations(err);
+        }
+
+        // ASYNC
+        jetpack.moveAsync('a', 'b')
+        .catch(function (err) {
+            expectations(err);
+            done();
+        });
     });
 
     it("respects internal CWD of jetpack instance", function (done) {
