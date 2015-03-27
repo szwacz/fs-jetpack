@@ -1,5 +1,8 @@
 0.6.0 (in progress)
 -------------------
+* Lots of code refactoring
+* **(breaking change)** `dir()` no longer has `exists` option.
+* **(breaking change)** `file()` no longer has `exists` and `empty` options.
 * **(breaking change)** `safe` option for `write()` renamed to `atomic` (and uses new algorithm under the hood).
 * **(breaking change)** `safe` option for `read()` dropped (`atomic` while writing is enough).
 * **(breaking change)** In `copy()` options `only` and `allBut` have been replaced by option `matching`.
