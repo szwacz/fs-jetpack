@@ -113,6 +113,18 @@ dest.write('config.json', config);
 
 # <a name="api"></a> API
 
+All API methods have blocking and non-blocking equivalents:
+```js
+// Synchronous call
+var data = jetpack.read('file.txt');
+
+// Asnychronous call
+jetpack.readAsync('file.txt')
+.then(function (data) {
+    
+});
+```
+
 **Methods:**
 * [append(path, data, [options])](#append)
 * [copy(from, to, [options])](#copy)
