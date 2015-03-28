@@ -113,12 +113,12 @@ dest.write('config.json', config);
 
 # <a name="api"></a> API
 
-All API methods have blocking and non-blocking equivalents:
+API methods have blocking and non-blocking equivalents:
 ```js
 // Synchronous call
 var data = jetpack.read('file.txt');
 
-// Asnychronous call
+// Asynchronous call
 jetpack.readAsync('file.txt')
 .then(function (data) {
     
@@ -126,24 +126,24 @@ jetpack.readAsync('file.txt')
 ```
 
 **Methods:**
-* [append(path, data, [options])](#append)
-* [copy(from, to, [options])](#copy)
-* [createReadStream(path, [options])](#create-read-stream)
-* [createWriteStream(path, [options])](#create-write-stream)
-* [cwd([path...])](#cwd)
-* [dir(path, [criteria])](#dir)
-* [exists(path)](#exists)
-* [file(path, [criteria])](#file)
+* [append](#append)
+* [copy](#copy)
+* [createReadStream](#create-read-stream)
+* [createWriteStream](#create-write-stream)
+* [cwd](#cwd)
+* [dir](#dir)
+* [exists](#exists)
+* [file](#file)
 * [find](#find)
-* [inspect(path, [options])](#inspect)
-* [inspectTree(path, [options])](#inspect-tree)
-* [list(path, [useInspect])](#list)
-* [move(from, to)](#move)
-* [path(parts...)](#path)
-* [read(path, [returnAs], [options])](#read)
-* [remove(path, [options])](#remove)
-* [rename(path, newName)](#rename)
-* [write(path, data, [options])](#write)
+* [inspect](#inspect)
+* [inspectTree](#inspect-tree)
+* [list](#list)
+* [move](#move)
+* [path](#path)
+* [read](#read)
+* [remove](#remove)
+* [rename](#rename)
+* [write](#write)
 
 
 ## <a name="append"></a> append(path, data, [options])
