@@ -1,39 +1,117 @@
 fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Coverage Status](https://coveralls.io/repos/szwacz/fs-jetpack/badge.svg)](https://coveralls.io/r/szwacz/fs-jetpack)
 ==========
 
-Motivation: node's [fs library](http://nodejs.org/api/fs.html) is very low level API, what makes it too often painful/inconvenient to use. This project is an attempt to build comprehensive, higher level API on top of that library. See ["Neat tricks fs-jetpack knows"](#how-fun) as a starter.
+Node's [fs library](http://nodejs.org/api/fs.html) API is very low level, and because of that painful to use. We need higher layer of abstraction over it. That's what fs-jetpack is.
 
-### Installation
+## Installation
 ```
 npm install fs-jetpack
 ```
 
-### Usage
+## Usage
 ```javascript
 var jetpack = requite('fs-jetpack');
 ```
 
-# API
-API has the same set of synchronous and asynchronous methods. All async methods are promise based (so no callbacks folks, [promises](https://github.com/kriskowal/q) instead).
+## [Jump to API Docs](#api)
 
-Commonly used naming convention in node world is reversed in this library. Asynchronous methods are those with "Async" suffix, all methods without "Async" in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference. Also it just feels right to me. When you see "Async" word you are 100% sure this method is returning promise, and when you don't see it, you are 100% sure this method retuns immediately (and possibly blocks).
 
-```javascript
-// Usage of blocking API
-try {
-    jetpack.dir('foo');
-} catch (err) {
-    // Something went wrong
-}
+#What's cool about jetpack?
 
-// Usage of non-blocking API
-jetpack.dirAsync('foo')
-.then(function () {
-    // Done!
-}, function (err) {
-    // Something went wrong
+## Promises instead of callbacks
+API has the same set of synchronous and asynchronous methods. All async methods are promise based.
+
+Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference.
+
+Thanks to that the API is also coherent...
+```js
+// If method has no 'Async' suffix it gives you answer right away.
+var data = jetpack.read('file.txt');
+console.log(data);
+
+// Want to make that call asnychronous? Just add the word "Async" and it will give you promise instead of ready value.
+jetpack.readAsync('file.txt')
+.then(function (data) {
+    console.log(data);
 });
 ```
+
+## Every jetpack instance has its internal CWD
+You can create many jetpack objects with different internal working directories (which are independent from `process.cwd()`) and work on directories in a little more object-oriented manner.
+```js
+var src = jetpack.cwd('path/to/source');
+var dest = jetpack.cwd('path/to/destination');
+src.copy('foo.txt', dest.path('bar.txt'));
+```
+
+## JSON is a first class citizen
+You can write JavaScript object directly to disk and it will be transformed to JSON automatically.
+```js
+var obj = { greet: "Hello World!" };
+jetpack.write('file.json', obj);
+```
+Then you can get your object back just by telling read method that it's a JSON.
+```js
+var obj = jetpack.read('file.json', 'json');
+```
+
+## Throws errors at you as the last resort
+Everyone who did something with files for sure seen *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
+1. For wrte/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
+2. For read/inspect operations, if file or directory doesn't exist `null` is returned instead of throwing.
+
+## This is just powerful API
+All methods play nicely with another. Here are few examples what it can do.  
+**Note:** All examples are synchronous. Unfortunately asynchronous versions of them will be uglier :)
+
+#### Declarative style files creation
+```js
+// To create structure...
+// (CWD path)
+// |- greets
+//    |- greet.txt
+//    |- greet.json
+// |- greets-i18n
+//    |- polish.txt
+
+jetpack
+.dir('greets')
+    .file('greet.txt', { content: 'Hello World!' })
+    .file('greet.json', { content: { greet: 'Hello World!' } })
+    .cwd('..')
+.dir('greets-i18n')
+    .file('polish.txt', { content: 'Cześć!' });
+```
+
+#### Delete all tmp files inside directory tree
+```js
+jetpack.find('my-dir', {
+    matching: '*.tmp'
+})
+.forEach(jetpack.remove);
+```
+
+#### Check if two files have the same content
+```js
+var file1 = jetpack.inspect('file1', { checksum: 'md5' });
+var file2 = jetpack.inspect('file2', { checksum: 'md5' });
+var areTheSame = (file1.md5 === file2.md5);
+```
+
+#### Great for build scripts
+```js
+var src = jetpack.cwd('path/to/source');
+var dest = jetpack.dir('path/to/destination', { empty: true });
+src.copy('.', dest.path(), {
+    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
+});
+var config = src.read('config.json', 'json');
+config.env = 'production';
+dest.write('config.json', config);
+```
+
+
+# <a name="api"></a> API
 
 **Methods:**
 * [append(path, data, [options])](#append)
@@ -403,50 +481,3 @@ Writes data to file.
 
 **returns:**  
 Nothing.
-
-
-# <a name="how-fun"></a> Neat tricks fs-jetpack knows
-
-### Every jetpack instance has its independent, internal CWD
-So you can create many jetpack objects and work on directories in a little more object-oriented fashion.
-```javascript
-var src = jetpack.cwd('path/to/source');
-var dest = jetpack.cwd('path/to/destination');
-src.copy('foo.txt', dest.path('bar.txt'));
-```
-
-### Files creation in declarative style
-You can create whole tree of directories and files in declarative style.
-```javascript
-// Synchronous style
-jetpack
-.dir('foo')
-    .file('foo.txt', { content: 'Hello...' })
-    .file('bar.txt', { content: '...world!' })
-    .cwd('..')
-.dir('bar')
-    .file('foo.txt', { content: 'Wazup?' });
-
-// Asynchronous style (unfortunately not that pretty)
-jetpack
-.dirAsync('foo')
-    .then(function (dir) {
-        return dir.fileAsync('foo.txt', { content: 'Hello...' });
-    })
-    .then(function (dir) {
-        return dir.fileAsync('bar.txt', { content: '...world!' });
-.then(function (dir) {
-    return dir.cwd('..').dirAsync('bar');
-})
-.then(function (dir) {
-    dir.fileAsync('foo.txt', { content: 'Wazup?' });
-});
-```
-
-### Hides ENOENT from you as much as possible
-*"ENOENT, no such file or directory"* is the most annoying error when working with file system, and fs-jetpack does 2 things to save you the hassle:  
-1. For wrte/creation operations, if any of parent directories doesn't exist, jetpack will just create them as well.  
-2. For read/inspect operations, if file or directory doesn't exist, `null` is returned instead of throwing.
-
-### JSON is a first class citizen
-TODO
