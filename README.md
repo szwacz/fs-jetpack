@@ -1,7 +1,9 @@
 fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Coverage Status](https://coveralls.io/repos/szwacz/fs-jetpack/badge.svg)](https://coveralls.io/r/szwacz/fs-jetpack)
 ==========
 
-Node's [fs library](http://nodejs.org/api/fs.html) API is very low level, and because of that painful to use. We need higher layer of abstraction over it. That's what fs-jetpack is.
+Node's [fs library](http://nodejs.org/api/fs.html) API is very low level, and because of that painful to use. We need higher layer of abstraction over it. That's what fs-jetpack aspires to be.
+
+### [Jump to API Docs](#api)
 
 ## Installation
 ```
@@ -12,8 +14,6 @@ npm install fs-jetpack
 ```javascript
 var jetpack = requite('fs-jetpack');
 ```
-
-## [Jump to API Docs](#api)
 
 
 #What's cool about jetpack?
@@ -60,7 +60,7 @@ Everyone who did something with files for sure seen *"ENOENT, no such file or di
 1. For wrte/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist `null` is returned instead of throwing.
 
-## This is just powerful API
+## This is just a powerful API
 All methods play nicely with another. Here are few examples what it can do.  
 **Note:** All examples are synchronous. Unfortunately asynchronous versions of them will be uglier :)
 
