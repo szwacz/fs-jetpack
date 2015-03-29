@@ -519,6 +519,7 @@ Writes data to file.
 `path` path to file.  
 `content` data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputed into file as JSON).  
 `options` (optional) `Object` with possible fields:
+* `atomic` (default `false`) if set to `true` the file will be written using strategy which is much more resistant to data loss. The trick is very simple, [read this to get the concept](http://stackoverflow.com/questions/17047994/transactionally-writing-files-in-node-js). 
 * `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
 
 **returns:**  
