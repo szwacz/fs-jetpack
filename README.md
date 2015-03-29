@@ -151,7 +151,7 @@ jetpack.readAsync('file.txt')
 
 
 ## <a name="append"></a> append(path, data, [options])
-also **appendAsync(path, data, [options])**
+asynchronous: **appendAsync(path, data, [options])**
 
 Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it (or them).
 
@@ -166,7 +166,7 @@ Nothing.
 
 
 ## <a name="copy"></a> copy(from, to, [options])
-also **copyAsync(from, to, [options])**  
+asynchronous: **copyAsync(from, to, [options])**  
 
 Copies given file or directory (with everything inside).
 
@@ -239,7 +239,7 @@ console.log(sillyCwd.cwd()); // '/one/two/three/a/b/c'
 
 
 ## <a name="dir"></a> dir(path, [criteria])
-also **dirAsync(path, [criteria])**  
+asynchronous: **dirAsync(path, [criteria])**  
 
 Ensures that directory on given path meets given criteria. If any criterium is not met it will be after this call.
 
@@ -269,7 +269,7 @@ jetpack
 
 
 ## <a name="exists"></a> exists(path)
-also **existsAsync(path)**  
+asynchronous: **existsAsync(path)**  
 
 Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
 
@@ -281,7 +281,7 @@ Checks whether something exists on given `path`. This method returns values more
 
 
 ## <a name="file"></a> file(path, [criteria])
-also **fileAsync(path, [criteria])**  
+asynchronous: **fileAsync(path, [criteria])**  
 
 Ensures that file meets given criteria. If any criterium is not met it will be after this call.
 
@@ -305,13 +305,13 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-## <a name="find"></a> find(path, searchOptions)
-also **findAsync(path, searchOptions)**
+## <a name="find"></a> find(path, searchOptions, [returnAs])
+asynchronous: **findAsync(path, searchOptions, [returnAs])**
 
 TODO
 
 ## <a name="inspect"></a> inspect(path, [options])
-also **inspectAsync(path, [options])**  
+asynchronous: **inspectAsync(path, [options])**  
 
 Inspects given path (replacement for `fs.stat`). Returned object by default contains only very basic, not platform-dependent properties (so you have something e.g. your unit tests can rely on), you can enable more properties through options object.
 
@@ -344,7 +344,7 @@ Otherwise `Object` of structure:
 
 
 ## <a name="inspect-tree"></a> inspectTree(path, [options])
-also **inspectTreeAsync(path, [options])**  
+asynchronous: **inspectTreeAsync(path, [options])**  
 
 Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
 
@@ -387,7 +387,7 @@ Otherwise tree of inspect objects like:
 
 
 ## <a name="list"></a> list(path, [useInspect])
-also **listAsync(path, [useInspect])**  
+asynchronous: **listAsync(path, [useInspect])**  
 
 Lists the contents of directory.
 
@@ -403,7 +403,7 @@ Lists the contents of directory.
 
 
 ## <a name="move"></a> move(from, to)
-also **moveAsync(from, to)**  
+asynchronous: **moveAsync(from, to)**  
 
 Moves given path to new location.
 
@@ -434,7 +434,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 
 
 ## <a name="read"></a> read(path, [returnAs])
-also **readAsync(path, [returnAs])**  
+asynchronous: **readAsync(path, [returnAs])**  
 
 Reads content of file. If file on given path doesn't exist returns `null` instead of throwing `ENOENT` error.
 
@@ -451,7 +451,7 @@ File content in specified format, or `null` if file doesn't exist.
 
 
 ## <a name="remove"></a> remove(path)
-also **removeAsync(path)**  
+asynchronous: **removeAsync(path)**  
 
 Deletes given path, no matter what it is (file or directory). If path already doesn't exist ends without throwing, so you can use it as 'ensure path doesn't exist'.
 
@@ -472,7 +472,7 @@ jetpack.remove('my_work/important_stuff');
 
 
 ## <a name="rename"></a> rename(path, newName)
-also **renameAsync(path, newName)**  
+asynchronous: **renameAsync(path, newName)**  
 
 Renames given file or directory.
 
@@ -485,7 +485,7 @@ Nothing.
 
 
 ## <a name="write"></a> write(path, data, [options])
-also **writeAsync(path, data, [options])**  
+asynchronous: **writeAsync(path, data, [options])**  
 
 Writes data to file.
 
