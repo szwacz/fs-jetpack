@@ -8,6 +8,7 @@
 * **(breaking change)** In `copy()` options `only` and `allBut` have been replaced by option `matching`.
 * **(breaking change)** In `remove()` options `only` and `allBut` have been dropped (to do the same use `find()`, and then remove).
 * **(breaking change)** Default jsonIndent changed form 0 to 2.
+* `find()` method added.
 * More telling errors when `read()` failed while parsing JSON.
 
 0.5.3 (2015-01-06)
