@@ -114,7 +114,7 @@ dest.write('config.json', config);
 ```
 
 
-# <a name="api"></a> API
+# <a name="api"></a> API Docs
 
 API methods have blocking and non-blocking equivalents:
 ```js
@@ -175,7 +175,7 @@ Copies given file or directory (with everything inside).
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
 * `overwrite` (default: `false`) Whether to overwrite destination path if it exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
-* `matching` (`String` or `Array`) will copy **only** items matching any of specified glob patterns
+* `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else (see examples below).
 
 **returns:**  
 Nothing.
@@ -185,11 +185,15 @@ Nothing.
 // Copies a file (and replaces it if one already exists in "somewhere" direcotry)
 jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
 
-// Copies only ".jpg" files from my_dir
-jetpack.copy('my_dir', 'somewhere/my_dir', { only: ['*.jpg'] });
+// Copies only .md files from my-dir to somewhere/my-dir
+jetpack.copy('my-dir', 'somewhere/my-dir', { matching: '*.md' });
 
-// TODO
-jetpack.copy('my_dir', 'somewhere/my_dir', { matching: ['./a/b'] });
+// When glob pattern starts with './' it means it is anchored to specified 
+// directory to copy. Here will be copied only .jpg files from my-dir/images 
+// and .md files from my-dir/articles
+jetpack.copy('my_dir', 'somewhere/my_dir', { 
+    matching: ['./images/**/*.jpg', './articles/**/*.md' ]
+});
 ```
 
 
@@ -241,7 +245,7 @@ console.log(sillyCwd.cwd()); // '/one/two/three/a/b/c'
 ## <a name="dir"></a> dir(path, [criteria])
 asynchronous: **dirAsync(path, [criteria])**  
 
-Ensures that directory on given path meets given criteria. If any criterium is not met it will be after this call.
+Ensures that directory on given path exists and meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
 `path` path to directory to examine.  
@@ -255,16 +259,16 @@ New CWD context with directory specified in `path` as CWD.
 **examples:**
 ```javascript
 // Creates directory if doesn't exist
-jetpack.dir('new_dir');
+jetpack.dir('new-dir');
 
 // Makes sure directory mode is 0700 and that it's empty
-jetpack.dir('empty_dir', { empty: true, mode: '700' });
+jetpack.dir('empty-dir', { empty: true, mode: '700' });
 
 // Because dir returns new CWD context pointing to just
 // created directory you can create dir chains.
 jetpack
-.dir('main_dir') // creates 'main_dir'
-.dir('sub_dir'); // creates 'main_dir/sub_dir'
+.dir('main-dir') // creates 'main-dir'
+.dir('sub-dir'); // creates 'main-dir/sub-dir'
 ```
 
 
@@ -283,12 +287,12 @@ Checks whether something exists on given `path`. This method returns values more
 ## <a name="file"></a> file(path, [criteria])
 asynchronous: **fileAsync(path, [criteria])**  
 
-Ensures that file meets given criteria. If any criterium is not met it will be after this call.
+Ensures that file exists and meets given criteria. If any criterium is not met it will be after this call.
 
 **parameters:**  
 `path` path to file to examine.  
 `criteria` (optional) criteria to be met by the file. Is an `Object` with possible fields:
-* `content` (`String`, `Buffer`, `Object` or `Array`) sets file content. If `Object` or `Array` given to this parameter the output will be JSON.
+* `content` sets file content. Could be `String`, `Buffer`, `Object` or `Array`. If `Object` or `Array` given to this parameter data will be written as JSON.
 * `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
 * `mode` ensures file has specified mode. If not set and file already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
@@ -308,7 +312,29 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ## <a name="find"></a> find(path, searchOptions, [returnAs])
 asynchronous: **findAsync(path, searchOptions, [returnAs])**
 
-TODO
+Finds in directory specified by `path` all files fulfilling `searchOptions`.
+
+**parameters:**  
+`path` path to start search in (all subdirectories will be searched).  
+`searchOptions` is an `Object` with possible fields:
+* `matching` glob patterns of files you would like to find.
+`returnAs` (optional) how the results should be returned. Could be one of:
+* `'absolutePath'` (default) returns array of absolute paths.
+* `'relativePath'` returns array of relative paths. The paths are relative to `path` you started search in.
+* `'inspect'` returns array of objects like you called [inspect](#inspect) on every of those files.
+
+**returns:**  
+`Array` of found files.
+
+**examples:**
+```javascript
+// Finds all files or directories which has 2015 in the name
+jetpack.find('my-work', { matching: '*2015*' });
+
+// Finds all jpg and png files and gives you back the list of inspect objects
+// (like you called jetpack.inspect on every of those paths)
+jetpack.find('my-work', { matching: ['*.jpg', '*.png'] }, 'inspect');
+```
 
 ## <a name="inspect"></a> inspect(path, [options])
 asynchronous: **inspectAsync(path, [options])**  
@@ -318,7 +344,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 **parameters:**  
 `path` path to inspect.  
 `options` (optional). Possible values:
-* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'` or `'sha1'`. If given path is directory this field is ignored.
+* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. If given path is directory this field is ignored.
 * `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
 * `absolutePath` (dafault `false`) if set to `true` will add absolute path to this resource.
@@ -351,7 +377,7 @@ Calls [inspect](#inspect) recursively on given path so it creates tree of all di
 **parameters:**  
 `path` the path to inspect.  
 `options` (optional). Possible values:
-* `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'` or `'sha1'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
+* `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
 * `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
 
 **returns:**  
@@ -394,7 +420,7 @@ Lists the contents of directory.
 **parameters:**  
 `path` path to directory you would like to list.  
 `useInspect` (optional) the type of data this call should return. Possible values:
-* `false` (default) returns just a list of filenames (the same as `fs.readdir()`)
+* `false` (default) returns just a list of filenames (the same as `fs.readdir`)
 * `true` performs [inspect](#inspect) on every item in directory, and returns array of those objects
 * `object` if object has been passed to this parameter, it is treated as `options` parameter for [inspect](#inspect) method, and will alter returned inspect objects
 
@@ -436,7 +462,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ## <a name="read"></a> read(path, [returnAs])
 asynchronous: **readAsync(path, [returnAs])**  
 
-Reads content of file. If file on given path doesn't exist returns `null` instead of throwing `ENOENT` error.
+Reads content of file. If file on given path doesn't exist returns `null` instead of throwing error.
 
 **parameters:**  
 `path` path to file.  
