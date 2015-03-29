@@ -26,30 +26,28 @@ var clearWorkingDir = function () {
 
 module.exports.clearWorkingDir = clearWorkingDir;
 
-module.exports.beforeEach = function () {
+module.exports.beforeEach = function (done) {
     jasmine.addMatchers(customMatchers);
 
     // Create brand new working directory
-    if (fse.existsSync(workingDir)) {
-        fse.removeSync(workingDir);
-    }
-    fse.mkdirSync(workingDir);
+    fse.remove(workingDir, function () {
+        fse.mkdirSync(workingDir);
 
-    // Set CWD there
-    process.chdir(workingDir);
+        // Set CWD there
+        process.chdir(workingDir);
+        // Better to be safe than sorry
+        if (pathUtil.basename(process.cwd()) !== 'fs-jetpack-test') {
+            throw "CWD switch failed!";
+        }
 
-    // Better to be safe than sorry
-    if (pathUtil.basename(process.cwd()) !== 'fs-jetpack-test') {
-        throw "CWD switch failed!";
-    }
+        done();
+    });
 };
 
-module.exports.afterEach = function () {
+module.exports.afterEach = function (done) {
     // Switch CWD back where we were, and clean the clutter.
     process.chdir(originalCwd);
-    if (fse.existsSync(workingDir)) {
-        fse.removeSync(workingDir);
-    }
+    fse.remove(workingDir, done);
 };
 
 module.exports.convertToUnixPathSeparators = function (thing) {
