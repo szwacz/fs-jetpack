@@ -51,3 +51,12 @@ module.exports.afterEach = function () {
         fse.removeSync(workingDir);
     }
 };
+
+module.exports.convertToUnixPathSeparators = function (thing) {
+    if (Array.isArray(thing)) {
+        return thing.map(function (path) {
+            return path.replace(/\\/g, '/');
+        });
+    }
+    return thing.replace(/\\/g, '/');
+};

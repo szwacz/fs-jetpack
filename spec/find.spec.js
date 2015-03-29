@@ -17,7 +17,8 @@ describe('find |', function () {
         };
 
         var expectations = function (found) {
-            expect(found).toMatch(/\/b\/file\.txt$/);
+            var expectedPath = pathUtil.resolve('./a/b/file.txt');
+            expect(found).toEqual([expectedPath]);
         };
 
         preparations();
@@ -47,7 +48,8 @@ describe('find |', function () {
         };
 
         var expectations = function (found) {
-            expect(found).toEqual(['./b/file.txt']);
+            var normalizedFound = helper.convertToUnixPathSeparators(found);
+            expect(normalizedFound).toEqual(['./b/file.txt']);
         };
 
         preparations();
@@ -122,8 +124,9 @@ describe('find |', function () {
         };
 
         var expectations = function (found) {
-            found.sort();
-            expect(found).toEqual([
+            var normalizedFound = helper.convertToUnixPathSeparators(found);
+            normalizedFound.sort();
+            expect(normalizedFound).toEqual([
                 './b/c/file.txt',
                 './b/file.txt',
                 './x/y/z'
@@ -153,7 +156,8 @@ describe('find |', function () {
         };
 
         var expectations = function (found) {
-            expect(found).toEqual(['./b/file.txt']);
+            var normalizedFound = helper.convertToUnixPathSeparators(found);
+            expect(normalizedFound).toEqual(['./b/file.txt']);
         };
 
         preparations();
