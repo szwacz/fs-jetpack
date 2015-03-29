@@ -1,7 +1,7 @@
 {
   "name": "fs-jetpack",
   "description": "Higher level API for 'fs' library",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
     "minimatch": "2.0.1",
