@@ -1,4 +1,4 @@
-0.6.0 (in progress)
+0.6.0 (2015-03-30)
 -------------------
 * Lots of code refactoring
 * **(breaking change)** `dir()` no longer has `exists` option.
