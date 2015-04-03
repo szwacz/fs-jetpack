@@ -71,13 +71,35 @@ describe('matcher |', function () {
             expect(test('/abbc')).toBe(false);
         });
 
-        it("characters #! have NO special meaning", function () {
-            // these characters have meaning in .gitignore, but here should have not
-            var test = matcher.create(['!a']);
-            expect(test('/!a')).toBe(true);
-
-            test = matcher.create(['#a']);
+        it("comment character # havs no special meaning", function () {
+            var test = matcher.create(['#a']);
             expect(test('/#a')).toBe(true);
+        });
+
+    });
+
+    describe("negation", function () {
+
+        it("selects everything except negated for one defined pattern", function () {
+            var test = matcher.create('!abc');
+            expect(test('/abc')).toBe(false);
+            expect(test('/xyz')).toBe(true);
+        });
+
+        it("selects everything except negated for multiple patterns", function () {
+            var test = matcher.create(['!abc', '!xyz']);
+            expect(test('/abc')).toBe(false);
+            expect(test('/xyz')).toBe(false);
+            expect(test('/whatever')).toBe(true);
+        });
+
+        it("filters previous match if negation is farther in order", function () {
+            var test = matcher.create(['abc', '123', '!/xyz/**', '!/789/**']);
+            expect(test('/abc')).toBe(true);
+            expect(test('/456/123')).toBe(true);
+            expect(test('/xyz/abc')).toBe(false);
+            expect(test('/789/123')).toBe(false);
+            expect(test('/whatever')).toBe(false);
         });
 
     });

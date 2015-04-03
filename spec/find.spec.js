@@ -174,6 +174,33 @@ describe('find |', function () {
         });
     });
 
+    it("deals with negated globs", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a/b/file.txt', '1');
+            fse.outputFileSync('a/b/file.md', '2');
+            fse.outputFileSync('a/b/c/file.txt', '3');
+        };
+
+        var expectations = function (found) {
+            var normalizedFound = helper.convertToUnixPathSeparators(found);
+            expect(normalizedFound).toEqual(['./b/c/file.txt', './b/file.txt']);
+        };
+
+        preparations();
+
+        // SYNC
+        var found = jetpack.find('a', { matching: ['file.*', '!*.md'] }, 'relativePath');
+        expectations(found);
+
+        // ASYNC
+        jetpack.findAsync('a', { matching: ['file.*', '!*.md'] }, 'relativePath')
+        .then(function (found) {
+            expectations(found);
+            done();
+        });
+    });
+
     it("works even if provided path is a file", function (done) {
 
         var preparations = function () {

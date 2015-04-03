@@ -320,25 +320,27 @@ describe('copy |', function () {
             });
         });
 
-        it('can copy empty directory', function (done) {
+        it('can use negation patterns', function (done) {
 
             var preparations = function () {
                 helper.clearWorkingDir();
                 fse.mkdirsSync('dir/a/b');
+                fse.mkdirsSync('dir/a/c');
             };
 
             var expectations = function () {
                 expect('copy/a/b').toBeDirectory();
+                expect('copy/a/c').not.toExist();
             };
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: 'b' });
+            jetpack.copy('dir', 'copy', { matching: ['b', '!c'] });
             expectations();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: 'b' })
+            jetpack.copyAsync('dir', 'copy', { matching: ['b', '!c'] })
             .then(function () {
                 expectations();
                 done();
