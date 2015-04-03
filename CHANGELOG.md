@@ -1,3 +1,7 @@
+0.6.1 (2015-04-03)
+-------------------
+* Option `matching` in `copy()` and `find()` now accepts negation patterns (e.g. `!some/file.txt`).
+
 0.6.0 (2015-03-30)
 -------------------
 * Lots of code refactoring
