@@ -61,9 +61,23 @@ Everyone who did something with files for sure seen *"ENOENT, no such file or di
 1. For wrte/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist `null` is returned instead of throwing.
 
-## This is just a powerful API
-All methods play nicely with each other. Here are few examples what it can give you.  
+## This is just a powerful API (examples)
+All methods play nicely with each other. Here are few examples what it gives you.  
 **Note:** All examples are synchronous. Unfortunately asynchronous versions of them will be uglier :)
+
+#### Great for build scripts
+```js
+var src = jetpack.cwd('path/to/source');
+var dest = jetpack.dir('path/to/destination', { empty: true });
+
+src.copy('.', dest.path(), {
+    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
+});
+
+var config = src.read('config.json', 'json');
+config.env = 'production';
+dest.write('config.json', config);
+```
 
 #### Files creation in declarative style
 ```js
@@ -97,20 +111,6 @@ jetpack.find('my-dir', {
 var file1 = jetpack.inspect('file1', { checksum: 'md5' });
 var file2 = jetpack.inspect('file2', { checksum: 'md5' });
 var areTheSame = (file1.md5 === file2.md5);
-```
-
-#### Great for build scripts
-```js
-var src = jetpack.cwd('path/to/source');
-var dest = jetpack.dir('path/to/destination', { empty: true });
-
-src.copy('.', dest.path(), {
-    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
-});
-
-var config = src.read('config.json', 'json');
-config.env = 'production';
-dest.write('config.json', config);
 ```
 
 
