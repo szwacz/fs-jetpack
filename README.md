@@ -1,7 +1,7 @@
 fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Coverage Status](https://coveralls.io/repos/szwacz/fs-jetpack/badge.svg)](https://coveralls.io/r/szwacz/fs-jetpack)
 ==========
 
-Node's [fs library](http://nodejs.org/api/fs.html) API is very low level, and because of that painful to use. We need higher layer of abstraction over it. That's what **fs-jetpack** aspires to be.
+Node's [file system API](http://nodejs.org/api/fs.html) is very low level and because of that too often painful to use. Let's build better API on top of standard one, so you can do more work with less code. That's what **fs-jetpack** is all about.
 
 #### [Jump to API Docs](#api)
 
