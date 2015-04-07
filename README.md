@@ -188,8 +188,13 @@ jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
 // Copies only .md files from my-dir to somewhere/my-dir
 jetpack.copy('my-dir', 'somewhere/my-dir', { matching: '*.md' });
 
-// When glob pattern starts with './' it means it is anchored to specified 
-// directory to copy. Here will be copied only .jpg files from my-dir/images 
+// Can copy also specyfic path anhored to CWD
+jetpack.copy('my_dir', 'somewhere/my_dir', { 
+    matching: ['my_dir/images/**']
+});
+
+// When glob pattern starts with './' it means it is anchored to base directory 
+// you want to copy. Here will be copied only .jpg files from my-dir/images 
 // and .md files from my-dir/articles
 jetpack.copy('my_dir', 'somewhere/my_dir', { 
     matching: ['./images/**/*.jpg', './articles/**/*.md' ]
