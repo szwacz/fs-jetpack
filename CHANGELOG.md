@@ -1,3 +1,7 @@
+0.6.2 (2015-04-07)
+-------------------
+* Option `matching` in `copy()` and `find()` now accepts patterns anchored to CWD.
+
 0.6.1 (2015-04-03)
 -------------------
 * Option `matching` in `copy()` and `find()` now accepts negation patterns (e.g. `!some/file.txt`).
