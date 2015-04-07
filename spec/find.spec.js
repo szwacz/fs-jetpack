@@ -174,7 +174,7 @@ describe('find |', function () {
         });
     });
 
-    it("deals with negated globs", function (done) {
+    it("deals with glob anchored to CWD", function (done) {
 
         var preparations = function () {
             fse.outputFileSync('a/b/file.txt', '1');
@@ -184,17 +184,58 @@ describe('find |', function () {
 
         var expectations = function (found) {
             var normalizedFound = helper.convertToUnixPathSeparators(found);
-            expect(normalizedFound).toEqual(['./b/c/file.txt', './b/file.txt']);
+            expect(normalizedFound).toEqual(['./b/file.txt']);
         };
 
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: ['file.*', '!*.md'] }, 'relativePath');
+        var found = jetpack.find('a', { matching: 'a/b/*.txt' }, 'relativePath');
         expectations(found);
 
         // ASYNC
-        jetpack.findAsync('a', { matching: ['file.*', '!*.md'] }, 'relativePath')
+        jetpack.findAsync('a', { matching: 'a/b/*.txt' }, 'relativePath')
+        .then(function (found) {
+            expectations(found);
+            done();
+        });
+    });
+
+    it('deals with negation globs', function (done) {
+
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.mkdirsSync('a/b');
+            fse.mkdirsSync('a/x');
+            fse.mkdirsSync('a/y');
+            fse.mkdirsSync('a/z');
+        };
+
+        var expectations = function (found) {
+            var normalizedFound = helper.convertToUnixPathSeparators(found);
+            expect(normalizedFound).toEqual(['./b']);
+        };
+
+        // SYNC
+        preparations();
+        var found = jetpack.find('a', { matching: [
+            'a/*',
+            // Three different pattern types to test:
+            '!x',
+            '!a/y',
+            '!./z'
+        ]}, 'relativePath');
+        expectations(found);
+
+        // ASYNC
+        preparations();
+        jetpack.findAsync('a', { matching: [
+            'a/*',
+            // Three different pattern types to test:
+            '!x',
+            '!a/y',
+            '!./z'
+        ]}, 'relativePath')
         .then(function (found) {
             expectations(found);
             done();
