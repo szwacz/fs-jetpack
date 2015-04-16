@@ -83,30 +83,6 @@ describe('inspect |', function () {
         });
     });
 
-    it('can output file mode', function (done) {
-
-        var preparations = function () {
-            fse.outputFileSync('dir/file.txt', 'abc');
-        }
-
-        var expectations = function (data) {
-            expect(typeof data.mode).toBe('number');
-        }
-
-        preparations();
-
-        // SYNC
-        var data = jetpack.inspect('dir/file.txt', { mode: true });
-        expectations(data);
-
-        // ASYNC
-        jetpack.inspectAsync('dir/file.txt', { mode: true })
-        .then(function (data) {
-            expectations(data);
-            done();
-        });
-    });
-
     it('can output file times (ctime, mtime, atime)', function (done) {
 
         var preparations = function () {
@@ -234,6 +210,96 @@ describe('inspect |', function () {
                 });
             });
 
+        });
+
+    });
+
+    describe('*nix specific', function () {
+
+        if (process.platform === 'win32') {
+            return;
+        }
+
+        it('can output file mode', function (done) {
+
+            var preparations = function () {
+                fse.outputFileSync('dir/file.txt', 'abc');
+            }
+
+            var expectations = function (data) {
+                expect(typeof data.mode).toBe('number');
+            }
+
+            preparations();
+
+            // SYNC
+            var data = jetpack.inspect('dir/file.txt', { mode: true });
+            expectations(data);
+
+            // ASYNC
+            jetpack.inspectAsync('dir/file.txt', { mode: true })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+
+        it('follows symlink by default', function (done) {
+
+            var preparations = function () {
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
+            }
+
+            var expectations = function (data) {
+                expect(data).toEqual({
+                    name: 'symlinked_file.txt',
+                    type: 'file',
+                    size: 3,
+                });
+            }
+
+            preparations();
+
+            // SYNC
+            var data = jetpack.inspect('symlinked_file.txt');
+            expectations(data);
+
+            // ASYNC
+            jetpack.inspectAsync('symlinked_file.txt')
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+
+        it('stats symlink if option specified', function (done) {
+
+            var preparations = function () {
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
+            }
+
+            var expectations = function (data) {
+                expect(data).toEqual({
+                    name: 'symlinked_file.txt',
+                    type: 'symlink',
+                    pointsAt: 'dir/file.txt'
+                });
+            }
+
+            preparations();
+
+            // SYNC
+            var data = jetpack.inspect('symlinked_file.txt', { symlinks: true });
+            expectations(data);
+
+            // ASYNC
+            jetpack.inspectAsync('symlinked_file.txt', { symlinks: true })
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
         });
 
     });

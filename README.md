@@ -29,7 +29,7 @@ Thanks to that the API is also coherent...
 var data = jetpack.read('file.txt');
 console.log(data);
 
-// Want to make that call asnychronous? Just add the word "Async" 
+// Want to make that call asnychronous? Just add the word "Async"
 // and it will give you promise instead of ready value.
 jetpack.readAsync('file.txt')
 .then(function (data) {
@@ -189,14 +189,14 @@ jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
 jetpack.copy('my-dir', 'somewhere/my-dir', { matching: '*.md' });
 
 // Can copy also specyfic path anhored to CWD
-jetpack.copy('my_dir', 'somewhere/my_dir', { 
+jetpack.copy('my_dir', 'somewhere/my_dir', {
     matching: ['my_dir/images/**']
 });
 
-// When glob pattern starts with './' it means it is anchored to base directory 
-// you want to copy. Here will be copied only .jpg files from my-dir/images 
+// When glob pattern starts with './' it means it is anchored to base directory
+// you want to copy. Here will be copied only .jpg files from my-dir/images
 // and .md files from my-dir/articles
-jetpack.copy('my_dir', 'somewhere/my_dir', { 
+jetpack.copy('my_dir', 'somewhere/my_dir', {
     matching: ['./images/**/*.jpg', './articles/**/*.md' ]
 });
 ```
@@ -353,6 +353,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 * `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
 * `absolutePath` (dafault `false`) if set to `true` will add absolute path to this resource.
+* `symlinks` (dafault `false`) if set to `true` will just inspect symlink itself and not follow it.
 
 **returns:**
 `null` if given path doens't exist.  
@@ -524,7 +525,7 @@ Writes data to file.
 `path` path to file.  
 `content` data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputed into file as JSON).  
 `options` (optional) `Object` with possible fields:
-* `atomic` (default `false`) if set to `true` the file will be written using strategy which is much more resistant to data loss. The trick is very simple, [read this to get the concept](http://stackoverflow.com/questions/17047994/transactionally-writing-files-in-node-js). 
+* `atomic` (default `false`) if set to `true` the file will be written using strategy which is much more resistant to data loss. The trick is very simple, [read this to get the concept](http://stackoverflow.com/questions/17047994/transactionally-writing-files-in-node-js).
 * `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
 
 **returns:**  
