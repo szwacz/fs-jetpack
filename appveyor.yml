@@ -1,6 +1,8 @@
 # appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
 
+version: "{build}"
+
 environment:
   matrix:
     - nodejs_version: "0.10"
