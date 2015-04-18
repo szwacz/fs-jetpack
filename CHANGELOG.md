@@ -1,3 +1,7 @@
+0.6.3 (2015-04-18)
+-------------------
+* Added support for symbolic links.
+
 0.6.2 (2015-04-07)
 -------------------
 * Option `matching` in `copy()` and `find()` now accepts patterns anchored to CWD.
