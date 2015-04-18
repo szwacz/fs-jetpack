@@ -394,7 +394,7 @@ describe('copy |', function () {
 
     });
 
-    describe('*nix specyfic |', function () {
+    describe('*nix specific |', function () {
 
         if (process.platform === 'win32') {
             return;
@@ -422,6 +422,35 @@ describe('copy |', function () {
             // AYNC
             preparations();
             jetpack.copyAsync('a', 'x')
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+
+        it('can copy symlink', function (done) {
+
+            var preparations = function () {
+                helper.clearWorkingDir();
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.mkdirsSync('to_copy');
+                fse.symlinkSync('dir/file.txt', 'to_copy/symlinked_file.txt');
+            };
+
+            var expectations = function () {
+                expect('dir/file.txt').toBeFileWithContent('abc');
+                expect(fse.lstatSync('copied/symlinked_file.txt').isSymbolicLink()).toBe(true);
+                expect(fse.readlinkSync('copied/symlinked_file.txt')).toBe('dir/file.txt');
+            };
+
+            // SYNC
+            preparations();
+            var data = jetpack.copy('to_copy', 'copied');
+            expectations();
+
+            // ASYNC
+            preparations();
+            jetpack.copyAsync('to_copy', 'copied')
             .then(function () {
                 expectations();
                 done();
