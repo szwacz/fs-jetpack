@@ -94,35 +94,4 @@ describe('symlink |', function () {
 
     });
 
-    describe('windows specyfic |', function () {
-
-        if (process.platform !== 'win32') {
-            return;
-        }
-
-        it("Throws nice error on Windows", function (done) {
-
-            var expectations = function (err) {
-                expect(err.code).toBe('EPERM');
-                expect(err.message).toBe('Symbolic links are not supported on Windows platform');
-            };
-
-            // SYNC
-            try {
-                jetpack.symlink('whatever', 'a/b/symlink');
-                throw "to make sure this code throws";
-            } catch (err) {
-                expectations(err);
-            }
-
-            // ASYNC
-            jetpack.symlinkAsync('whatever', 'a/b/symlink')
-            .catch(function (err) {
-                expectations(err);
-                done();
-            });
-        });
-
-    });
-
 });
