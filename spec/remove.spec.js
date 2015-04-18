@@ -101,4 +101,40 @@ describe('remove', function () {
         });
     });
 
+    describe('*nix specific', function () {
+
+        if (process.platform === 'win32') {
+            return;
+        }
+
+        it('removes only symlinks, never real content where symlinks point', function (done) {
+
+            var preparations = function () {
+                helper.clearWorkingDir();
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.mkdirsSync('to_remove');
+                fse.symlinkSync('dir/file.txt', 'to_remove/symlinked_file.txt');
+            };
+
+            var expectations = function () {
+                expect('dir/file.txt').toBeFileWithContent('abc');
+                expect('to_remove').not.toExist();
+            };
+
+            // SYNC
+            preparations();
+            var data = jetpack.remove('to_remove');
+            expectations();
+
+            // ASYNC
+            preparations();
+            jetpack.removeAsync('to_remove')
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+
+    });
+
 });
