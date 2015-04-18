@@ -147,6 +147,7 @@ jetpack.readAsync('file.txt')
 * [read](#read)
 * [remove](#remove)
 * [rename](#rename)
+* [symlink](#symlink)
 * [write](#write)
 
 
@@ -501,6 +502,19 @@ jetpack.remove('my_work/notes.txt');
 // Deletes directory "important_stuff" and everything inside
 jetpack.remove('my_work/important_stuff');
 ```
+
+
+## <a name="symlink"></a> symlink(symlinkValue, path)
+asynchronous: **symlinkAsync(symlinkValue, path)**  
+
+Creates symbolic link.
+
+**parameters:**  
+`symlinkValue` path where symbolic link should point.  
+`path` path where symbolic link should be put.  
+
+**returns:**  
+Nothing.
 
 
 ## <a name="rename"></a> rename(path, newName)
