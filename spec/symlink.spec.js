@@ -100,21 +100,25 @@ describe('symlink |', function () {
             return;
         }
 
-        it("is NOOP on Windows", function (done) {
+        it("Throws nice error on Windows", function (done) {
 
-            var expectations = function () {
-                // No file should be outputted.
-                expect(fse.readdirSync('.').length).toBe(0);
+            var expectations = function (err) {
+                expect(err.code).toBe('EPERM');
+                expect(err.message).toBe('Symbolic links are not supported on Windows platform');
             };
 
             // SYNC
-            jetpack.symlink('whatever', 'a/b/symlink');
-            expectations();
+            try {
+                jetpack.symlink('whatever', 'a/b/symlink');
+                throw "to make sure this code throws";
+            } catch (err) {
+                expectations(err);
+            }
 
             // ASYNC
             jetpack.symlinkAsync('whatever', 'a/b/symlink')
-            .then(function () {
-                expectations();
+            .catch(function (err) {
+                expectations(err);
                 done();
             });
         });
