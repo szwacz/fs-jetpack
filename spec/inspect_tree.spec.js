@@ -299,4 +299,50 @@ describe('inspectTree |', function () {
         });
     });
 
+    describe('*nix specific', function () {
+
+        if (process.platform === 'win32') {
+            return;
+        }
+
+        it('can deal with symlink', function (done) {
+
+            var preparations = function () {
+                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.symlinkSync('dir/file.txt', 'dir/symlinked_file.txt');
+            }
+
+            var expectations = function (data) {
+                expect(data).toEqual({
+                    name: 'dir',
+                    type: 'dir',
+                    size: 3,
+                    children: [{
+                        name: 'file.txt',
+                        type: 'file',
+                        size: 3,
+                    },{
+                        name: 'symlinked_file.txt',
+                        type: 'symlink',
+                        pointsAt: 'dir/file.txt',
+                    }]
+                });
+            }
+
+            preparations();
+
+            // SYNC
+            var data = jetpack.inspectTree('dir');
+            expectations(data);
+
+            // ASYNC
+            jetpack.inspectTreeAsync('dir')
+            .then(function (data) {
+                expectations(data);
+                done();
+            });
+        });
+
+    });
+
 });
