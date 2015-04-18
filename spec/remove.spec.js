@@ -111,19 +111,21 @@ describe('remove', function () {
 
             var preparations = function () {
                 helper.clearWorkingDir();
-                fse.outputFileSync('dir/file.txt', 'abc');
+                fse.outputFileSync('have_to_stay_file', 'abc');
                 fse.mkdirsSync('to_remove');
-                fse.symlinkSync('dir/file.txt', 'to_remove/symlinked_file.txt');
+                fse.symlinkSync('../have_to_stay_file', 'to_remove/symlink');
+                // Make sure we symlinked it properly.
+                expect(fse.readFileSync('to_remove/symlink', 'utf8')).toBe('abc');
             };
 
             var expectations = function () {
-                expect('dir/file.txt').toBeFileWithContent('abc');
+                expect('have_to_stay_file').toBeFileWithContent('abc');
                 expect('to_remove').not.toExist();
             };
 
             // SYNC
             preparations();
-            var data = jetpack.remove('to_remove');
+            jetpack.remove('to_remove');
             expectations();
 
             // ASYNC

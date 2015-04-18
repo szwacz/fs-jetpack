@@ -432,15 +432,13 @@ describe('copy |', function () {
 
             var preparations = function () {
                 helper.clearWorkingDir();
-                fse.outputFileSync('dir/file.txt', 'abc');
                 fse.mkdirsSync('to_copy');
-                fse.symlinkSync('dir/file.txt', 'to_copy/symlinked_file.txt');
+                fse.symlinkSync('some/file', 'to_copy/symlink');
             };
 
             var expectations = function () {
-                expect('dir/file.txt').toBeFileWithContent('abc');
-                expect(fse.lstatSync('copied/symlinked_file.txt').isSymbolicLink()).toBe(true);
-                expect(fse.readlinkSync('copied/symlinked_file.txt')).toBe('dir/file.txt');
+                expect(fse.lstatSync('copied/symlink').isSymbolicLink()).toBe(true);
+                expect(fse.readlinkSync('copied/symlink')).toBe('some/file');
             };
 
             // SYNC
