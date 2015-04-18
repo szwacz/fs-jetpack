@@ -10,88 +10,80 @@ describe('symlink |', function () {
     beforeEach(helper.beforeEach);
     afterEach(helper.afterEach);
 
-    describe('*nix specyfic |', function () {
+    it("can create a symlink", function (done) {
 
-        if (process.platform === 'win32') {
-            return;
-        }
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
 
-        it("can create a symlink", function (done) {
+        var expectations = function () {
+            expect(fse.lstatSync('symlink').isSymbolicLink()).toBe(true);
+            expect(fse.readlinkSync('symlink')).toBe('some_path');
+        };
 
-            var preparations = function () {
-                helper.clearWorkingDir();
-            };
+        // SYNC
+        preparations();
+        jetpack.symlink('some_path', 'symlink');
+        expectations();
 
-            var expectations = function () {
-                expect(fse.lstatSync('symlink').isSymbolicLink()).toBe(true);
-                expect(fse.readlinkSync('symlink')).toBe('some/path');
-            };
-
-            // SYNC
-            preparations();
-            jetpack.symlink('some/path', 'symlink');
+        // ASYNC
+        preparations();
+        jetpack.symlinkAsync('some_path', 'symlink')
+        .then(function () {
             expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.symlinkAsync('some/path', 'symlink')
-            .then(function () {
-                expectations();
-                done();
-            });
+            done();
         });
+    });
 
-        it("can create nonexistent parent directories", function (done) {
+    it("can create nonexistent parent directories", function (done) {
 
-            var preparations = function () {
-                helper.clearWorkingDir();
-            };
+        var preparations = function () {
+            helper.clearWorkingDir();
+        };
 
-            var expectations = function () {
-                expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
-            };
+        var expectations = function () {
+            expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
+        };
 
-            // SYNC
-            preparations();
-            jetpack.symlink('whatever', 'a/b/symlink');
+        // SYNC
+        preparations();
+        jetpack.symlink('whatever', 'a/b/symlink');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetpack.symlinkAsync('whatever', 'a/b/symlink')
+        .then(function () {
             expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.symlinkAsync('whatever', 'a/b/symlink')
-            .then(function () {
-                expectations();
-                done();
-            });
+            done();
         });
+    });
 
-        it("respects internal CWD of jetpack instance", function (done) {
+    it("respects internal CWD of jetpack instance", function (done) {
 
-            var preparations = function () {
-                helper.clearWorkingDir();
-                fse.mkdirsSync('a/b');
-            };
+        var preparations = function () {
+            helper.clearWorkingDir();
+            fse.mkdirsSync('a/b');
+        };
 
-            var expectations = function () {
-                expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
-            };
+        var expectations = function () {
+            expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
+        };
 
-            var jetContext = jetpack.cwd('a/b');
+        var jetContext = jetpack.cwd('a/b');
 
-            // SYNC
-            preparations();
-            jetContext.symlink('whatever', 'symlink');
+        // SYNC
+        preparations();
+        jetContext.symlink('whatever', 'symlink');
+        expectations();
+
+        // ASYNC
+        preparations();
+        jetContext.symlinkAsync('whatever', 'symlink')
+        .then(function () {
             expectations();
-
-            // ASYNC
-            preparations();
-            jetContext.symlinkAsync('whatever', 'symlink')
-            .then(function () {
-                expectations();
-                done();
-            });
+            done();
         });
-
     });
 
 });
