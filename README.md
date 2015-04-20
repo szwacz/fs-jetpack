@@ -1,4 +1,4 @@
-fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack)
+fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack)
 ==========
 
 Node's [file system API](http://nodejs.org/api/fs.html) is very low level and because of that too often painful to use. Let's build better API on top of standard one, so you can do more work with less code. That's what **fs-jetpack** is all about.
