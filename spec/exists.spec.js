@@ -70,4 +70,28 @@ describe('exists', function () {
         });
     });
 
+    describe("edge cases", function () {
+
+        it("ENOTDIR error changes into 'false'", function (done) {
+            // We have here malformed path: /some/dir/file.txt/some_dir
+            // (so file is in the middle of path, not at the end).
+            // This leads to ENOTDIR error, but technically speaking this
+            // path doesn't exist so let's just return false.
+
+            fse.outputFileSync('text.txt', 'abc');
+
+            // SYNC
+            var exists = jetpack.exists('text.txt/something');
+            expect(exists).toBe(false);
+
+            // ASYNC
+            jetpack.existsAsync('text.txt/something')
+            .then(function (exists) {
+                expect(exists).toBe(false);
+                done();
+            });
+        });
+
+    });
+
 });
