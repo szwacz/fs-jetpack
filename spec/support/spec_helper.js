@@ -6,7 +6,7 @@ var os = require('os');
 
 var customMatchers = require('./jasmine_matchers');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 var originalCwd = process.cwd();
 // The directory we will be using as CWD for tests.
