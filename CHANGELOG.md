@@ -1,3 +1,7 @@
+0.6.5 (2015-06-19)
+-------------------
+* `exists()` can handle ENOTDIR error.
+
 0.6.3 and 0.6.4 (2015-04-18)
 -------------------
 * Added support for symbolic links.
