@@ -1,3 +1,5 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('find |', function () {
@@ -24,19 +26,19 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: '*.txt' }); // default
-        expectations(found);
-        found = jetpack.find('a', { matching: '*.txt' }, 'absolutePath'); // explicit
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: '*.txt' }); // default
+        expectations(foundSync);
+        foundSync = jetpack.find('a', { matching: '*.txt' }, 'absolutePath'); // explicit
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: '*.txt' }) // default
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             return jetpack.findAsync('a', { matching: '*.txt' }, 'absolutePath'); // explicit
         })
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -55,13 +57,13 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: '*.txt' }, 'relativePath');
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: '*.txt' }, 'relativePath');
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: '*.txt' }, 'relativePath')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -79,13 +81,13 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: '*.txt' }, 'inspect');
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: '*.txt' }, 'inspect');
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: '*.txt' }, 'inspect')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -103,13 +105,13 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: '*.txt' });
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: '*.txt' });
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: '*.txt' })
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -129,20 +131,20 @@ describe('find |', function () {
             expect(normalizedFound).toEqual([
                 './b/c/file.txt',
                 './b/file.txt',
-                './x/y/z'
+                './x/y/z',
             ]);
         };
 
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: ['*.txt', 'z'] }, 'relativePath');
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: ['*.txt', 'z'] }, 'relativePath');
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: ['*.txt', 'z'] }, 'relativePath')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -163,13 +165,13 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: './b/*.txt' }, 'relativePath');
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: './b/*.txt' }, 'relativePath');
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: './b/*.txt' }, 'relativePath')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -190,13 +192,13 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('a', { matching: 'a/b/*.txt' }, 'relativePath');
-        expectations(found);
+        var foundSync = jetpack.find('a', { matching: 'a/b/*.txt' }, 'relativePath');
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('a', { matching: 'a/b/*.txt' }, 'relativePath')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -218,26 +220,30 @@ describe('find |', function () {
 
         // SYNC
         preparations();
-        var found = jetpack.find('a', { matching: [
-            'a/*',
-            // Three different pattern types to test:
-            '!x',
-            '!a/y',
-            '!./z'
-        ]}, 'relativePath');
-        expectations(found);
+        var foundSync = jetpack.find('a', {
+            matching: [
+                'a/*',
+                // Three different pattern types to test:
+                '!x',
+                '!a/y',
+                '!./z',
+            ],
+        }, 'relativePath');
+        expectations(foundSync);
 
         // ASYNC
         preparations();
-        jetpack.findAsync('a', { matching: [
-            'a/*',
-            // Three different pattern types to test:
-            '!x',
-            '!a/y',
-            '!./z'
-        ]}, 'relativePath')
-        .then(function (found) {
-            expectations(found);
+        jetpack.findAsync('a', {
+            matching: [
+                'a/*',
+                // Three different pattern types to test:
+                '!x',
+                '!a/y',
+                '!./z',
+            ],
+        }, 'relativePath')
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -255,13 +261,13 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var found = jetpack.find('file.txt', { matching: '*.txt' }, 'relativePath');
-        expectations(found);
+        var foundSync = jetpack.find('file.txt', { matching: '*.txt' }, 'relativePath');
+        expectations(foundSync);
 
         // ASYNC
         jetpack.findAsync('file.txt', { matching: '*.txt' }, 'relativePath')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });
@@ -303,13 +309,13 @@ describe('find |', function () {
         var jetContext = jetpack.cwd('a');
 
         // SYNC
-        var found = jetContext.find('b', { matching: '*.txt' }, 'inspect');
-        expectations(found);
+        var foundSync = jetContext.find('b', { matching: '*.txt' }, 'inspect');
+        expectations(foundSync);
 
         // ASYNC
         jetContext.findAsync('b', { matching: '*.txt' }, 'inspect')
-        .then(function (found) {
-            expectations(found);
+        .then(function (foundAsync) {
+            expectations(foundAsync);
             done();
         });
     });

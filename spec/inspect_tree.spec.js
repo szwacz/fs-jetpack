@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('inspectTree |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -15,7 +16,7 @@ describe('inspectTree |', function () {
         var preparations = function () {
             fse.outputFileSync('dir/file.txt', 'abc');
             fse.outputFileSync('dir/subdir/file.txt', 'defg');
-        }
+        };
 
         var expectations = function (data) {
             expect(data).toEqual({
@@ -26,8 +27,8 @@ describe('inspectTree |', function () {
                     {
                         name: 'file.txt',
                         type: 'file',
-                        size: 3
-                    },{
+                        size: 3,
+                    }, {
                         name: 'subdir',
                         type: 'dir',
                         size: 4,
@@ -35,24 +36,24 @@ describe('inspectTree |', function () {
                             {
                                 name: 'file.txt',
                                 type: 'file',
-                                size: 4
-                            }
-                        ]
-                    }
-                ]
+                                size: 4,
+                            },
+                        ],
+                    },
+                ],
             });
-        }
+        };
 
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('dir');
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('dir');
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('dir')
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -64,7 +65,7 @@ describe('inspectTree |', function () {
             fse.outputFileSync('dir/empty.txt', '');
             fse.outputFileSync('dir/file.txt', 'abc');
             fse.outputFileSync('dir/subdir/file.txt', 'defg');
-        }
+        };
 
         var expectations = function (data) {
             // dir
@@ -79,18 +80,18 @@ describe('inspectTree |', function () {
             expect(data.children[3].size).toBe(4);
             // dir/subdir/file.txt
             expect(data.children[3].children[0].size).toBe(4);
-        }
+        };
 
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('dir');
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('dir');
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('dir')
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -114,13 +115,13 @@ describe('inspectTree |', function () {
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('dir', { checksum: 'md5' });
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('dir', { checksum: 'md5' });
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -144,13 +145,13 @@ describe('inspectTree |', function () {
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('dir', { checksum: 'md5' });
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('dir', { checksum: 'md5' });
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -159,7 +160,7 @@ describe('inspectTree |', function () {
 
         var preparations = function () {
             fse.outputFileSync('dir/subdir/file.txt', 'defg');
-        }
+        };
 
         var expectations = function (data) {
             // data will look like...
@@ -182,18 +183,18 @@ describe('inspectTree |', function () {
             expect(data.relativePath).toBe('.');
             expect(data.children[0].relativePath).toBe('./subdir');
             expect(data.children[0].children[0].relativePath).toBe('./subdir/file.txt');
-        }
+        };
 
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('dir', { relativePath: true });
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('dir', { relativePath: true });
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('dir', { relativePath: true })
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -202,26 +203,26 @@ describe('inspectTree |', function () {
 
         var preparations = function () {
             fse.outputFileSync('dir/file.txt', 'abc');
-        }
+        };
 
         var expectations = function (data) {
             expect(data).toEqual({
                 name: 'file.txt',
                 type: 'file',
-                size: 3
+                size: 3,
             });
-        }
+        };
 
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('dir/file.txt');
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('dir/file.txt');
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('dir/file.txt')
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -230,27 +231,27 @@ describe('inspectTree |', function () {
 
         var preparations = function () {
             fse.mkdirsSync('empty');
-        }
+        };
 
         var expectations = function (data) {
             expect(data).toEqual({
                 name: 'empty',
                 type: 'dir',
                 size: 0,
-                children: []
+                children: [],
             });
-        }
+        };
 
         preparations();
 
         // SYNC
-        var tree = jetpack.inspectTree('empty');
-        expectations(tree);
+        var treeSync = jetpack.inspectTree('empty');
+        expectations(treeSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('empty')
-        .then(function (tree) {
-            expectations(tree);
+        .then(function (treeAsync) {
+            expectations(treeAsync);
             done();
         });
     });
@@ -262,13 +263,13 @@ describe('inspectTree |', function () {
         };
 
         // SYNC
-        var data = jetpack.inspectTree('nonexistent');
-        expectations(data);
+        var dataSync = jetpack.inspectTree('nonexistent');
+        expectations(dataSync);
 
         // ASYNC
         jetpack.inspectTreeAsync('nonexistent')
-        .then(function (data) {
-            expectations(data);
+        .then(function (dataAsync) {
+            expectations(dataAsync);
             done();
         });
     });
@@ -288,13 +289,13 @@ describe('inspectTree |', function () {
         var jetContext = jetpack.cwd('a');
 
         // SYNC
-        var data = jetContext.inspectTree('b.txt');
-        expectations(data);
+        var dataSync = jetContext.inspectTree('b.txt');
+        expectations(dataSync);
 
         // ASYNC
         jetContext.inspectTreeAsync('b.txt')
-        .then(function (data) {
-            expectations(data);
+        .then(function (dataAsync) {
+            expectations(dataAsync);
             done();
         });
     });
@@ -310,7 +311,7 @@ describe('inspectTree |', function () {
             var preparations = function () {
                 fse.outputFileSync('dir/file.txt', 'abc');
                 fse.symlinkSync('dir/file.txt', 'dir/symlinked_file.txt');
-            }
+            };
 
             var expectations = function (data) {
                 expect(data).toEqual({
@@ -321,24 +322,24 @@ describe('inspectTree |', function () {
                         name: 'file.txt',
                         type: 'file',
                         size: 3,
-                    },{
+                    }, {
                         name: 'symlinked_file.txt',
                         type: 'symlink',
                         pointsAt: 'dir/file.txt',
-                    }]
+                    }],
                 });
-            }
+            };
 
             preparations();
 
             // SYNC
-            var data = jetpack.inspectTree('dir');
-            expectations(data);
+            var dataSync = jetpack.inspectTree('dir');
+            expectations(dataSync);
 
             // ASYNC
             jetpack.inspectTreeAsync('dir')
-            .then(function (data) {
-                expectations(data);
+            .then(function (dataAsync) {
+                expectations(dataAsync);
                 done();
             });
         });

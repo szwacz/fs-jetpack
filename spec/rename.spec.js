@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('rename |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 

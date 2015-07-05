@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('list |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -17,22 +18,22 @@ describe('list |', function () {
             fse.outputFileSync('dir/empty.txt', '');
             fse.outputFileSync('dir/file.txt', 'abc');
             fse.outputFileSync('dir/subdir/file.txt', 'defg');
-        }
+        };
 
         var expectations = function (data) {
             expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
-        }
+        };
 
         preparations();
 
         // SYNC
-        var list = jetpack.list('dir');
-        expectations(list);
+        var listSync = jetpack.list('dir');
+        expectations(listSync);
 
         // ASYNC
         jetpack.listAsync('dir')
-        .then(function (list) {
-            expectations(list);
+        .then(function (listAsync) {
+            expectations(listAsync);
             done();
         });
     });
@@ -42,7 +43,7 @@ describe('list |', function () {
         var preparations = function () {
             fse.outputFileSync('dir/file.txt', 'abc');
             fse.mkdirsSync('dir/next');
-        }
+        };
 
         var expectations = function (data) {
             expect(data).toEqual([
@@ -50,23 +51,23 @@ describe('list |', function () {
                     name: 'file.txt',
                     type: 'file',
                     size: 3,
-                },{
+                }, {
                     name: 'next',
                     type: 'dir',
-                }
+                },
             ]);
-        }
+        };
 
         preparations();
 
         // SYNC
-        var list = jetpack.list('dir', true);
-        expectations(list);
+        var listSync = jetpack.list('dir', true);
+        expectations(listSync);
 
         // ASYNC
         jetpack.listAsync('dir', true)
-        .then(function (list) {
-            expectations(list);
+        .then(function (listAsync) {
+            expectations(listAsync);
             done();
         });
     });
@@ -75,22 +76,22 @@ describe('list |', function () {
 
         var preparations = function () {
             fse.outputFileSync('dir/file.txt', 'abc');
-        }
+        };
 
         var expectations = function (data) {
             expect(data[0].md5).toBeDefined();
-        }
+        };
 
         preparations();
 
         // SYNC
-        var list = jetpack.list('dir', { checksum: 'md5' });
-        expectations(list);
+        var listSync = jetpack.list('dir', { checksum: 'md5' });
+        expectations(listSync);
 
         // ASYNC
         jetpack.listAsync('dir', { checksum: 'md5' })
-        .then(function (list) {
-            expectations(list);
+        .then(function (listAsync) {
+            expectations(listAsync);
             done();
         });
     });
@@ -102,13 +103,13 @@ describe('list |', function () {
         };
 
         // SYNC
-        var data = jetpack.list('nonexistent');
-        expectations(data);
+        var dataSync = jetpack.list('nonexistent');
+        expectations(dataSync);
 
         // ASYNC
         jetpack.listAsync('nonexistent')
-        .then(function (data) {
-            expectations(data);
+        .then(function (dataAsync) {
+            expectations(dataAsync);
             done();
         });
     });
@@ -126,13 +127,13 @@ describe('list |', function () {
         preparations();
 
         // SYNC
-        var list = jetpack.list('file.txt');
-        expectations(list);
+        var listSync = jetpack.list('file.txt');
+        expectations(listSync);
 
         // ASYNC
         jetpack.listAsync('file.txt')
-        .then(function (list) {
-            expectations(list);
+        .then(function (listAsync) {
+            expectations(listAsync);
             done();
         });
     });
@@ -153,14 +154,14 @@ describe('list |', function () {
 
         // SYNC
         preparations();
-        var data = jetContext.list('b');
-        expectations(data);
+        var dataSync = jetContext.list('b');
+        expectations(dataSync);
 
         // ASYNC
         preparations();
         jetContext.listAsync('b')
-        .then(function (data) {
-            expectations(data);
+        .then(function (dataAsync) {
+            expectations(dataAsync);
             done();
         });
     });

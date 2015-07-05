@@ -14,7 +14,7 @@ module.exports.toExist = function () {
             }
             return {
                 pass: pass,
-                message: message
+                message: message,
             };
         },
         negativeCompare: function (path) {
@@ -27,27 +27,30 @@ module.exports.toExist = function () {
             }
             return {
                 pass: pass,
-                message: message
+                message: message,
             };
-        }
-    }
+        },
+    };
 };
 
 module.exports.toBeDirectory = function () {
     return {
         compare: function (path) {
-            var pass = false;
+            var pass;
             var message = 'Path ' + path + ' should be directory';
             try {
                 var stat = fs.statSync(path);
                 pass = stat.isDirectory();
-            } catch (err) {}
+            } catch (err) {
+                // For sure not a directory.
+                pass = false;
+            }
             return {
                 pass: pass,
-                message: message
+                message: message,
             };
-        }
-    }
+        },
+    };
 };
 
 module.exports.toBeFileWithContent = function () {
@@ -69,10 +72,10 @@ module.exports.toBeFileWithContent = function () {
             }
             return {
                 pass: pass,
-                message: message
+                message: message,
             };
-        }
-    }
+        },
+    };
 };
 
 module.exports.toHaveMode = function () {
@@ -94,8 +97,8 @@ module.exports.toHaveMode = function () {
             }
             return {
                 pass: pass,
-                message: message
+                message: message,
             };
-        }
-    }
+        },
+    };
 };

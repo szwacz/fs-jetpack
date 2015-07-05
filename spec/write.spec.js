@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('write |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -66,7 +67,7 @@ describe('write |', function () {
     it('writes data as JSON', function (done) {
 
         var obj = {
-            utf8: "ąćłźż"
+            utf8: "ąćłźż",
         };
 
         var preparations = function () {
@@ -95,7 +96,7 @@ describe('write |', function () {
     it('written JSON data can be indented', function (done) {
 
         var obj = {
-            utf8: "ąćłźż"
+            utf8: "ąćłźż",
         };
 
         var preparations = function () {
@@ -135,7 +136,7 @@ describe('write |', function () {
     it('writes and reads file as JSON with Date parsing', function (done) {
 
         var obj = {
-            date: new Date()
+            date: new Date(),
         };
 
         var preparations = function () {

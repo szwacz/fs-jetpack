@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('move |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -99,7 +100,7 @@ describe('move |', function () {
         // SYNC
         try {
             jetpack.move('a', 'b');
-            throw "to make sure this code throws"
+            throw new Error("to make sure this code throws");
         } catch (err) {
             expectations(err);
         }

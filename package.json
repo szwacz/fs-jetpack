@@ -10,11 +10,14 @@
     "rimraf": "2.2.8"
   },
   "devDependencies": {
+    "eslint": "^0.24.0",
     "fs-extra": "^0.16.3",
-    "jasmine": "^2.2.1"
+    "jasmine": "^2.2.1",
+    "precommit-hook": "^3.0.0"
   },
   "scripts": {
-    "test": "node_modules/.bin/jasmine"
+    "test": "node_modules/.bin/jasmine",
+    "lint": "node_modules/.bin/eslint ."
   },
   "main": "main.js",
   "homepage": "https://github.com/szwacz/fs-jetpack",
@@ -26,5 +29,9 @@
   "keywords": [
     "fs",
     "file system"
+  ],
+  "pre-commit": [
+    "lint",
+    "test"
   ]
 }

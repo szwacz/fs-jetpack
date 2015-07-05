@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('copy |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -126,7 +127,7 @@ describe('copy |', function () {
         // SYNC
         try {
             jetpack.copy('a', 'b');
-            throw "to make sure this code throws"
+            throw new Error("to make sure this code throws");
         } catch (err) {
             expectations(err);
         }
@@ -186,7 +187,7 @@ describe('copy |', function () {
             preparations();
             try {
                 jetpack.copy('a', 'b');
-                throw "to make sure this code throws";
+                throw new Error("to make sure this code throws");
             } catch (err) {
                 expectations(err);
             }
@@ -368,24 +369,28 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: [
-                '**',
-                // Three different pattern types to test:
-                '!x',
-                '!dir/a/y',
-                '!./a/z'
-            ]});
+            jetpack.copy('dir', 'copy', {
+                matching: [
+                    '**',
+                    // Three different pattern types to test:
+                    '!x',
+                    '!dir/a/y',
+                    '!./a/z',
+                ],
+            });
             expectations();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: [
-                '**',
-                // Three different pattern types to test:
-                '!x',
-                '!dir/a/y',
-                '!./a/z'
-            ]})
+            jetpack.copyAsync('dir', 'copy', {
+                matching: [
+                    '**',
+                    // Three different pattern types to test:
+                    '!x',
+                    '!dir/a/y',
+                    '!./a/z',
+                ],
+            })
             .then(function () {
                 expectations();
                 done();
@@ -443,7 +448,7 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            var data = jetpack.copy('to_copy', 'copied');
+            jetpack.copy('to_copy', 'copied');
             expectations();
 
             // ASYNC

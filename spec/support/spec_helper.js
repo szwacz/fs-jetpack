@@ -1,4 +1,8 @@
+/* eslint-env jasmine */
+
 // Boilerplate code for every test.
+
+"use strict";
 
 var fse = require('fs-extra');
 var pathUtil = require('path');
@@ -20,7 +24,7 @@ var clearWorkingDir = function () {
     });
 
     if (fse.readdirSync('.').length > 0) {
-        throw "Clearing working directory failed!";
+        throw new Error("Clearing working directory failed!");
     }
 };
 
@@ -37,7 +41,7 @@ module.exports.beforeEach = function (done) {
         process.chdir(workingDir);
         // Better to be safe than sorry
         if (pathUtil.basename(process.cwd()) !== 'fs-jetpack-test') {
-            throw "CWD switch failed!";
+            throw new Error("CWD switch failed!");
         }
 
         done();

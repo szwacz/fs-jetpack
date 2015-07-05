@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('read |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -23,20 +24,20 @@ describe('read |', function () {
 
         // SYNC
         preparations();
-        var content = jetpack.read('file.txt'); // defaults to 'utf8'
-        expectations(content);
-        content = jetpack.read('file.txt', 'utf8'); // explicitly said
-        expectations(content);
+        var contentSync = jetpack.read('file.txt'); // defaults to 'utf8'
+        expectations(contentSync);
+        contentSync = jetpack.read('file.txt', 'utf8'); // explicitly said
+        expectations(contentSync);
 
         // ASYNC
         preparations();
         jetpack.readAsync('file.txt') // defaults to 'utf8'
-        .then(function (content) {
-            expectations(content);
+        .then(function (contentAsync) {
+            expectations(contentAsync);
             return jetpack.readAsync('file.txt', 'utf8'); // explicitly said
         })
-        .then(function (content) {
-            expectations(content);
+        .then(function (contentAsync) {
+            expectations(contentAsync);
             done();
         });
     });
@@ -57,14 +58,14 @@ describe('read |', function () {
 
         // SYNC
         preparations();
-        var content = jetpack.read('file.txt', 'buf');
-        expectations(content);
+        var contentSync = jetpack.read('file.txt', 'buf');
+        expectations(contentSync);
 
         // ASYNC
         preparations();
         jetpack.readAsync('file.txt', 'buf')
-        .then(function (content) {
-            expectations(content);
+        .then(function (contentAsync) {
+            expectations(contentAsync);
             done();
         });
     });
@@ -72,7 +73,7 @@ describe('read |', function () {
     it('reads file as JSON', function (done) {
 
         var obj = {
-            utf8: "ąćłźż"
+            utf8: "ąćłźż",
         };
 
         var preparations = function () {
@@ -80,20 +81,20 @@ describe('read |', function () {
             fse.outputFileSync('file.json', JSON.stringify(obj));
         };
 
-        var expectations = function () {
+        var expectations = function (content) {
             expect(content).toEqual(obj);
         };
 
         // SYNC
         preparations();
-        var content = jetpack.read('file.json', 'json');
-        expectations(content);
+        var contentSync = jetpack.read('file.json', 'json');
+        expectations(contentSync);
 
         // ASYNC
         preparations();
         jetpack.readAsync('file.json', 'json')
-        .then(function (content) {
-            expectations(content);
+        .then(function (contentAsync) {
+            expectations(contentAsync);
             done();
         });
     });
@@ -130,7 +131,7 @@ describe('read |', function () {
 
         var obj = {
             utf8: "ąćłźż",
-            date: new Date()
+            date: new Date(),
         };
 
         var preparations = function () {
@@ -144,14 +145,14 @@ describe('read |', function () {
 
         // SYNC
         preparations();
-        var content = jetpack.read('file.json', 'jsonWithDates');
-        expectations(content);
+        var contentSync = jetpack.read('file.json', 'jsonWithDates');
+        expectations(contentSync);
 
         // ASYNC
         preparations();
         jetpack.readAsync('file.json', 'jsonWithDates')
-        .then(function (content) {
-            expectations(content);
+        .then(function (contentAsync) {
+            expectations(contentAsync);
             done();
         });
     });
@@ -163,13 +164,13 @@ describe('read |', function () {
         };
 
         // SYNC
-        var content = jetpack.read('nonexistent.txt');
-        expectations(content);
+        var contentSync = jetpack.read('nonexistent.txt');
+        expectations(contentSync);
 
         // ASYNC
         jetpack.readAsync('nonexistent.txt')
-        .then(function (content) {
-            expectations(content);
+        .then(function (contentAsync) {
+            expectations(contentAsync);
             done();
         });
     });
@@ -188,8 +189,8 @@ describe('read |', function () {
 
         // SYNC
         try {
-            var content = jetpack.read('dir');
-            throw 'to make sure this code throws';
+            jetpack.read('dir');
+            throw new Error('to make sure this code throws');
         } catch (err) {
             expectations(err);
         }
@@ -217,13 +218,13 @@ describe('read |', function () {
         var jetContext = jetpack.cwd('a');
 
         // SYNC
-        var data = jetContext.read('file.txt');
-        expectations(data);
+        var dataSync = jetContext.read('file.txt');
+        expectations(dataSync);
 
         // ASYNC
         jetContext.readAsync('file.txt')
-        .then(function (data) {
-            expectations(data);
+        .then(function (dataAsync) {
+            expectations(dataAsync);
             done();
         });
     });

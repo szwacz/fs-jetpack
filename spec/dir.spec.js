@@ -1,3 +1,5 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('dir |', function () {
@@ -27,7 +29,7 @@ describe('dir |', function () {
             jetpack.dir('x');
             expectations();
 
-            //ASYNC
+            // ASYNC
             preparations();
             jetpack.dirAsync('x')
             .then(function () {
@@ -52,7 +54,7 @@ describe('dir |', function () {
             jetpack.dir('x');
             expectations();
 
-            //ASYNC
+            // ASYNC
             preparations();
             jetpack.dirAsync('x')
             .then(function () {
@@ -199,20 +201,20 @@ describe('dir |', function () {
             helper.clearWorkingDir();
         };
 
-        var expectations = function (ret) {
-            expect(ret.cwd()).toBe(pathUtil.resolve('a'));
+        var expectations = function (jetpackContext) {
+            expect(jetpackContext.cwd()).toBe(pathUtil.resolve('a'));
         };
 
         // SYNC
         preparations();
-        var ret = jetpack.dir('a');
-        expectations(ret);
+        var jetpackContextSync = jetpack.dir('a');
+        expectations(jetpackContextSync);
 
         // ASYNC
         preparations();
         jetpack.dirAsync('a')
-        .then(function (ret) {
-            expectations(ret);
+        .then(function (jetpackContextAsync) {
+            expectations(jetpackContextAsync);
             done();
         });
     });
@@ -229,7 +231,7 @@ describe('dir |', function () {
                 helper.clearWorkingDir();
             };
 
-            var expectations = function (ret) {
+            var expectations = function () {
                 expect('x').toBeDirectory();
             };
 

@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('remove', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -89,7 +90,7 @@ describe('remove', function () {
 
         // SYNC
         preparations();
-        jetContext.remove('b')
+        jetContext.remove('b');
         expectations();
 
         // ASYNC

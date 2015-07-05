@@ -1,9 +1,10 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('file |', function () {
 
     var fse = require('fs-extra');
-    var pathUtil = require('path');
     var helper = require('./support/spec_helper');
     var jetpack = require('..');
 
@@ -151,7 +152,7 @@ describe('file |', function () {
                 helper.clearWorkingDir();
             };
 
-            var expectations = function (content) {
+            var expectations = function () {
                 var sizeA = fse.statSync('a.json').size;
                 var sizeB = fse.statSync('b.json').size;
                 var sizeC = fse.statSync('c.json').size;
@@ -200,7 +201,7 @@ describe('file |', function () {
             // ASYNC
             preparations();
             jetpack.fileAsync('file.txt', { content: '123' })
-            .then(function() {
+            .then(function () {
                 expectations();
                 done();
             });
@@ -260,13 +261,13 @@ describe('file |', function () {
 
     it('returns currently used jetpack instance', function (done) {
         // SYNC
-        var jetpackContext = jetpack.file('file.txt');
-        expect(jetpackContext).toBe(jetpack);
+        var jetpackContextSync = jetpack.file('file.txt');
+        expect(jetpackContextSync).toBe(jetpack);
 
         // ASYNC
         jetpack.fileAsync('file.txt')
-        .then(function (jetpackContext) {
-            expect(jetpackContext).toBe(jetpack);
+        .then(function (jetpackContextAsync) {
+            expect(jetpackContextAsync).toBe(jetpack);
             done();
         });
     });

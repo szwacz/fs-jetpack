@@ -1,3 +1,5 @@
+/* eslint-env jasmine */
+
 "use strict";
 
 describe('cwd', function () {
