@@ -12,7 +12,7 @@ npm install fs-jetpack
 
 ## Usage
 ```javascript
-var jetpack = requite('fs-jetpack');
+var jetpack = require('fs-jetpack');
 ```
 
 
