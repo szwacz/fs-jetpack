@@ -149,12 +149,12 @@ describe('find |', function () {
         });
     });
 
-    it("deals with glob anchored with ./", function (done) {
+    it("deals with glob anchored with ./ (anchored to directory we're finding in)", function (done) {
 
         var preparations = function () {
-            fse.outputFileSync('a/b/file.txt', '1');
-            fse.outputFileSync('a/b/file.md', '2');
-            fse.outputFileSync('a/b/c/file.txt', '3');
+            fse.outputFileSync('x/y/a/b/file.txt', '1');
+            fse.outputFileSync('x/y/a/b/file.md', '2');
+            fse.outputFileSync('x/y/a/b/c/file.txt', '3');
         };
 
         var expectations = function (found) {
@@ -165,11 +165,11 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var foundSync = jetpack.find('a', { matching: './b/*.txt' }, 'relativePath');
+        var foundSync = jetpack.find('x/y/a', { matching: './b/*.txt' }, 'relativePath');
         expectations(foundSync);
 
         // ASYNC
-        jetpack.findAsync('a', { matching: './b/*.txt' }, 'relativePath')
+        jetpack.findAsync('x/y/a', { matching: './b/*.txt' }, 'relativePath')
         .then(function (foundAsync) {
             expectations(foundAsync);
             done();

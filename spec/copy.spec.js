@@ -300,9 +300,9 @@ describe('copy |', function () {
 
             var preparations = function () {
                 helper.clearWorkingDir();
-                fse.outputFileSync('dir/file.txt', '1');
-                fse.outputFileSync('dir/a/file.txt', '2');
-                fse.outputFileSync('dir/a/b/file.txt', '3');
+                fse.outputFileSync('x/y/file.txt', '1');
+                fse.outputFileSync('x/y/a/file.txt', '2');
+                fse.outputFileSync('x/y/a/b/file.txt', '3');
             };
 
             var expectations = function () {
@@ -313,12 +313,12 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: './a/*.txt' });
+            jetpack.copy('x/y', 'copy', { matching: './a/*.txt' });
             expectations();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: './a/*.txt' })
+            jetpack.copyAsync('x/y', 'copy', { matching: './a/*.txt' })
             .then(function () {
                 expectations();
                 done();
