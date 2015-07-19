@@ -1,3 +1,7 @@
+0.7.0 (in progress)
+-------------------
+* **(breaking change)** `matching` option in `copy()` and `find()` resolves glob patterns to the folder you want copy or find stuff in (previously CWD was used).
+
 0.6.5 (2015-06-19)
 -------------------
 * `exists()` can handle ENOTDIR error.
