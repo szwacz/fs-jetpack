@@ -176,6 +176,32 @@ describe('find |', function () {
         });
     });
 
+    it("can use ./ as indication of anchor directory", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('x/y/a.txt', '123');
+            fse.outputFileSync('x/y/b/a.txt', '456');
+        };
+
+        var expectations = function (found) {
+            var normalizedFound = helper.convertToUnixPathSeparators(found);
+            expect(normalizedFound).toEqual(['./a.txt']);
+        };
+
+        preparations();
+
+        // SYNC
+        var foundSync = jetpack.find('x/y', { matching: './a.txt' }, 'relativePath');
+        expectations(foundSync);
+
+        // ASYNC
+        jetpack.findAsync('x/y', { matching: './a.txt' }, 'relativePath')
+        .then(function (foundAsync) {
+            expectations(foundAsync);
+            done();
+        });
+    });
+
     it('deals with negation globs', function (done) {
 
         var preparations = function () {
@@ -183,6 +209,7 @@ describe('find |', function () {
             fse.mkdirsSync('x/y/a/b');
             fse.mkdirsSync('x/y/a/x');
             fse.mkdirsSync('x/y/a/y');
+            fse.mkdirsSync('x/y/a/z');
         };
 
         var expectations = function (found) {
@@ -195,9 +222,10 @@ describe('find |', function () {
         var foundSync = jetpack.find('x/y', {
             matching: [
                 'a/*',
-                // Two different pattern types to test:
+                // Three different pattern types to test:
                 '!x',
                 '!a/y',
+                '!./a/z',
             ],
         }, 'relativePath');
         expectations(foundSync);
@@ -207,9 +235,10 @@ describe('find |', function () {
         jetpack.findAsync('x/y', {
             matching: [
                 'a/*',
-                // Two different pattern types to test:
+                // Three different pattern types to test:
                 '!x',
                 '!a/y',
+                '!./a/z',
             ],
         }, 'relativePath')
         .then(function (foundAsync) {

@@ -296,6 +296,33 @@ describe('copy |', function () {
             });
         });
 
+        it("can use ./ as indication of anchor directory", function (done) {
+
+            var preparations = function () {
+                helper.clearWorkingDir();
+                fse.outputFileSync('x/y/a.txt', '123');
+                fse.outputFileSync('x/y/b/a.txt', '456');
+            };
+
+            var expectations = function () {
+                expect('copy/a.txt').toExist();
+                expect('copy/b/a.txt').not.toExist();
+            };
+
+            // SYNC
+            preparations();
+            jetpack.copy('x/y', 'copy', { matching: './a.txt' });
+            expectations();
+
+            // ASYNC
+            preparations();
+            jetpack.copyAsync('x/y', 'copy', { matching: './a.txt' })
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+
         it("matching works also if copying single file", function (done) {
 
             var preparations = function () {
@@ -334,12 +361,14 @@ describe('copy |', function () {
                 fse.mkdirsSync('x/y/dir/a/b');
                 fse.mkdirsSync('x/y/dir/a/x');
                 fse.mkdirsSync('x/y/dir/a/y');
+                fse.mkdirsSync('x/y/dir/a/z');
             };
 
             var expectations = function () {
                 expect('copy/dir/a/b').toBeDirectory();
                 expect('copy/dir/a/x').not.toExist();
                 expect('copy/dir/a/y').not.toExist();
+                expect('copy/dir/a/z').not.toExist();
             };
 
             // SYNC
@@ -347,9 +376,10 @@ describe('copy |', function () {
             jetpack.copy('x/y', 'copy', {
                 matching: [
                     '**',
-                    // Two different pattern types to test:
+                    // Three different pattern types to test:
                     '!x',
                     '!dir/a/y',
+                    '!./dir/a/z',
                 ],
             });
             expectations();
@@ -359,9 +389,10 @@ describe('copy |', function () {
             jetpack.copyAsync('x/y', 'copy', {
                 matching: [
                     '**',
-                    // Two different pattern types to test:
+                    // Three different pattern types to test:
                     '!x',
                     '!dir/a/y',
+                    '!./dir/a/z',
                 ],
             })
             .then(function () {
