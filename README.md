@@ -1,7 +1,7 @@
 fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack)
 ==========
 
-Node's [file system API](http://nodejs.org/api/fs.html) is very low level and because of that too often painful to use. Let's build better API on top of standard one, so you can do more work with less code. That's what **fs-jetpack** is all about.
+Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more conveninet API to work with file system.
 
 #### [Jump to API Docs](#api)
 
@@ -16,7 +16,7 @@ var jetpack = require('fs-jetpack');
 ```
 
 
-#What's cool about jetpack?
+# What's cool about jetpack?
 
 ## Promises instead of callbacks
 API has the same set of synchronous and asynchronous methods. All async methods are promise based.
@@ -57,13 +57,13 @@ var obj = jetpack.read('file.json', 'json');
 ```
 
 ## Throws errors at you as the last resort
-Everyone who did something with files for sure seen *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
+Everyone who did something with files for sure seen (and probably hates) *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
 1. For wrte/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist `null` is returned instead of throwing.
 
-## This is just a powerful API (examples)
+## Jetpack can do more in less code (examples)
 All methods play nicely with each other. Here are few examples what it gives you.  
-**Note:** All examples are synchronous. Unfortunately asynchronous versions of them will be uglier :)
+**Note:** All examples are synchronous. Unfortunately asynchronous equvalents won't be that pretty.
 
 #### Great for build scripts
 ```js
@@ -80,22 +80,24 @@ dest.write('config.json', config);
 ```
 
 #### Files creation in declarative style
+Let's say you want to create folder structure:
+```
+.
+|- greets
+   |- greet.txt
+   |- greet.json
+|- greets-i18n
+   |- polish.txt
+```
+Peace of cake with jetpack!
 ```js
-// To create structure...
-// (CWD path)
-// |- greets
-//    |- greet.txt
-//    |- greet.json
-// |- greets-i18n
-//    |- polish.txt
-
 jetpack
 .dir('greets')
-    .file('greet.txt', { content: 'Hello World!' })
-    .file('greet.json', { content: { greet: 'Hello World!' } })
+    .file('greet.txt', { content: 'Hello world!' })
+    .file('greet.json', { content: { greet: 'Hello world!' } })
     .cwd('..')
 .dir('greets-i18n')
-    .file('polish.txt', { content: 'Cześć!' });
+    .file('polish.txt', { content: 'Witaj świecie!' });
 ```
 
 #### Delete all tmp files inside directory tree
@@ -326,7 +328,7 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`.
 * `matching` glob patterns of files you would like to find.
 `returnAs` (optional) how the results should be returned. Could be one of:
 * `'absolutePath'` (default) returns array of absolute paths.
-* `'relativePath'` returns array of relative paths. The paths are relative to `path` you started search in.
+* `'relativePath'` returns array of relative paths. The paths are relative to `path` you started search in, not to CWD.
 * `'inspect'` returns array of objects like you called [inspect](#inspect) on every of those files.
 
 **returns:**  
