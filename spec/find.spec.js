@@ -149,7 +149,7 @@ describe('find |', function () {
         });
     });
 
-    it("deals with glob anchored with ./ (anchored to directory we're finding in)", function (done) {
+    it("anchors globs to directory you're finding in", function (done) {
 
         var preparations = function () {
             fse.outputFileSync('x/y/a/b/file.txt', '1');
@@ -165,38 +165,11 @@ describe('find |', function () {
         preparations();
 
         // SYNC
-        var foundSync = jetpack.find('x/y/a', { matching: './b/*.txt' }, 'relativePath');
+        var foundSync = jetpack.find('x/y/a', { matching: 'b/*.txt' }, 'relativePath');
         expectations(foundSync);
 
         // ASYNC
-        jetpack.findAsync('x/y/a', { matching: './b/*.txt' }, 'relativePath')
-        .then(function (foundAsync) {
-            expectations(foundAsync);
-            done();
-        });
-    });
-
-    it("deals with glob anchored to CWD", function (done) {
-
-        var preparations = function () {
-            fse.outputFileSync('a/b/file.txt', '1');
-            fse.outputFileSync('a/b/file.md', '2');
-            fse.outputFileSync('a/b/c/file.txt', '3');
-        };
-
-        var expectations = function (found) {
-            var normalizedFound = helper.convertToUnixPathSeparators(found);
-            expect(normalizedFound).toEqual(['./b/file.txt']);
-        };
-
-        preparations();
-
-        // SYNC
-        var foundSync = jetpack.find('a', { matching: 'a/b/*.txt' }, 'relativePath');
-        expectations(foundSync);
-
-        // ASYNC
-        jetpack.findAsync('a', { matching: 'a/b/*.txt' }, 'relativePath')
+        jetpack.findAsync('x/y/a', { matching: 'b/*.txt' }, 'relativePath')
         .then(function (foundAsync) {
             expectations(foundAsync);
             done();
@@ -207,39 +180,36 @@ describe('find |', function () {
 
         var preparations = function () {
             helper.clearWorkingDir();
-            fse.mkdirsSync('a/b');
-            fse.mkdirsSync('a/x');
-            fse.mkdirsSync('a/y');
-            fse.mkdirsSync('a/z');
+            fse.mkdirsSync('x/y/a/b');
+            fse.mkdirsSync('x/y/a/x');
+            fse.mkdirsSync('x/y/a/y');
         };
 
         var expectations = function (found) {
             var normalizedFound = helper.convertToUnixPathSeparators(found);
-            expect(normalizedFound).toEqual(['./b']);
+            expect(normalizedFound).toEqual(['./a/b']);
         };
 
         // SYNC
         preparations();
-        var foundSync = jetpack.find('a', {
+        var foundSync = jetpack.find('x/y', {
             matching: [
                 'a/*',
-                // Three different pattern types to test:
+                // Two different pattern types to test:
                 '!x',
                 '!a/y',
-                '!./z',
             ],
         }, 'relativePath');
         expectations(foundSync);
 
         // ASYNC
         preparations();
-        jetpack.findAsync('a', {
+        jetpack.findAsync('x/y', {
             matching: [
                 'a/*',
-                // Three different pattern types to test:
+                // Two different pattern types to test:
                 '!x',
                 '!a/y',
-                '!./z',
             ],
         }, 'relativePath')
         .then(function (foundAsync) {
@@ -248,31 +218,7 @@ describe('find |', function () {
         });
     });
 
-    it("works even if provided path is a file", function (done) {
-
-        var preparations = function () {
-            fse.outputFileSync('file.txt', '1');
-        };
-
-        var expectations = function (found) {
-            expect(found).toEqual(['.']);
-        };
-
-        preparations();
-
-        // SYNC
-        var foundSync = jetpack.find('file.txt', { matching: '*.txt' }, 'relativePath');
-        expectations(foundSync);
-
-        // ASYNC
-        jetpack.findAsync('file.txt', { matching: '*.txt' }, 'relativePath')
-        .then(function (foundAsync) {
-            expectations(foundAsync);
-            done();
-        });
-    });
-
-    it("throws nice error if path doesn't exist", function (done) {
+    it("throws if path doesn't exist", function (done) {
 
         var expectations = function (err) {
             expect(err.code).toBe('ENOENT');

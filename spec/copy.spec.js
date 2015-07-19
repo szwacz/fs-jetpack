@@ -267,13 +267,13 @@ describe('copy |', function () {
             });
         });
 
-        it("by pattern anchored to CWD", function (done) {
+        it("by pattern anchored to copied directory", function (done) {
 
             var preparations = function () {
                 helper.clearWorkingDir();
-                fse.outputFileSync('dir/file.txt', '1');
-                fse.outputFileSync('dir/a/file.txt', '2');
-                fse.outputFileSync('dir/a/b/file.txt', '3');
+                fse.outputFileSync('x/y/dir/file.txt', '1');
+                fse.outputFileSync('x/y/dir/a/file.txt', '2');
+                fse.outputFileSync('x/y/dir/a/b/file.txt', '3');
             };
 
             var expectations = function () {
@@ -284,66 +284,43 @@ describe('copy |', function () {
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', { matching: 'dir/a/*.txt' });
+            jetpack.copy('x/y/dir', 'copy', { matching: 'a/*.txt' });
             expectations();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', { matching: 'dir/a/*.txt' })
+            jetpack.copyAsync('x/y/dir', 'copy', { matching: 'a/*.txt' })
             .then(function () {
                 expectations();
                 done();
             });
         });
 
-        it("by patterns anchored to './' (internals of about to be copied directory)", function (done) {
+        it("matching works also if copying single file", function (done) {
 
             var preparations = function () {
                 helper.clearWorkingDir();
-                fse.outputFileSync('x/y/file.txt', '1');
-                fse.outputFileSync('x/y/a/file.txt', '2');
-                fse.outputFileSync('x/y/a/b/file.txt', '3');
+                fse.outputFileSync('a', '123');
+                fse.outputFileSync('x', '456');
             };
 
             var expectations = function () {
-                expect('copy/file.txt').not.toExist();
-                expect('copy/a/file.txt').toBeFileWithContent('2');
-                expect('copy/a/b/file.txt').not.toExist();
+                expect('a-copy').not.toExist();
+                expect('x-copy').toExist();
             };
 
             // SYNC
             preparations();
-            jetpack.copy('x/y', 'copy', { matching: './a/*.txt' });
+            jetpack.copy('a', 'a-copy', { matching: 'x' });
+            jetpack.copy('x', 'x-copy', { matching: 'x' });
             expectations();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('x/y', 'copy', { matching: './a/*.txt' })
+            jetpack.copyAsync('a', 'a-copy', { matching: 'x' })
             .then(function () {
-                expectations();
-                done();
-            });
-        });
-
-        it("works also if copying single file", function (done) {
-
-            var preparations = function () {
-                helper.clearWorkingDir();
-                fse.outputFileSync('a', '1');
-            };
-
-            var expectations = function () {
-                expect('b').not.toExist();
-            };
-
-            // SYNC
-            preparations();
-            jetpack.copy('a', 'b', { matching: 'x' });
-            expectations();
-
-            // ASYNC
-            preparations();
-            jetpack.copyAsync('a', 'b', { matching: 'x' })
+                return jetpack.copyAsync('x', 'x-copy', { matching: 'x' });
+            })
             .then(function () {
                 expectations();
                 done();
@@ -354,41 +331,37 @@ describe('copy |', function () {
 
             var preparations = function () {
                 helper.clearWorkingDir();
-                fse.mkdirsSync('dir/a/b');
-                fse.mkdirsSync('dir/a/x');
-                fse.mkdirsSync('dir/a/y');
-                fse.mkdirsSync('dir/a/z');
+                fse.mkdirsSync('x/y/dir/a/b');
+                fse.mkdirsSync('x/y/dir/a/x');
+                fse.mkdirsSync('x/y/dir/a/y');
             };
 
             var expectations = function () {
-                expect('copy/a/b').toBeDirectory();
-                expect('copy/a/x').not.toExist();
-                expect('copy/a/y').not.toExist();
-                expect('copy/a/z').not.toExist();
+                expect('copy/dir/a/b').toBeDirectory();
+                expect('copy/dir/a/x').not.toExist();
+                expect('copy/dir/a/y').not.toExist();
             };
 
             // SYNC
             preparations();
-            jetpack.copy('dir', 'copy', {
+            jetpack.copy('x/y', 'copy', {
                 matching: [
                     '**',
-                    // Three different pattern types to test:
+                    // Two different pattern types to test:
                     '!x',
                     '!dir/a/y',
-                    '!./a/z',
                 ],
             });
             expectations();
 
             // ASYNC
             preparations();
-            jetpack.copyAsync('dir', 'copy', {
+            jetpack.copyAsync('x/y', 'copy', {
                 matching: [
                     '**',
-                    // Three different pattern types to test:
+                    // Two different pattern types to test:
                     '!x',
                     '!dir/a/y',
-                    '!./a/z',
                 ],
             })
             .then(function () {
