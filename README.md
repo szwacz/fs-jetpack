@@ -185,22 +185,23 @@ Nothing.
 
 **examples:**
 ```javascript
-// Copies a file (and replaces it if one already exists in "somewhere" direcotry)
-jetpack.copy('file.txt', 'somwhere/file.txt', { overwrite: true });
+// Copies a file (and replaces it if one already exists in 'copied' direcotry)
+jetpack.copy('file.txt', 'copied/file.txt', { overwrite: true });
 
-// Copies only .md files from my-dir to somewhere/my-dir
-jetpack.copy('my-dir', 'somewhere/my-dir', { matching: '*.md' });
+// Copies only .md files inside 'dir' to 'copied-dir'
+jetpack.copy('dir', 'copied-dir', { matching: '*.md' });
 
-// Can copy also specyfic path anhored to CWD
-jetpack.copy('my_dir', 'somewhere/my_dir', {
-    matching: ['my_dir/images/**']
-});
+// Can add many globs as an array
+jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '*.txt'] });
 
-// When glob pattern starts with './' it means it is anchored to base directory
-// you want to copy. Here will be copied only .jpg files from my-dir/images
-// and .md files from my-dir/articles
-jetpack.copy('my_dir', 'somewhere/my_dir', {
-    matching: ['./images/**/*.jpg', './articles/**/*.md' ]
+// Supports negation patterns as well
+jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '!top-secret.md'] });
+
+// All patterns are anchored to dir you want to copy, not to CWD.
+// So in this example directory 'dir1/dir2/images' will be copied
+// to 'copied-dir2/images'
+jetpack.copy('dir1/dir2', 'copied-dir2', {
+    matching: 'images/**'
 });
 ```
 
@@ -338,6 +339,9 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`.
 ```javascript
 // Finds all files or directories which has 2015 in the name
 jetpack.find('my-work', { matching: '*2015*' });
+
+// Finds all .js  files inside 'my-project' but with exclusion of 'vendor' directory.
+jetpack.find('my-project', { matching: ['*.js', '!vendor/**/*'] });
 
 // Finds all jpg and png files and gives you back the list of inspect objects
 // (like you called jetpack.inspect on every of those paths)
