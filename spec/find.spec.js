@@ -269,6 +269,34 @@ describe('find |', function () {
         });
     });
 
+    it("throws if path is a file, not a directory", function (done) {
+
+        var preparations = function () {
+            fse.outputFileSync('a/b', 'abc');
+        };
+
+        var expectations = function (err) {
+            expect(err.code).toBe('ENOTDIR');
+            expect(err.message).toMatch(/^Path you want to find stuff in must be a directory/);
+        };
+
+        preparations();
+
+        // SYNC
+        try {
+            jetpack.find('a/b', { matching: '*.txt' });
+        } catch(err) {
+            expectations(err);
+        }
+
+        // ASYNC
+        jetpack.findAsync('a/b', { matching: '*.txt' })
+        .catch(function (err) {
+            expectations(err);
+            done();
+        });
+    });
+
     it("respects internal CWD of jetpack instance", function (done) {
 
         var preparations = function () {
