@@ -66,6 +66,13 @@ describe('matcher |', function () {
             expect(test('/c.rtf')).toBe(false);
         });
 
+        it("{a,b}", function () {
+            var test = matcher.create(['*.{jpg,png}']);
+            expect(test('a.jpg')).toBe(true);
+            expect(test('b.png')).toBe(true);
+            expect(test('c.txt')).toBe(false);
+        });
+
         it("?", function () {
             var test = matcher.create(['a?c']);
             expect(test('/abc')).toBe(true);
