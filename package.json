@@ -10,7 +10,7 @@
     "rimraf": "2.2.8"
   },
   "devDependencies": {
-    "eslint": "^0.24.0",
+    "eslint": "^1.6.0",
     "fs-extra": "^0.16.3",
     "jasmine": "^2.2.1",
     "precommit-hook": "^3.0.0"
