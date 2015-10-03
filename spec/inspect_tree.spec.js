@@ -164,7 +164,7 @@ describe('inspectTree |', function () {
 
         var expectations = function (data) {
             // data will look like...
-            /*{
+            /* {
                 name: 'dir',
                 relativePath: '.',
                 children: [
@@ -179,7 +179,7 @@ describe('inspectTree |', function () {
                         ]
                     }
                 ]
-            }*/
+            } */
             expect(data.relativePath).toBe('.');
             expect(data.children[0].relativePath).toBe('./subdir');
             expect(data.children[0].children[0].relativePath).toBe('./subdir/file.txt');

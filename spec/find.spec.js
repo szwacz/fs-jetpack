@@ -257,7 +257,7 @@ describe('find |', function () {
         // SYNC
         try {
             jetpack.find('a', { matching: '*.txt' });
-        } catch(err) {
+        } catch (err) {
             expectations(err);
         }
 
@@ -285,7 +285,7 @@ describe('find |', function () {
         // SYNC
         try {
             jetpack.find('a/b', { matching: '*.txt' });
-        } catch(err) {
+        } catch (err) {
             expectations(err);
         }
 
