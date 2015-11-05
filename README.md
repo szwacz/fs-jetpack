@@ -63,7 +63,7 @@ Everyone who did something with files for sure seen (and probably hates) *"ENOEN
 
 ## Jetpack can do more in less code (examples)
 All methods play nicely with each other. Here are few examples what it gives you.  
-**Note:** All examples are synchronous. Unfortunately asynchronous equvalents won't be that pretty.
+**Note:** All examples are synchronous. Unfortunately asynchronous equivalents won't be that pretty.
 
 #### Great for build scripts
 ```js
