@@ -1,3 +1,7 @@
+0.7.1 (2015-12-17)
+-------------------
+* Updated third party dependencies.
+
 0.7.0 (2015-07-20)
 -------------------
 * **(breaking change)** `matching` option in `copy()` and `find()` resolves glob patterns to the folder you want copy or find stuff in (previously CWD was used).
