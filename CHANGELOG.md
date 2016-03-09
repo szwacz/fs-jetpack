@@ -1,3 +1,7 @@
+0.7.2 (2016-03-09)
+-------------------
+* Fixed .dotfiles copying
+
 0.7.1 (2015-12-17)
 -------------------
 * Updated third party dependencies.
