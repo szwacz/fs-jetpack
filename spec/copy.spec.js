@@ -401,6 +401,38 @@ describe('copy |', function () {
             });
         });
 
+        it("wildcard copies everything", function (done) {
+
+            var preparations = function () {
+                helper.clearWorkingDir();
+                // Just a file
+                fse.outputFileSync('x/file.txt', '123');
+                // Dot file
+                fse.outputFileSync('x/y/.dot', 'dot');
+                // Empty directory
+                fse.mkdirsSync('x/y/z');
+            };
+
+            var expectations = function () {
+                expect('copy/file.txt').toBeFileWithContent('123');
+                expect('copy/y/.dot').toBeFileWithContent('dot');
+                expect('copy/y/z').toBeDirectory();
+            };
+
+            // SYNC
+            preparations();
+            jetpack.copy('x', 'copy', { matching: '**' });
+            expectations();
+
+            // ASYNC
+            preparations();
+            jetpack.copyAsync('x', 'copy', { matching: '**' })
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+
     });
 
     describe('*nix specific |', function () {
