@@ -496,6 +496,35 @@ describe('copy |', function () {
             });
         });
 
+        it('can overwrite symlink', function (done) {
+
+            var preparations = function () {
+                helper.clearWorkingDir();
+                fse.mkdirsSync('to_copy');
+                fse.symlinkSync('some/file', 'to_copy/symlink');
+                fse.mkdirsSync('copied');
+                fse.symlinkSync('some/other_file', 'copied/symlink');
+            };
+
+            var expectations = function () {
+                expect(fse.lstatSync('copied/symlink').isSymbolicLink()).toBe(true);
+                expect(fse.readlinkSync('copied/symlink')).toBe('some/file');
+            };
+
+            // SYNC
+            preparations();
+            jetpack.copy('to_copy', 'copied', { overwrite: true });
+            expectations();
+
+            // ASYNC
+            preparations();
+            jetpack.copyAsync('to_copy', 'copied', { overwrite: true })
+            .then(function () {
+                expectations();
+                done();
+            });
+        });
+
     });
 
 });
