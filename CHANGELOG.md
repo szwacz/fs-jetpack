@@ -1,3 +1,7 @@
+0.7.3 (2016-03-21)
+-------------------
+* Bugfixed `copy()` with symlink overwrite
+
 0.7.2 (2016-03-09)
 -------------------
 * Fixed .dotfiles copying
