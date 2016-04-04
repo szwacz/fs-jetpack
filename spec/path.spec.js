@@ -1,34 +1,32 @@
 /* eslint-env jasmine */
 
-"use strict";
+'use strict';
 
 describe('path', function () {
+  var pathUtil = require('path');
+  var jetpack = require('..');
 
-    var pathUtil = require('path');
-    var jetpack = require('..');
+  it('if empty returns same path as cwd()', function () {
+    expect(jetpack.path()).toBe(jetpack.cwd());
+    expect(jetpack.path('')).toBe(jetpack.cwd());
+    expect(jetpack.path('.')).toBe(jetpack.cwd());
+  });
 
-    it('if empty returns same path as cwd()', function () {
-        expect(jetpack.path()).toBe(jetpack.cwd());
-        expect(jetpack.path('')).toBe(jetpack.cwd());
-        expect(jetpack.path('.')).toBe(jetpack.cwd());
-    });
+  it('is absolute if prepending slash present', function () {
+    expect(jetpack.path('/blah')).toBe(pathUtil.resolve('/blah'));
+  });
 
-    it('is absolute if prepending slash present', function () {
-        expect(jetpack.path('/blah')).toBe(pathUtil.resolve('/blah'));
-    });
+  it('resolves to CWD path of this jetpack instance', function () {
+    var a = pathUtil.join(jetpack.cwd(), 'a');
+    expect(jetpack.path('a')).toBe(a);
+    // Create jetpack instance with other CWD
+    var jetpackSubdir = jetpack.cwd('subdir');
+    var b = pathUtil.join(jetpack.cwd(), 'subdir', 'b');
+    expect(jetpackSubdir.path('b')).toBe(b);
+  });
 
-    it('resolves to CWD path of this jetpack instance', function () {
-        var a = pathUtil.join(jetpack.cwd(), 'a');
-        expect(jetpack.path('a')).toBe(a);
-        // Create jetpack instance with other CWD
-        var jetpackSubdir = jetpack.cwd('subdir');
-        var b = pathUtil.join(jetpack.cwd(), 'subdir', 'b');
-        expect(jetpackSubdir.path('b')).toBe(b);
-    });
-
-    it('can take unlimited number of arguments as path parts', function () {
-        var abc = pathUtil.join(jetpack.cwd(), 'a', 'b', 'c');
-        expect(jetpack.path('a', 'b', 'c')).toBe(abc);
-    });
-
+  it('can take unlimited number of arguments as path parts', function () {
+    var abc = pathUtil.join(jetpack.cwd(), 'a', 'b', 'c');
+    expect(jetpack.path('a', 'b', 'c')).toBe(abc);
+  });
 });

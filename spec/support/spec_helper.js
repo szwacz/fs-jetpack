@@ -2,7 +2,7 @@
 
 // Boilerplate code for every test.
 
-"use strict";
+'use strict';
 
 var fse = require('fs-extra');
 var pathUtil = require('path');
@@ -17,48 +17,48 @@ var originalCwd = process.cwd();
 var workingDir = pathUtil.join(os.tmpdir(), 'fs-jetpack-test');
 
 var clearWorkingDir = function () {
-    // Clear all contents, but don't remove the main directory
-    // (you can't because it is CWD).
-    fse.readdirSync('.').forEach(function (filename) {
-        fse.removeSync(filename);
-    });
+  // Clear all contents, but don't remove the main directory
+  // (you can't because it is CWD).
+  fse.readdirSync('.').forEach(function (filename) {
+    fse.removeSync(filename);
+  });
 
-    if (fse.readdirSync('.').length > 0) {
-        throw new Error("Clearing working directory failed!");
-    }
+  if (fse.readdirSync('.').length > 0) {
+    throw new Error('Clearing working directory failed!');
+  }
 };
 
 module.exports.clearWorkingDir = clearWorkingDir;
 
 module.exports.beforeEach = function (done) {
-    jasmine.addMatchers(customMatchers);
+  jasmine.addMatchers(customMatchers);
 
-    // Create brand new working directory
-    fse.remove(workingDir, function () {
-        fse.mkdirSync(workingDir);
+  // Create brand new working directory
+  fse.remove(workingDir, function () {
+    fse.mkdirSync(workingDir);
 
-        // Set CWD there
-        process.chdir(workingDir);
-        // Better to be safe than sorry
-        if (pathUtil.basename(process.cwd()) !== 'fs-jetpack-test') {
-            throw new Error("CWD switch failed!");
-        }
+    // Set CWD there
+    process.chdir(workingDir);
+    // Better to be safe than sorry
+    if (pathUtil.basename(process.cwd()) !== 'fs-jetpack-test') {
+      throw new Error('CWD switch failed!');
+    }
 
-        done();
-    });
+    done();
+  });
 };
 
 module.exports.afterEach = function (done) {
-    // Switch CWD back where we were, and clean the clutter.
-    process.chdir(originalCwd);
-    fse.remove(workingDir, done);
+  // Switch CWD back where we were, and clean the clutter.
+  process.chdir(originalCwd);
+  fse.remove(workingDir, done);
 };
 
 module.exports.convertToUnixPathSeparators = function (thing) {
-    if (Array.isArray(thing)) {
-        return thing.map(function (path) {
-            return path.replace(/\\/g, '/');
-        });
-    }
-    return thing.replace(/\\/g, '/');
+  if (Array.isArray(thing)) {
+    return thing.map(function (path) {
+      return path.replace(/\\/g, '/');
+    });
+  }
+  return thing.replace(/\\/g, '/');
 };

@@ -1,96 +1,91 @@
 /* eslint-env jasmine */
 
-"use strict";
+'use strict';
 
 describe('atomic write |', function () {
+  var fse = require('fs-extra');
+  var helper = require('./support/spec_helper');
+  var jetpack = require('..');
 
-    var fse = require('fs-extra');
-    var helper = require('./support/spec_helper');
-    var jetpack = require('..');
+  beforeEach(helper.beforeEach);
+  afterEach(helper.afterEach);
 
-    beforeEach(helper.beforeEach);
-    afterEach(helper.afterEach);
+  var path = 'file.txt';
+  var newPath = path + '.__new__';
 
-    var path = 'file.txt';
-    var newPath = path + '.__new__';
+  it("fresh write (file doesn't exist yet)", function (done) {
+    var preparations = function () {
+      helper.clearWorkingDir();
+    };
 
-    it("fresh write (file doesn't exist yet)", function (done) {
+    var expectations = function () {
+      expect(path).toBeFileWithContent('abc');
+      expect(newPath).not.toExist();
+    };
 
-        var preparations = function () {
-            helper.clearWorkingDir();
-        };
+    // SYNC
+    preparations();
+    jetpack.write(path, 'abc', { atomic: true });
+    expectations();
 
-        var expectations = function () {
-            expect(path).toBeFileWithContent('abc');
-            expect(newPath).not.toExist();
-        };
-
-        // SYNC
-        preparations();
-        jetpack.write(path, 'abc', { atomic: true });
-        expectations();
-
-        // ASYNC
-        preparations();
-        jetpack.writeAsync(path, 'abc', { atomic: true })
-        .then(function () {
-            expectations();
-            done();
-        });
+    // ASYNC
+    preparations();
+    jetpack.writeAsync(path, 'abc', { atomic: true })
+    .then(function () {
+      expectations();
+      done();
     });
+  });
 
-    it('overwrite existing file', function (done) {
+  it('overwrite existing file', function (done) {
+    var preparations = function () {
+      helper.clearWorkingDir();
+      fse.outputFileSync(path, 'xyz');
+    };
 
-        var preparations = function () {
-            helper.clearWorkingDir();
-            fse.outputFileSync(path, 'xyz');
-        };
+    var expectations = function () {
+      expect(path).toBeFileWithContent('abc');
+      expect(newPath).not.toExist();
+    };
 
-        var expectations = function () {
-            expect(path).toBeFileWithContent('abc');
-            expect(newPath).not.toExist();
-        };
+    // SYNC
+    preparations();
+    jetpack.write(path, 'abc', { atomic: true });
+    expectations();
 
-        // SYNC
-        preparations();
-        jetpack.write(path, 'abc', { atomic: true });
-        expectations();
-
-        // ASYNC
-        preparations();
-        jetpack.writeAsync(path, 'abc', { atomic: true })
-        .then(function () {
-            expectations();
-            done();
-        });
+    // ASYNC
+    preparations();
+    jetpack.writeAsync(path, 'abc', { atomic: true })
+    .then(function () {
+      expectations();
+      done();
     });
+  });
 
-    it('if previous operation failed', function (done) {
+  it('if previous operation failed', function (done) {
+    var preparations = function () {
+      helper.clearWorkingDir();
+      fse.outputFileSync(path, 'xyz');
+      // File from interrupted previous operation remained.
+      fse.outputFileSync(newPath, '123');
+    };
 
-        var preparations = function () {
-            helper.clearWorkingDir();
-            fse.outputFileSync(path, 'xyz');
-            // File from interrupted previous operation remained.
-            fse.outputFileSync(newPath, '123');
-        };
+    var expectations = function () {
+      expect(path).toBeFileWithContent('abc');
+      expect(newPath).not.toExist();
+    };
 
-        var expectations = function () {
-            expect(path).toBeFileWithContent('abc');
-            expect(newPath).not.toExist();
-        };
+    // SYNC
+    preparations();
+    jetpack.write(path, 'abc', { atomic: true });
+    expectations();
 
-        // SYNC
-        preparations();
-        jetpack.write(path, 'abc', { atomic: true });
-        expectations();
-
-        // ASYNC
-        preparations();
-        jetpack.writeAsync(path, 'abc', { atomic: true })
-        .then(function () {
-            expectations();
-            done();
-        });
+    // ASYNC
+    preparations();
+    jetpack.writeAsync(path, 'abc', { atomic: true })
+    .then(function () {
+      expectations();
+      done();
     });
-
+  });
 });
