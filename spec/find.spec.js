@@ -12,6 +12,8 @@ describe('find |', function () {
   afterEach(helper.afterEach);
 
   it('returns list of absolute paths by default', function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('a/b/file.txt', 'abc');
     };
@@ -24,7 +26,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('a', { matching: '*.txt' }); // default
+    foundSync = jetpack.find('a', { matching: '*.txt' }); // default
     expectations(foundSync);
     foundSync = jetpack.find('a', { matching: '*.txt' }, 'absolutePath'); // explicit
     expectations(foundSync);
@@ -42,6 +44,8 @@ describe('find |', function () {
   });
 
   it('can return list of relative paths', function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('a/b/file.txt', 'abc');
     };
@@ -54,7 +58,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('a', { matching: '*.txt' }, 'relativePath');
+    foundSync = jetpack.find('a', { matching: '*.txt' }, 'relativePath');
     expectations(foundSync);
 
     // ASYNC
@@ -66,6 +70,8 @@ describe('find |', function () {
   });
 
   it('can return list of inspect objects', function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
@@ -77,7 +83,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('a', { matching: '*.txt' }, 'inspect');
+    foundSync = jetpack.find('a', { matching: '*.txt' }, 'inspect');
     expectations(foundSync);
 
     // ASYNC
@@ -89,6 +95,8 @@ describe('find |', function () {
   });
 
   it('returns empty list if nothing found', function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('a/b/c.md', 'abc');
     };
@@ -100,7 +108,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('a', { matching: '*.txt' });
+    foundSync = jetpack.find('a', { matching: '*.txt' });
     expectations(foundSync);
 
     // ASYNC
@@ -112,6 +120,8 @@ describe('find |', function () {
   });
 
   it('finds all paths which match globs', function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('a/b/file.txt', '1');
       fse.outputFileSync('a/b/c/file.txt', '2');
@@ -132,7 +142,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('a', { matching: ['*.txt', 'z'] }, 'relativePath');
+    foundSync = jetpack.find('a', { matching: ['*.txt', 'z'] }, 'relativePath');
     expectations(foundSync);
 
     // ASYNC
@@ -144,6 +154,8 @@ describe('find |', function () {
   });
 
   it("anchors globs to directory you're finding in", function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('x/y/a/b/file.txt', '1');
       fse.outputFileSync('x/y/a/b/file.md', '2');
@@ -158,7 +170,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('x/y/a', { matching: 'b/*.txt' }, 'relativePath');
+    foundSync = jetpack.find('x/y/a', { matching: 'b/*.txt' }, 'relativePath');
     expectations(foundSync);
 
     // ASYNC
@@ -170,6 +182,8 @@ describe('find |', function () {
   });
 
   it('can use ./ as indication of anchor directory', function (done) {
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('x/y/a.txt', '123');
       fse.outputFileSync('x/y/b/a.txt', '456');
@@ -183,7 +197,7 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    var foundSync = jetpack.find('x/y', { matching: './a.txt' }, 'relativePath');
+    foundSync = jetpack.find('x/y', { matching: './a.txt' }, 'relativePath');
     expectations(foundSync);
 
     // ASYNC
@@ -195,6 +209,8 @@ describe('find |', function () {
   });
 
   it('deals with negation globs', function (done) {
+    var foundSync;
+
     var preparations = function () {
       helper.clearWorkingDir();
       fse.mkdirsSync('x/y/a/b');
@@ -210,7 +226,7 @@ describe('find |', function () {
 
     // SYNC
     preparations();
-    var foundSync = jetpack.find('x/y', {
+    foundSync = jetpack.find('x/y', {
       matching: [
         'a/*',
         // Three different pattern types to test:
@@ -287,6 +303,9 @@ describe('find |', function () {
   });
 
   it('respects internal CWD of jetpack instance', function (done) {
+    var jetContext;
+    var foundSync;
+
     var preparations = function () {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
@@ -297,10 +316,10 @@ describe('find |', function () {
 
     preparations();
 
-    var jetContext = jetpack.cwd('a');
+    jetContext = jetpack.cwd('a');
 
     // SYNC
-    var foundSync = jetContext.find('b', { matching: '*.txt' }, 'inspect');
+    foundSync = jetContext.find('b', { matching: '*.txt' }, 'inspect');
     expectations(foundSync);
 
     // ASYNC
