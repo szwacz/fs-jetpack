@@ -126,7 +126,7 @@ describe('find |', function () {
       fse.outputFileSync('a/b/file.txt', '1');
       fse.outputFileSync('a/b/c/file.txt', '2');
       fse.outputFileSync('a/b/c/file.md', '3');
-      fse.mkdirsSync('a/x/y/z');
+      fse.outputFileSync('a/x/y/z', 'Zzzzz...');
     };
 
     var expectations = function (found) {
@@ -213,10 +213,10 @@ describe('find |', function () {
 
     var preparations = function () {
       helper.clearWorkingDir();
-      fse.mkdirsSync('x/y/a/b');
-      fse.mkdirsSync('x/y/a/x');
-      fse.mkdirsSync('x/y/a/y');
-      fse.mkdirsSync('x/y/a/z');
+      fse.outputFileSync('x/y/a/b', 'bbb');
+      fse.outputFileSync('x/y/a/x', 'xxx');
+      fse.outputFileSync('x/y/a/y', 'yyy');
+      fse.outputFileSync('x/y/a/z', 'zzz');
     };
 
     var expectations = function (found) {
