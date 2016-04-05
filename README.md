@@ -327,6 +327,8 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`.
 `path` path to start search in (all subdirectories will be searched).  
 `searchOptions` is an `Object` with possible fields:
 * `matching` glob patterns of files you would like to find.
+* `files` (default `true`) whether or not should search for files.
+* `directories` (default `false`) whether or not should search for directories.
 `returnAs` (optional) how the results should be returned. Could be one of:
 * `'absolutePath'` (default) returns array of absolute paths.
 * `'relativePath'` returns array of relative paths. The paths are relative to `path` you started search in, not to CWD.
@@ -337,15 +339,18 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`.
 
 **examples:**
 ```javascript
-// Finds all files or directories which has 2015 in the name
+// Finds all files which has 2015 in the name
 jetpack.find('my-work', { matching: '*2015*' });
 
-// Finds all .js  files inside 'my-project' but with exclusion of 'vendor' directory.
+// Finds all .js files inside 'my-project' but excluding those in 'vendor' subtree.
 jetpack.find('my-project', { matching: ['*.js', '!vendor/**/*'] });
 
 // Finds all jpg and png files and gives you back the list of inspect objects
 // (like you called jetpack.inspect on every of those paths)
 jetpack.find('my-work', { matching: ['*.jpg', '*.png'] }, 'inspect');
+
+// Looks for all directories named 'foo' (and will omit all files named 'foo').
+jetpack.find('my-work', { matching: ['foo'], files: false, directories: true });
 ```
 
 ## <a name="inspect"></a> inspect(path, [options])
