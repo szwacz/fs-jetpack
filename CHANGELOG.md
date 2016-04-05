@@ -1,3 +1,7 @@
+0.8.0 (in progress)
+-------------------
+* **(breaking change)** `find()` now distinguishes between files and directories and by default searches only for files (previously searched for both).
+
 0.7.3 (2016-03-21)
 -------------------
 * Bugfixed `copy()` with symlink overwrite
