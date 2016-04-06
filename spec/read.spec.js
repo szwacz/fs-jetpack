@@ -11,6 +11,8 @@ describe('read |', function () {
   afterEach(helper.afterEach);
 
   it('reads file as a string', function (done) {
+    var contentSync;
+
     var preparations = function () {
       helper.clearWorkingDir();
       fse.outputFileSync('file.txt', 'abc');
@@ -22,7 +24,7 @@ describe('read |', function () {
 
     // SYNC
     preparations();
-    var contentSync = jetpack.read('file.txt'); // defaults to 'utf8'
+    contentSync = jetpack.read('file.txt'); // defaults to 'utf8'
     expectations(contentSync);
     contentSync = jetpack.read('file.txt', 'utf8'); // explicitly said
     expectations(contentSync);
@@ -41,6 +43,8 @@ describe('read |', function () {
   });
 
   it('reads file as a Buffer', function (done) {
+    var contentSync;
+
     var preparations = function () {
       helper.clearWorkingDir();
       fse.outputFileSync('file.txt', new Buffer([11, 22]));
@@ -55,7 +59,7 @@ describe('read |', function () {
 
     // SYNC
     preparations();
-    var contentSync = jetpack.read('file.txt', 'buf');
+    contentSync = jetpack.read('file.txt', 'buf');
     expectations(contentSync);
 
     // ASYNC
@@ -68,6 +72,7 @@ describe('read |', function () {
   });
 
   it('reads file as JSON', function (done) {
+    var contentSync;
     var obj = {
       utf8: 'ąćłźż'
     };
@@ -83,7 +88,7 @@ describe('read |', function () {
 
     // SYNC
     preparations();
-    var contentSync = jetpack.read('file.json', 'json');
+    contentSync = jetpack.read('file.json', 'json');
     expectations(contentSync);
 
     // ASYNC
@@ -123,6 +128,7 @@ describe('read |', function () {
   });
 
   it('reads file as JSON with Date parsing', function (done) {
+    var contentSync;
     var obj = {
       utf8: 'ąćłźż',
       date: new Date()
@@ -139,7 +145,7 @@ describe('read |', function () {
 
     // SYNC
     preparations();
-    var contentSync = jetpack.read('file.json', 'jsonWithDates');
+    contentSync = jetpack.read('file.json', 'jsonWithDates');
     expectations(contentSync);
 
     // ASYNC
@@ -196,6 +202,9 @@ describe('read |', function () {
   });
 
   it('respects internal CWD of jetpack instance', function (done) {
+    var jetContext;
+    var dataSync;
+
     var preparations = function () {
       fse.outputFileSync('a/file.txt', 'abc');
     };
@@ -206,10 +215,10 @@ describe('read |', function () {
 
     preparations();
 
-    var jetContext = jetpack.cwd('a');
+    jetContext = jetpack.cwd('a');
 
     // SYNC
-    var dataSync = jetContext.read('file.txt');
+    dataSync = jetContext.read('file.txt');
     expectations(dataSync);
 
     // ASYNC
