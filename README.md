@@ -495,13 +495,13 @@ Reads content of file. If file on given path doesn't exist returns `null` instea
 File content in specified format, or `null` if file doesn't exist.
 
 
-## <a name="remove"></a> remove(path)
-asynchronous: **removeAsync(path)**  
+## <a name="remove"></a> remove([path])
+asynchronous: **removeAsync([path])**  
 
 Deletes given path, no matter what it is (file or directory). If path already doesn't exist ends without throwing, so you can use it as 'ensure path doesn't exist'.
 
 **parameters:**  
-`path` path to file or directory you want to remove.  
+`path` (optional) path to file or directory you want to remove. If not specified the remove action will be performed on current working directory (CWD).
 
 **returns:**  
 Nothing.
@@ -513,6 +513,11 @@ jetpack.remove('my_work/notes.txt');
 
 // Deletes directory "important_stuff" and everything inside
 jetpack.remove('my_work/important_stuff');
+
+// Remove can be called with no parameters and will default to CWD then.
+// In this example folder 'my_work' will cease to exist.
+var myStuffDir = jetpack.cwd('my_stuff');
+myStuffDir.remove();
 ```
 
 

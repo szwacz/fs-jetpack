@@ -98,6 +98,34 @@ describe('remove', function () {
     });
   });
 
+  it('can be called witn no parameters, what will remove CWD directory', function (done) {
+    var jetContext;
+
+    var preparations = function () {
+      helper.clearWorkingDir();
+      fse.outputFileSync('a/b/c.txt', 'abc');
+    };
+
+    var expectations = function () {
+      expect('a').not.toExist();
+    };
+
+    jetContext = jetpack.cwd('a');
+
+    // SYNC
+    preparations();
+    jetContext.remove();
+    expectations();
+
+    // ASYNC
+    preparations();
+    jetContext.removeAsync()
+    .then(function () {
+      expectations();
+      done();
+    });
+  });
+
   describe('*nix specific', function () {
     if (process.platform === 'win32') {
       return;

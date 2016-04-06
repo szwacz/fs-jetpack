@@ -2,6 +2,7 @@
 -------------------
 * **(breaking change)** `find()` now distinguishes between files and directories and by default searches only for files (previously searched for both).
 * **DEPRECATION:** Don't do `jetpack.read('sth', 'buf')`, do `jetpack.read('sth', 'buffer')` instead.
+* `remove()` can be now called without any parameters.
 
 0.7.3 (2016-03-21)
 -------------------
