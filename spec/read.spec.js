@@ -59,6 +59,35 @@ describe('read |', function () {
 
     // SYNC
     preparations();
+    contentSync = jetpack.read('file.txt', 'buffer');
+    expectations(contentSync);
+
+    // ASYNC
+    preparations();
+    jetpack.readAsync('file.txt', 'buffer')
+    .then(function (contentAsync) {
+      expectations(contentAsync);
+      done();
+    });
+  });
+
+  it('reads file as a Buffer (deprecated)', function (done) {
+    var contentSync;
+
+    var preparations = function () {
+      helper.clearWorkingDir();
+      fse.outputFileSync('file.txt', new Buffer([11, 22]));
+    };
+
+    var expectations = function (content) {
+      expect(Buffer.isBuffer(content)).toBe(true);
+      expect(content.length).toBe(2);
+      expect(content[0]).toBe(11);
+      expect(content[1]).toBe(22);
+    };
+
+    // SYNC
+    preparations();
     contentSync = jetpack.read('file.txt', 'buf');
     expectations(contentSync);
 
