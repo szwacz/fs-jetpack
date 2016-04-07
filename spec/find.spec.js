@@ -67,30 +67,6 @@ describe('find |', function () {
     });
   });
 
-  it('can return list of inspect objects', function (done) {
-    var foundSync;
-
-    var preparations = function () {
-      fse.outputFileSync('a/b/c.txt', 'abc');
-    };
-    var expectations = function (found) {
-      expect(found[0].name).toBe('c.txt');
-    };
-
-    preparations();
-
-    // SYNC
-    foundSync = jetpack.find('a', { matching: '*.txt' }, 'inspect');
-    expectations(foundSync);
-
-    // ASYNC
-    jetpack.findAsync('a', { matching: '*.txt' }, 'inspect')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
-      done();
-    });
-  });
-
   it('defaults to CWD if no path provided', function (done) {
     var foundSync;
 
@@ -321,26 +297,24 @@ describe('find |', function () {
 
   it('respects internal CWD of jetpack instance', function (done) {
     var jetContext;
-    var foundSync;
 
     var preparations = function () {
-      fse.outputFileSync('a/b/c.txt', 'abc');
+      fse.outputFileSync('a/b/c/d.txt', 'abc');
     };
     var expectations = function (found) {
-      expect(found[0].name).toBe('c.txt');
+      expect(found).toEqual(['./c/d.txt']);
     };
 
     jetContext = jetpack.cwd('a');
     preparations();
 
     // SYNC
-    foundSync = jetContext.find('b', { matching: '*.txt' }, 'inspect');
-    expectations(foundSync);
+    expectations(jetContext.find('b', { matching: '*.txt' }, 'relativePath'));
 
     // ASYNC
-    jetContext.findAsync('b', { matching: '*.txt' }, 'inspect')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    jetContext.findAsync('b', { matching: '*.txt' }, 'relativePath')
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
