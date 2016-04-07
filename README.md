@@ -430,20 +430,16 @@ Otherwise tree of inspect objects like:
 ```
 
 
-## <a name="list"></a> list(path, [useInspect])
+## <a name="list"></a> list([path])
 asynchronous: **listAsync(path, [useInspect])**  
 
-Lists the contents of directory.
+Lists the contents of directory. Equivalent of `fs.readdir`.
 
 **parameters:**  
-`path` path to directory you would like to list.  
-`useInspect` (optional) the type of data this call should return. Possible values:
-* `false` (default) returns just a list of filenames (the same as `fs.readdir`)
-* `true` performs [inspect](#inspect) on every item in directory, and returns array of those objects
-* `object` if object has been passed to this parameter, it is treated as `options` parameter for [inspect](#inspect) method, and will alter returned inspect objects
+`path` (optional) path to directory you would like to list. If not specified defaults to CWD.
 
 **returns:**  
-`Array` of strings or objects depending on call properies. Or `null` if given path doesn't exist.
+Array of file names inside given path, or `null` if given path doesn't exist.
 
 
 ## <a name="move"></a> move(from, to)

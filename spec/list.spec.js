@@ -10,14 +10,13 @@ describe('list |', function () {
   beforeEach(helper.beforeEach);
   afterEach(helper.afterEach);
 
-  it('lists file names by default', function (done) {
+  it('lists file names in given path', function (done) {
     var preparations = function () {
       fse.mkdirsSync('dir/empty');
       fse.outputFileSync('dir/empty.txt', '');
       fse.outputFileSync('dir/file.txt', 'abc');
       fse.outputFileSync('dir/subdir/file.txt', 'defg');
     };
-
     var expectations = function (data) {
       expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
     };
@@ -25,8 +24,7 @@ describe('list |', function () {
     preparations();
 
     // SYNC
-    var listSync = jetpack.list('dir');
-    expectations(listSync);
+    expectations(jetpack.list('dir'));
 
     // ASYNC
     jetpack.listAsync('dir')
@@ -36,58 +34,27 @@ describe('list |', function () {
     });
   });
 
-  it('lists inspect objects if true passed as second parameter', function (done) {
+  it('lists CWD if no path parameter passed', function (done) {
+    var jetContext;
+
     var preparations = function () {
-      fse.outputFileSync('dir/file.txt', 'abc');
-      fse.mkdirsSync('dir/next');
+      fse.mkdirsSync('dir/a');
+      fse.outputFileSync('dir/b');
     };
-
     var expectations = function (data) {
-      expect(data).toEqual([
-        {
-          name: 'file.txt',
-          type: 'file',
-          size: 3
-        }, {
-          name: 'next',
-          type: 'dir'
-        }
-      ]);
+      expect(data).toEqual(['a', 'b']);
     };
 
+    jetContext = jetpack.cwd('dir');
     preparations();
 
     // SYNC
-    var listSync = jetpack.list('dir', true);
-    expectations(listSync);
+    expectations(jetContext.list());
 
     // ASYNC
-    jetpack.listAsync('dir', true)
-    .then(function (listAsync) {
-      expectations(listAsync);
-      done();
-    });
-  });
-
-  it('lists inspect objects with additional fields when extra options provided', function (done) {
-    var preparations = function () {
-      fse.outputFileSync('dir/file.txt', 'abc');
-    };
-
-    var expectations = function (data) {
-      expect(data[0].md5).toBeDefined();
-    };
-
-    preparations();
-
-    // SYNC
-    var listSync = jetpack.list('dir', { checksum: 'md5' });
-    expectations(listSync);
-
-    // ASYNC
-    jetpack.listAsync('dir', { checksum: 'md5' })
-    .then(function (listAsync) {
-      expectations(listAsync);
+    jetContext.listAsync()
+    .then(function (list) {
+      expectations(list);
       done();
     });
   });
@@ -113,7 +80,6 @@ describe('list |', function () {
     var preparations = function () {
       fse.outputFileSync('file.txt', 'abc');
     };
-
     var expectations = function (list) {
       expect(list).toBe(null);
     };
@@ -121,40 +87,38 @@ describe('list |', function () {
     preparations();
 
     // SYNC
-    var listSync = jetpack.list('file.txt');
-    expectations(listSync);
+    expectations(jetpack.list('file.txt'));
 
     // ASYNC
     jetpack.listAsync('file.txt')
-    .then(function (listAsync) {
-      expectations(listAsync);
+    .then(function (list) {
+      expectations(list);
       done();
     });
   });
 
   it('respects internal CWD of jetpack instance', function (done) {
+    var jetContext;
+
     var preparations = function () {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
-
     var expectations = function (data) {
       expect(data).toEqual(['c.txt']);
     };
 
+    jetContext = jetpack.cwd('a');
     preparations();
-
-    var jetContext = jetpack.cwd('a');
 
     // SYNC
     preparations();
-    var dataSync = jetContext.list('b');
-    expectations(dataSync);
+    expectations(jetContext.list('b'));
 
     // ASYNC
     preparations();
     jetContext.listAsync('b')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });

@@ -1,8 +1,9 @@
 0.8.0 (in progress)
 -------------------
 * **(breaking change)** `find()` now distinguishes between files and directories and by default searches only for files (previously searched for both).
-* **DEPRECATION:** Don't do `jetpack.read('sth', 'buf')`, do `jetpack.read('sth', 'buffer')` instead.
-* `remove()` can be now called without any parameters.
+* **(breaking change)** `list()` no longer accepts `useInspect` as a parameter. To achieve old behaviour use `jetpack.list()` with `Array.map()`.
+* **(deprecation)** Don't do `jetpack.read('sth', 'buf')`, do `jetpack.read('sth', 'buffer')` instead.
+* `remove()`, `list()` can be now called without any parameters and defaults to CWD in that case.
 
 0.7.3 (2016-03-21)
 -------------------
