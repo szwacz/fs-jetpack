@@ -1,8 +1,8 @@
 0.8.0 (in progress)
 -------------------
 * **(breaking change)** `find()` now distinguishes between files and directories and by default searches only for files (previously searched for both).
+* **(breaking change)** `find()` no longer can be configured with `returnAs` parameter and returns always relative paths (previously returned absolute).
 * **(breaking change)** `list()` no longer accepts `useInspect` as a parameter. To achieve old behaviour use `jetpack.list()` with `Array.map()`.
-* **(breaking change)** `find()` no longer accepts `'inspect'` as `returnAs` parameter.
 * **(deprecation)** Don't do `jetpack.read('sth', 'buf')`, do `jetpack.read('sth', 'buffer')` instead.
 * `remove()`, `list()` and `find()` can be now called without provided `path`, and defaults to CWD in that case.
 

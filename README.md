@@ -318,21 +318,17 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-## <a name="find"></a> find(path, searchOptions, [returnAs])
-asynchronous: **findAsync(path, searchOptions, [returnAs])**
+## <a name="find"></a> find([path], searchOptions)
+asynchronous: **findAsync([path], searchOptions)**
 
-Finds in directory specified by `path` all files fulfilling `searchOptions`.
+Finds in directory specified by `path` all files fulfilling `searchOptions`. Returned paths are relative to current CWD of jetpack instance.
 
 **parameters:**  
-`path` path to start search in (all subdirectories will be searched).  
+`path` (optional, defaults to `'.'`) path to start search in (all subdirectories will be searched).  
 `searchOptions` is an `Object` with possible fields:
 * `matching` glob patterns of files you would like to find.
 * `files` (default `true`) whether or not should search for files.
 * `directories` (default `false`) whether or not should search for directories.
-`returnAs` (optional) how the results should be returned. Could be one of:
-* `'absolutePath'` (default) returns array of absolute paths.
-* `'relativePath'` returns array of relative paths. The paths are relative to `path` you started search in, not to CWD.
-* `'inspect'` returns array of objects like you called [inspect](#inspect) on every of those files.
 
 **returns:**  
 `Array` of found files.
@@ -345,12 +341,12 @@ jetpack.find('my-work', { matching: '*2015*' });
 // Finds all .js files inside 'my-project' but excluding those in 'vendor' subtree.
 jetpack.find('my-project', { matching: ['*.js', '!vendor/**/*'] });
 
-// Finds all jpg and png files and gives you back the list of inspect objects
-// (like you called jetpack.inspect on every of those paths)
-jetpack.find('my-work', { matching: ['*.jpg', '*.png'] }, 'inspect');
-
 // Looks for all directories named 'foo' (and will omit all files named 'foo').
 jetpack.find('my-work', { matching: ['foo'], files: false, directories: true });
+
+// Path parameter might be omitted and CWD is used as path in that case.
+var myStuffDir = jetpack.cwd('my-stuff');
+myStuffDir.find({ matching: ['*.md'] });
 ```
 
 ## <a name="inspect"></a> inspect(path, [options])

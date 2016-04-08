@@ -22,16 +22,16 @@ describe('find | can look for directories as well', function () {
 
   it("doesn't look for directories by default", function (done) {
     var foundSync;
-    var expectedOutcome = ['./b/foo1'];
+    var expectedOutcome = ['a/b/foo1'];
 
     preparations();
 
     // SYNC
-    foundSync = jetpack.find('a', { matching: 'foo*' }, 'relativePath');
+    foundSync = jetpack.find('a', { matching: 'foo*' });
     expectations(foundSync, expectedOutcome);
 
     // ASYNC
-    jetpack.findAsync('a', { matching: 'foo*' }, 'relativePath')
+    jetpack.findAsync('a', { matching: 'foo*' })
     .then(function (foundAsync) {
       expectations(foundAsync, expectedOutcome);
       done();
@@ -40,7 +40,7 @@ describe('find | can look for directories as well', function () {
 
   it('can look for files and directories', function (done) {
     var foundSync;
-    var expectedOutcome = ['./b/foo1', './b/foo2'];
+    var expectedOutcome = ['a/b/foo1', 'a/b/foo2'];
 
     preparations();
 
@@ -48,14 +48,14 @@ describe('find | can look for directories as well', function () {
     foundSync = jetpack.find('a', {
       matching: 'foo*',
       directories: true
-    }, 'relativePath');
+    });
     expectations(foundSync, expectedOutcome);
 
     // ASYNC
     jetpack.findAsync('a', {
       matching: 'foo*',
       directories: true
-    }, 'relativePath')
+    })
     .then(function (foundAsync) {
       expectations(foundAsync, expectedOutcome);
       done();
@@ -64,7 +64,7 @@ describe('find | can look for directories as well', function () {
 
   it('can look for only directories', function (done) {
     var foundSync;
-    var expectedOutcome = ['./b/foo2'];
+    var expectedOutcome = ['a/b/foo2'];
 
     preparations();
 
@@ -73,7 +73,7 @@ describe('find | can look for directories as well', function () {
       matching: 'foo*',
       files: false,
       directories: true
-    }, 'relativePath');
+    });
     expectations(foundSync, expectedOutcome);
 
     // ASYNC
@@ -81,7 +81,7 @@ describe('find | can look for directories as well', function () {
       matching: 'foo*',
       files: false,
       directories: true
-    }, 'relativePath')
+    })
     .then(function (foundAsync) {
       expectations(foundAsync, expectedOutcome);
       done();
@@ -99,7 +99,7 @@ describe('find | can look for directories as well', function () {
       matching: 'foo*',
       files: false,
       directories: false
-    }, 'relativePath');
+    });
     expectations(foundSync, expectedOutcome);
 
     // ASYNC
@@ -107,7 +107,7 @@ describe('find | can look for directories as well', function () {
       matching: 'foo*',
       files: false,
       directories: false
-    }, 'relativePath')
+    })
     .then(function (foundAsync) {
       expectations(foundAsync, expectedOutcome);
       done();

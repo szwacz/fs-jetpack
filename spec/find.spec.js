@@ -4,97 +4,57 @@
 
 describe('find |', function () {
   var fse = require('fs-extra');
-  var pathUtil = require('path');
   var helper = require('./support/spec_helper');
   var jetpack = require('..');
 
   beforeEach(helper.beforeEach);
   afterEach(helper.afterEach);
 
-  it('returns list of absolute paths by default', function (done) {
-    var foundSync;
-
-    var preparations = function () {
-      fse.outputFileSync('a/b/file.txt', 'abc');
-    };
-    var expectations = function (found) {
-      var expectedPath = pathUtil.resolve('./a/b/file.txt');
-      expect(found).toEqual([expectedPath]);
-    };
-
-    preparations();
-
-    // SYNC
-    foundSync = jetpack.find('a', { matching: '*.txt' }); // default
-    expectations(foundSync);
-    foundSync = jetpack.find('a', { matching: '*.txt' }, 'absolutePath'); // explicit
-    expectations(foundSync);
-
-    // ASYNC
-    jetpack.findAsync('a', { matching: '*.txt' }) // default
-    .then(function (foundAsync) {
-      expectations(foundAsync);
-      return jetpack.findAsync('a', { matching: '*.txt' }, 'absolutePath'); // explicit
-    })
-    .then(function (foundAsync) {
-      expectations(foundAsync);
-      done();
-    });
-  });
-
-  it('can return list of relative paths', function (done) {
-    var foundSync;
-
+  it('returns list of relative paths anchored to CWD', function (done) {
     var preparations = function () {
       fse.outputFileSync('a/b/file.txt', 'abc');
     };
     var expectations = function (found) {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).toEqual(['./b/file.txt']);
+      expect(normalizedFound).toEqual(['a/b/file.txt']);
     };
 
     preparations();
 
     // SYNC
-    foundSync = jetpack.find('a', { matching: '*.txt' }, 'relativePath');
-    expectations(foundSync);
+    expectations(jetpack.find('a', { matching: '*.txt' }));
 
     // ASYNC
-    jetpack.findAsync('a', { matching: '*.txt' }, 'relativePath')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    jetpack.findAsync('a', { matching: '*.txt' })
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
 
   it('defaults to CWD if no path provided', function (done) {
-    var foundSync;
-
     var preparations = function () {
       fse.outputFileSync('a/b/file.txt', 'abc');
     };
     var expectations = function (found) {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).toEqual(['./a/b/file.txt']);
+      expect(normalizedFound).toEqual(['a/b/file.txt']);
     };
 
     preparations();
 
     // SYNC
-    foundSync = jetpack.find({ matching: '*.txt' }, 'relativePath');
-    expectations(foundSync);
+    expectations(jetpack.find({ matching: '*.txt' }));
 
     // ASYNC
-    jetpack.findAsync({ matching: '*.txt' }, 'relativePath')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    jetpack.findAsync({ matching: '*.txt' })
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
 
   it('returns empty list if nothing found', function (done) {
-    var foundSync;
-
     var preparations = function () {
       fse.outputFileSync('a/b/c.md', 'abc');
     };
@@ -105,20 +65,17 @@ describe('find |', function () {
     preparations();
 
     // SYNC
-    foundSync = jetpack.find('a', { matching: '*.txt' });
-    expectations(foundSync);
+    expectations(jetpack.find('a', { matching: '*.txt' }));
 
     // ASYNC
     jetpack.findAsync('a', { matching: '*.txt' })
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
 
   it('finds all paths which match globs', function (done) {
-    var foundSync;
-
     var preparations = function () {
       fse.outputFileSync('a/b/file.txt', '1');
       fse.outputFileSync('a/b/c/file.txt', '2');
@@ -129,84 +86,73 @@ describe('find |', function () {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
       normalizedFound.sort();
       expect(normalizedFound).toEqual([
-        './b/c/file.txt',
-        './b/file.txt',
-        './x/y/z'
+        'a/b/c/file.txt',
+        'a/b/file.txt',
+        'a/x/y/z'
       ]);
     };
 
     preparations();
 
     // SYNC
-    foundSync = jetpack.find('a', { matching: ['*.txt', 'z'] }, 'relativePath');
-    expectations(foundSync);
+    expectations(jetpack.find('a', { matching: ['*.txt', 'z'] }));
 
     // ASYNC
-    jetpack.findAsync('a', { matching: ['*.txt', 'z'] }, 'relativePath')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    jetpack.findAsync('a', { matching: ['*.txt', 'z'] })
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
 
   it("anchors globs to directory you're finding in", function (done) {
-    var foundSync;
-
     var preparations = function () {
-      fse.outputFileSync('x/y/a/b/file.txt', '1');
-      fse.outputFileSync('x/y/a/b/file.md', '2');
-      fse.outputFileSync('x/y/a/b/c/file.txt', '3');
+      fse.outputFileSync('x/y/a/b/file.txt', '123');
+      fse.outputFileSync('x/y/a/b/c/file.txt', '456');
     };
     var expectations = function (found) {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).toEqual(['./b/file.txt']);
+      expect(normalizedFound).toEqual(['x/y/a/b/file.txt']);
     };
 
     preparations();
 
     // SYNC
-    foundSync = jetpack.find('x/y/a', { matching: 'b/*.txt' }, 'relativePath');
-    expectations(foundSync);
+    expectations(jetpack.find('x/y/a', { matching: 'b/*.txt' }));
 
     // ASYNC
-    jetpack.findAsync('x/y/a', { matching: 'b/*.txt' }, 'relativePath')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    jetpack.findAsync('x/y/a', { matching: 'b/*.txt' })
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
 
   it('can use ./ as indication of anchor directory', function (done) {
-    var foundSync;
-
     var preparations = function () {
-      fse.outputFileSync('x/y/a.txt', '123');
-      fse.outputFileSync('x/y/b/a.txt', '456');
+      fse.outputFileSync('x/y/file.txt', '123');
+      fse.outputFileSync('x/y/b/file.txt', '456');
     };
     var expectations = function (found) {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).toEqual(['./a.txt']);
+      expect(normalizedFound).toEqual(['x/y/file.txt']);
     };
 
     preparations();
 
     // SYNC
-    foundSync = jetpack.find('x/y', { matching: './a.txt' }, 'relativePath');
-    expectations(foundSync);
+    expectations(jetpack.find('x/y', { matching: './file.txt' }));
 
     // ASYNC
-    jetpack.findAsync('x/y', { matching: './a.txt' }, 'relativePath')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    jetpack.findAsync('x/y', { matching: './file.txt' })
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
 
   it('deals with negation globs', function (done) {
-    var foundSync;
-
     var preparations = function () {
-      helper.clearWorkingDir();
       fse.outputFileSync('x/y/a/b', 'bbb');
       fse.outputFileSync('x/y/a/x', 'xxx');
       fse.outputFileSync('x/y/a/y', 'yyy');
@@ -214,12 +160,13 @@ describe('find |', function () {
     };
     var expectations = function (found) {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).toEqual(['./a/b']);
+      expect(normalizedFound).toEqual(['x/y/a/b']);
     };
 
-    // SYNC
     preparations();
-    foundSync = jetpack.find('x/y', {
+
+    // SYNC
+    expectations(jetpack.find('x/y', {
       matching: [
         'a/*',
         // Three different pattern types to test:
@@ -227,11 +174,9 @@ describe('find |', function () {
         '!a/y',
         '!./a/z'
       ]
-    }, 'relativePath');
-    expectations(foundSync);
+    }, 'relativePath'));
 
     // ASYNC
-    preparations();
     jetpack.findAsync('x/y', {
       matching: [
         'a/*',
@@ -240,9 +185,9 @@ describe('find |', function () {
         '!a/y',
         '!./a/z'
       ]
-    }, 'relativePath')
-    .then(function (foundAsync) {
-      expectations(foundAsync);
+    })
+    .then(function (found) {
+      expectations(found);
       done();
     });
   });
@@ -272,7 +217,6 @@ describe('find |', function () {
     var preparations = function () {
       fse.outputFileSync('a/b', 'abc');
     };
-
     var expectations = function (err) {
       expect(err.code).toBe('ENOTDIR');
       expect(err.message).toMatch(/^Path you want to find stuff in must be a directory/);
@@ -302,17 +246,17 @@ describe('find |', function () {
       fse.outputFileSync('a/b/c/d.txt', 'abc');
     };
     var expectations = function (found) {
-      expect(found).toEqual(['./c/d.txt']);
+      expect(found).toEqual(['b/c/d.txt']); // NOT a/b/c/d.txt
     };
 
     jetContext = jetpack.cwd('a');
     preparations();
 
     // SYNC
-    expectations(jetContext.find('b', { matching: '*.txt' }, 'relativePath'));
+    expectations(jetContext.find('b', { matching: '*.txt' }));
 
     // ASYNC
-    jetContext.findAsync('b', { matching: '*.txt' }, 'relativePath')
+    jetContext.findAsync('b', { matching: '*.txt' })
     .then(function (found) {
       expectations(found);
       done();
