@@ -217,7 +217,8 @@ describe('find |', function () {
 
   it('respects internal CWD of jetpack instance', function (done) {
     var expectations = function (found) {
-      expect(found).toEqual(['b/c/d.txt']); // NOT a/b/c/d.txt
+      var normalizedFound = helper.convertToUnixPathSeparators(found);
+      expect(normalizedFound).toEqual(['b/c/d.txt']); // NOT a/b/c/d.txt
     };
 
     var jetContext = jetpack.cwd('a');
