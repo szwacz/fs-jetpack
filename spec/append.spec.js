@@ -15,7 +15,6 @@ describe('append |', function () {
       helper.clearWorkingDir();
       fse.writeFileSync('file.txt', 'abc');
     };
-
     var expectations = function () {
       expect('file.txt').toBeFileWithContent('abcxyz');
     };
@@ -39,7 +38,6 @@ describe('append |', function () {
       helper.clearWorkingDir();
       fse.writeFileSync('file.txt', new Buffer([11]));
     };
-
     var expectations = function () {
       var buf = fse.readFileSync('file.txt');
       expect(buf[0]).toBe(11);
@@ -65,7 +63,6 @@ describe('append |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('file.txt').toBeFileWithContent('xyz');
     };
@@ -88,7 +85,6 @@ describe('append |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('dir/dir/file.txt').toBeFileWithContent('xyz');
     };
@@ -112,7 +108,6 @@ describe('append |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b.txt').toBeFileWithContent('abcxyz');
     };

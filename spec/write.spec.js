@@ -14,7 +14,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('file.txt').toBeFileWithContent('abc');
     };
@@ -39,7 +38,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       var content = fse.readFileSync('file.txt');
       expect(content.length).toBe(2);
@@ -69,7 +67,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       var content = JSON.parse(fse.readFileSync('file.json', 'utf8'));
       expect(content).toEqual(obj);
@@ -97,7 +94,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       var sizeA = fse.statSync('a.json').size;
       var sizeB = fse.statSync('b.json').size;
@@ -136,7 +132,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       var content = JSON.parse(fse.readFileSync('file.json', 'utf8'));
       expect(content.date).toBe(obj.date.toISOString());
@@ -160,7 +155,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('a/b/c.txt').toBeFileWithContent('abc');
     };
@@ -183,7 +177,6 @@ describe('write |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('a/b/c.txt').toBeFileWithContent('abc');
     };

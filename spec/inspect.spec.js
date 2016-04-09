@@ -11,10 +11,6 @@ describe('inspect |', function () {
   afterEach(helper.afterEach);
 
   it('can inspect a file', function (done) {
-    var preparations = function () {
-      fse.outputFileSync('dir/file.txt', 'abc');
-    };
-
     var expectations = function (data) {
       expect(data).toEqual({
         name: 'file.txt',
@@ -23,25 +19,20 @@ describe('inspect |', function () {
       });
     };
 
-    preparations();
+    fse.outputFileSync('dir/file.txt', 'abc');
 
     // SYNC
-    var dataSync = jetpack.inspect('dir/file.txt');
-    expectations(dataSync);
+    expectations(jetpack.inspect('dir/file.txt'));
 
     // ASYNC
     jetpack.inspectAsync('dir/file.txt')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });
 
   it('can inspect a directory', function (done) {
-    var preparations = function () {
-      fse.mkdirsSync('dir/empty');
-    };
-
     var expectations = function (data) {
       expect(data).toEqual({
         name: 'empty',
@@ -49,16 +40,15 @@ describe('inspect |', function () {
       });
     };
 
-    preparations();
+    fse.mkdirsSync('dir/empty');
 
     // SYNC
-    var dataSync = jetpack.inspect('dir/empty');
-    expectations(dataSync);
+    expectations(jetpack.inspect('dir/empty'));
 
     // ASYNC
     jetpack.inspectAsync('dir/empty')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });
@@ -69,88 +59,70 @@ describe('inspect |', function () {
     };
 
     // SYNC
-    var dataSync = jetpack.inspect('nonexistent');
-    expectations(dataSync);
+    expectations(jetpack.inspect('nonexistent'));
 
     // ASYNC
     jetpack.inspectAsync('nonexistent')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });
 
   it('can output file times (ctime, mtime, atime)', function (done) {
-    var preparations = function () {
-      fse.outputFileSync('dir/file.txt', 'abc');
-    };
-
     var expectations = function (data) {
       expect(typeof data.accessTime.getTime).toBe('function');
       expect(typeof data.modifyTime.getTime).toBe('function');
       expect(typeof data.changeTime.getTime).toBe('function');
     };
 
-    preparations();
+    fse.outputFileSync('dir/file.txt', 'abc');
 
     // SYNC
-    var dataSync = jetpack.inspect('dir/file.txt', { times: true });
-    expectations(dataSync);
+    expectations(jetpack.inspect('dir/file.txt', { times: true }));
 
     // ASYNC
     jetpack.inspectAsync('dir/file.txt', { times: true })
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });
 
   it('can output absolute path', function (done) {
-    var preparations = function () {
-      fse.outputFileSync('dir/file.txt', 'abc');
-    };
-
     var expectations = function (data) {
       expect(data.absolutePath).toBe(jetpack.path('dir/file.txt'));
     };
 
-    preparations();
+    fse.outputFileSync('dir/file.txt', 'abc');
 
     // SYNC
-    var dataSync = jetpack.inspect('dir/file.txt', { absolutePath: true });
-    expectations(dataSync);
+    expectations(jetpack.inspect('dir/file.txt', { absolutePath: true }));
 
     // ASYNC
     jetpack.inspectAsync('dir/file.txt', { absolutePath: true })
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });
 
   it('respects internal CWD of jetpack instance', function (done) {
-    var preparations = function () {
-      fse.outputFileSync('a/b.txt', 'abc');
-    };
-
     var expectations = function (data) {
       expect(data.name).toBe('b.txt');
     };
 
-    preparations();
-
     var jetContext = jetpack.cwd('a');
 
+    fse.outputFileSync('a/b.txt', 'abc');
+
     // SYNC
-    preparations();
-    var dataSync = jetContext.inspect('b.txt');
-    expectations(dataSync);
+    expectations(jetContext.inspect('b.txt'));
 
     // ASYNC
-    preparations();
     jetContext.inspectAsync('b.txt')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });
@@ -179,24 +151,19 @@ describe('inspect |', function () {
       }
     ].forEach(function (test) {
       it(test.name, function (done) {
-        var preparations = function () {
-          fse.outputFileSync('file.txt', test.content);
-        };
-
         var expectations = function (data) {
           expect(data[test.name]).toBe(test.expected);
         };
 
-        preparations();
+        fse.outputFileSync('file.txt', test.content);
 
         // SYNC
-        var dataSync = jetpack.inspect('file.txt', { checksum: test.name });
-        expectations(dataSync);
+        expectations(jetpack.inspect('file.txt', { checksum: test.name }));
 
         // ASYNC
         jetpack.inspectAsync('file.txt', { checksum: test.name })
-        .then(function (dataAsync) {
-          expectations(dataAsync);
+        .then(function (data) {
+          expectations(data);
           done();
         });
       });
@@ -209,34 +176,24 @@ describe('inspect |', function () {
     }
 
     it('can output file mode', function (done) {
-      var preparations = function () {
-        fse.outputFileSync('dir/file.txt', 'abc');
-      };
-
       var expectations = function (data) {
         expect(typeof data.mode).toBe('number');
       };
 
-      preparations();
+      fse.outputFileSync('dir/file.txt', 'abc');
 
       // SYNC
-      var dataSync = jetpack.inspect('dir/file.txt', { mode: true });
-      expectations(dataSync);
+      expectations(jetpack.inspect('dir/file.txt', { mode: true }));
 
       // ASYNC
       jetpack.inspectAsync('dir/file.txt', { mode: true })
-      .then(function (dataAsync) {
-        expectations(dataAsync);
+      .then(function (data) {
+        expectations(data);
         done();
       });
     });
 
     it('follows symlink by default', function (done) {
-      var preparations = function () {
-        fse.outputFileSync('dir/file.txt', 'abc');
-        fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
-      };
-
       var expectations = function (data) {
         expect(data).toEqual({
           name: 'symlinked_file.txt',
@@ -245,26 +202,21 @@ describe('inspect |', function () {
         });
       };
 
-      preparations();
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
 
       // SYNC
-      var dataSync = jetpack.inspect('symlinked_file.txt');
-      expectations(dataSync);
+      expectations(jetpack.inspect('symlinked_file.txt'));
 
       // ASYNC
       jetpack.inspectAsync('symlinked_file.txt')
-      .then(function (dataAsync) {
-        expectations(dataAsync);
+      .then(function (data) {
+        expectations(data);
         done();
       });
     });
 
     it('stats symlink if option specified', function (done) {
-      var preparations = function () {
-        fse.outputFileSync('dir/file.txt', 'abc');
-        fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
-      };
-
       var expectations = function (data) {
         expect(data).toEqual({
           name: 'symlinked_file.txt',
@@ -273,16 +225,16 @@ describe('inspect |', function () {
         });
       };
 
-      preparations();
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
 
       // SYNC
-      var dataSync = jetpack.inspect('symlinked_file.txt', { symlinks: true });
-      expectations(dataSync);
+      expectations(jetpack.inspect('symlinked_file.txt', { symlinks: true }));
 
       // ASYNC
       jetpack.inspectAsync('symlinked_file.txt', { symlinks: true })
-      .then(function (dataAsync) {
-        expectations(dataAsync);
+      .then(function (data) {
+        expectations(data);
         done();
       });
     });

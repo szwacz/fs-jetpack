@@ -15,7 +15,6 @@ describe('rename |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b.txt').not.toExist();
       expect('a/x.txt').toBeFileWithContent('abc');
@@ -40,7 +39,6 @@ describe('rename |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b').not.toExist();
       expect('a/x').toBeDirectory();
@@ -65,7 +63,6 @@ describe('rename |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b').not.toExist();
       expect('a/x').toBeDirectory();

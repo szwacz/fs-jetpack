@@ -26,7 +26,6 @@ describe('remove', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('file.txt', 'abc');
     };
-
     var expectations = function () {
       expect('file.txt').not.toExist();
     };
@@ -52,7 +51,6 @@ describe('remove', function () {
       fse.outputFileSync('a/f.txt', 'abc');
       fse.outputFileSync('a/b/f.txt', '123');
     };
-
     var expectations = function () {
       expect('a').not.toExist();
     };
@@ -76,7 +74,6 @@ describe('remove', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b/c.txt', '123');
     };
-
     var expectations = function () {
       expect('a').toExist();
       expect('a/b').not.toExist();
@@ -99,18 +96,15 @@ describe('remove', function () {
   });
 
   it('can be called witn no parameters, what will remove CWD directory', function (done) {
-    var jetContext;
-
     var preparations = function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a').not.toExist();
     };
 
-    jetContext = jetpack.cwd('a');
+    var jetContext = jetpack.cwd('a');
 
     // SYNC
     preparations();
@@ -140,7 +134,6 @@ describe('remove', function () {
         // Make sure we symlinked it properly.
         expect(fse.readFileSync('to_remove/symlink', 'utf8')).toBe('abc');
       };
-
       var expectations = function () {
         expect('have_to_stay_file').toBeFileWithContent('abc');
         expect('to_remove').not.toExist();

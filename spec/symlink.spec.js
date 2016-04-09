@@ -14,7 +14,6 @@ describe('symlink |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect(fse.lstatSync('symlink').isSymbolicLink()).toBe(true);
       expect(fse.readlinkSync('symlink')).toBe('some_path');
@@ -38,7 +37,6 @@ describe('symlink |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
     };
@@ -62,7 +60,6 @@ describe('symlink |', function () {
       helper.clearWorkingDir();
       fse.mkdirsSync('a/b');
     };
-
     var expectations = function () {
       expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
     };

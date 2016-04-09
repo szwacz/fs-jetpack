@@ -15,7 +15,6 @@ describe('file |', function () {
       var prepartions = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('file.txt').toBeFileWithContent('');
       };
@@ -39,7 +38,6 @@ describe('file |', function () {
         helper.clearWorkingDir();
         fse.outputFileSync('file.txt', 'abc');
       };
-
       var expectations = function () {
         expect('file.txt').toBeFileWithContent('abc');
       };
@@ -64,7 +62,6 @@ describe('file |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('file.txt').toBeFileWithContent('ąbć');
       };
@@ -87,7 +84,6 @@ describe('file |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         var buf = fse.readFileSync('file');
         expect(buf[0]).toBe(11);
@@ -110,12 +106,14 @@ describe('file |', function () {
     });
 
     it('from object (json)', function (done) {
-      var obj = { a: 'abc', b: 123 };
+      var obj = {
+        a: 'abc',
+        b: 123
+      };
 
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         var data = JSON.parse(fse.readFileSync('file.txt', 'utf8'));
         expect(data).toEqual(obj);
@@ -136,12 +134,14 @@ describe('file |', function () {
     });
 
     it('written JSON data can be indented', function (done) {
-      var obj = { a: 'abc', b: 123 };
+      var obj = {
+        a: 'abc',
+        b: 123
+      };
 
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         var sizeA = fse.statSync('a.json').size;
         var sizeB = fse.statSync('b.json').size;
@@ -177,7 +177,6 @@ describe('file |', function () {
         helper.clearWorkingDir();
         fse.writeFileSync('file.txt', 'abc');
       };
-
       var expectations = function () {
         expect('file.txt').toBeFileWithContent('123');
       };
@@ -203,7 +202,6 @@ describe('file |', function () {
       // Create nested directories to be sure we can delete non-empty dir.
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a').toBeFileWithContent('');
     };
@@ -226,7 +224,6 @@ describe('file |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('a/b/c.txt').toBeFileWithContent('');
     };
@@ -247,13 +244,12 @@ describe('file |', function () {
 
   it('returns currently used jetpack instance', function (done) {
     // SYNC
-    var jetpackContextSync = jetpack.file('file.txt');
-    expect(jetpackContextSync).toBe(jetpack);
+    expect(jetpack.file('file.txt')).toBe(jetpack);
 
     // ASYNC
     jetpack.fileAsync('file.txt')
-    .then(function (jetpackContextAsync) {
-      expect(jetpackContextAsync).toBe(jetpack);
+    .then(function (jetpackContext) {
+      expect(jetpackContext).toBe(jetpack);
       done();
     });
   });
@@ -262,7 +258,6 @@ describe('file |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('a/b.txt').toBeFileWithContent('');
     };
@@ -313,7 +308,6 @@ describe('file |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('file.txt').toHaveMode('511');
       };
@@ -351,7 +345,6 @@ describe('file |', function () {
         helper.clearWorkingDir();
         fse.writeFileSync('file.txt', 'abc', { mode: '700' });
       };
-
       var expectations = function () {
         expect('file.txt').toHaveMode('511');
       };
@@ -374,7 +367,6 @@ describe('file |', function () {
       var preparations = function () {
         fse.writeFileSync('file.txt', 'abc', { mode: '700' });
       };
-
       var expectations = function () {
         expect('file.txt').toHaveMode('700');
       };

@@ -12,13 +12,12 @@ describe('exists', function () {
 
   it("returns false if file doesn't exist", function (done) {
     // SYNC
-    var existsSync = jetpack.exists('file.txt');
-    expect(existsSync).toBe(false);
+    expect(jetpack.exists('file.txt')).toBe(false);
 
     // ASYNC
     jetpack.existsAsync('file.txt')
-    .then(function (existsAsync) {
-      expect(existsAsync).toBe(false);
+    .then(function (exists) {
+      expect(exists).toBe(false);
       done();
     });
   });
@@ -27,13 +26,12 @@ describe('exists', function () {
     fse.mkdirsSync('a');
 
     // SYNC
-    var existsSync = jetpack.exists('a');
-    expect(existsSync).toBe('dir');
+    expect(jetpack.exists('a')).toBe('dir');
 
     // ASYNC
     jetpack.existsAsync('a')
-    .then(function (existsAsync) {
-      expect(existsAsync).toBe('dir');
+    .then(function (exists) {
+      expect(exists).toBe('dir');
       done();
     });
   });
@@ -42,30 +40,28 @@ describe('exists', function () {
     fse.outputFileSync('text.txt', 'abc');
 
     // SYNC
-    var existsSync = jetpack.exists('text.txt');
-    expect(existsSync).toBe('file');
+    expect(jetpack.exists('text.txt')).toBe('file');
 
     // ASYNC
     jetpack.existsAsync('text.txt')
-    .then(function (existsAsync) {
-      expect(existsAsync).toBe('file');
+    .then(function (exists) {
+      expect(exists).toBe('file');
       done();
     });
   });
 
   it('respects internal CWD of jetpack instance', function (done) {
-    fse.outputFileSync('a/text.txt', 'abc');
-
     var jetContext = jetpack.cwd('a');
 
+    fse.outputFileSync('a/text.txt', 'abc');
+
     // SYNC
-    var existsSync = jetContext.exists('text.txt');
-    expect(existsSync).toBe('file');
+    expect(jetContext.exists('text.txt')).toBe('file');
 
     // ASYNC
     jetContext.existsAsync('text.txt')
-    .then(function (existsAsync) {
-      expect(existsAsync).toBe('file');
+    .then(function (exists) {
+      expect(exists).toBe('file');
       done();
     });
   });
@@ -80,13 +76,12 @@ describe('exists', function () {
       fse.outputFileSync('text.txt', 'abc');
 
       // SYNC
-      var existsSync = jetpack.exists('text.txt/something');
-      expect(existsSync).toBe(false);
+      expect(jetpack.exists('text.txt/something')).toBe(false);
 
       // ASYNC
       jetpack.existsAsync('text.txt/something')
-      .then(function (existsAsync) {
-        expect(existsAsync).toBe(false);
+      .then(function (exists) {
+        expect(exists).toBe(false);
         done();
       });
     });

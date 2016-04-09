@@ -10,8 +10,6 @@ var os = require('os');
 
 var customMatchers = require('./jasmine_matchers');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
-
 var originalCwd = process.cwd();
 // The directory we will be using as CWD for tests.
 var workingDir = pathUtil.join(os.tmpdir(), 'fs-jetpack-test');
@@ -27,6 +25,8 @@ var clearWorkingDir = function () {
     throw new Error('Clearing working directory failed!');
   }
 };
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 module.exports.clearWorkingDir = clearWorkingDir;
 

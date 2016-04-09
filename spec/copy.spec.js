@@ -15,7 +15,6 @@ describe('copy |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('file.txt', 'abc');
     };
-
     var expectations = function () {
       expect('file.txt').toBeFileWithContent('abc');
       expect('file_1.txt').toBeFileWithContent('abc');
@@ -40,7 +39,6 @@ describe('copy |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('file.txt', 'abc');
     };
-
     var expectations = function () {
       expect('file.txt').toBeFileWithContent('abc');
       expect('dir/dir/file.txt').toBeFileWithContent('abc');
@@ -65,7 +63,6 @@ describe('copy |', function () {
       helper.clearWorkingDir();
       fse.mkdirsSync('dir');
     };
-
     var expectations = function () {
       expect('a/dir').toBeDirectory();
     };
@@ -91,7 +88,6 @@ describe('copy |', function () {
       fse.outputFileSync('a/b/f2.txt', '123');
       fse.mkdirsSync('a/b/c');
     };
-
     var expectations = function () {
       expect('dir/a/f1.txt').toBeFileWithContent('abc');
       expect('dir/a/b/c').toBeDirectory();
@@ -139,7 +135,6 @@ describe('copy |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b.txt').toBeFileWithContent('abc');
       expect('a/x.txt').toBeFileWithContent('abc');
@@ -168,7 +163,6 @@ describe('copy |', function () {
         fse.outputFileSync('a/file.txt', 'abc');
         fse.mkdirsSync('b');
       };
-
       var expectations = function (err) {
         expect(err.code).toBe('EEXIST');
         expect(err.message).toMatch(/^Destination path already exists/);
@@ -198,7 +192,6 @@ describe('copy |', function () {
         fse.outputFileSync('a/file.txt', 'abc');
         fse.outputFileSync('b/file.txt', 'xyz');
       };
-
       var expectations = function () {
         expect('a/file.txt').toBeFileWithContent('abc');
         expect('b/file.txt').toBeFileWithContent('abc');
@@ -230,7 +223,6 @@ describe('copy |', function () {
         fse.outputFileSync('dir/a/b/file.txt', '3');
         fse.outputFileSync('dir/a/b/file.md', 'm3');
       };
-
       var expectations = function () {
         expect('copy/file.txt').toBeFileWithContent('1');
         expect('copy/file.md').not.toExist();
@@ -261,7 +253,6 @@ describe('copy |', function () {
         fse.outputFileSync('x/y/dir/a/file.txt', '2');
         fse.outputFileSync('x/y/dir/a/b/file.txt', '3');
       };
-
       var expectations = function () {
         expect('copy/file.txt').not.toExist();
         expect('copy/a/file.txt').toBeFileWithContent('2');
@@ -288,7 +279,6 @@ describe('copy |', function () {
         fse.outputFileSync('x/y/a.txt', '123');
         fse.outputFileSync('x/y/b/a.txt', '456');
       };
-
       var expectations = function () {
         expect('copy/a.txt').toExist();
         expect('copy/b/a.txt').not.toExist();
@@ -314,7 +304,6 @@ describe('copy |', function () {
         fse.outputFileSync('a', '123');
         fse.outputFileSync('x', '456');
       };
-
       var expectations = function () {
         expect('a-copy').not.toExist();
         expect('x-copy').toExist();
@@ -346,7 +335,6 @@ describe('copy |', function () {
         fse.mkdirsSync('x/y/dir/a/y');
         fse.mkdirsSync('x/y/dir/a/z');
       };
-
       var expectations = function () {
         expect('copy/dir/a/b').toBeDirectory();
         expect('copy/dir/a/x').not.toExist();
@@ -394,7 +382,6 @@ describe('copy |', function () {
         // Empty directory
         fse.mkdirsSync('x/y/z');
       };
-
       var expectations = function () {
         expect('copy/file.txt').toBeFileWithContent('123');
         expect('copy/y/.dot').toBeFileWithContent('dot');
@@ -428,7 +415,6 @@ describe('copy |', function () {
         fse.chmodSync('a/b', '700');
         fse.chmodSync('a/b/c.txt', '711');
       };
-
       var expectations = function () {
         expect('x/b').toHaveMode('700');
         expect('x/b/c.txt').toHaveMode('711');
@@ -454,7 +440,6 @@ describe('copy |', function () {
         fse.mkdirsSync('to_copy');
         fse.symlinkSync('some/file', 'to_copy/symlink');
       };
-
       var expectations = function () {
         expect(fse.lstatSync('copied/symlink').isSymbolicLink()).toBe(true);
         expect(fse.readlinkSync('copied/symlink')).toBe('some/file');
@@ -482,7 +467,6 @@ describe('copy |', function () {
         fse.mkdirsSync('copied');
         fse.symlinkSync('some/other_file', 'copied/symlink');
       };
-
       var expectations = function () {
         expect(fse.lstatSync('copied/symlink').isSymbolicLink()).toBe(true);
         expect(fse.readlinkSync('copied/symlink')).toBe('some/file');

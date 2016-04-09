@@ -38,8 +38,9 @@ module.exports.toBeDirectory = function () {
     compare: function (path) {
       var pass;
       var message = 'Path ' + path + ' should be directory';
+      var stat;
       try {
-        var stat = fs.statSync(path);
+        stat = fs.statSync(path);
         pass = stat.isDirectory();
       } catch (err) {
         // For sure not a directory.
@@ -57,10 +58,10 @@ module.exports.toBeFileWithContent = function () {
   return {
     compare: function (path, expectedContent) {
       var pass = true;
-      var message = 'File ' + path + ' should have content "'
-      + expectedContent + '"';
+      var message = 'File ' + path + ' should have content "' + expectedContent + '"';
+      var fileContent;
       try {
-        var fileContent = fs.readFileSync(path, 'utf8');
+        fileContent = fs.readFileSync(path, 'utf8');
         if (fileContent !== expectedContent) {
           pass = false;
           message = 'File ' + path + ' should have content "'
@@ -83,8 +84,9 @@ module.exports.toHaveMode = function () {
     compare: function (path, expectedMode) {
       var pass = true;
       var message = 'File ' + path + ' should have mode ' + expectedMode;
+      var mode;
       try {
-        var mode = fs.statSync(path).mode.toString(8);
+        mode = fs.statSync(path).mode.toString(8);
         mode = mode.substring(mode.length - 3);
         if (mode !== expectedMode) {
           pass = false;

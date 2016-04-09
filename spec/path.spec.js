@@ -18,10 +18,10 @@ describe('path', function () {
 
   it('resolves to CWD path of this jetpack instance', function () {
     var a = pathUtil.join(jetpack.cwd(), 'a');
-    expect(jetpack.path('a')).toBe(a);
     // Create jetpack instance with other CWD
     var jetpackSubdir = jetpack.cwd('subdir');
     var b = pathUtil.join(jetpack.cwd(), 'subdir', 'b');
+    expect(jetpack.path('a')).toBe(a);
     expect(jetpackSubdir.path('b')).toBe(b);
   });
 

@@ -11,10 +11,13 @@ describe('streams |', function () {
   afterEach(helper.afterEach);
 
   it('exposes vanilla stream methods', function (done) {
+    var input;
+    var output;
+
     fse.outputFileSync('a.txt', 'abc');
 
-    var output = jetpack.createWriteStream('b.txt');
-    var input = jetpack.createReadStream('a.txt');
+    input = jetpack.createReadStream('a.txt');
+    output = jetpack.createWriteStream('b.txt');
     output.on('finish', function () {
       expect('b.txt').toBeFileWithContent('abc');
       done();
@@ -23,11 +26,15 @@ describe('streams |', function () {
   });
 
   it('stream methods respect jetpack internal CWD', function (done) {
-    fse.outputFileSync('dir/a.txt', 'abc');
+    var input;
+    var output;
 
     var dir = jetpack.cwd('dir');
-    var output = dir.createWriteStream('b.txt');
-    var input = dir.createReadStream('a.txt');
+
+    fse.outputFileSync('dir/a.txt', 'abc');
+
+    input = dir.createReadStream('a.txt');
+    output = dir.createWriteStream('b.txt');
     output.on('finish', function () {
       expect('dir/b.txt').toBeFileWithContent('abc');
       done();

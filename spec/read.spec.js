@@ -11,45 +11,29 @@ describe('read |', function () {
   afterEach(helper.afterEach);
 
   it('reads file as a string', function (done) {
-    var contentSync;
-
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('file.txt', 'abc');
-    };
-
     var expectations = function (content) {
       expect(content).toBe('abc');
     };
 
+    fse.outputFileSync('file.txt', 'abc');
+
     // SYNC
-    preparations();
-    contentSync = jetpack.read('file.txt'); // defaults to 'utf8'
-    expectations(contentSync);
-    contentSync = jetpack.read('file.txt', 'utf8'); // explicitly said
-    expectations(contentSync);
+    expectations(jetpack.read('file.txt')); // defaults to 'utf8'
+    expectations(jetpack.read('file.txt', 'utf8')); // explicitly specified
 
     // ASYNC
-    preparations();
     jetpack.readAsync('file.txt') // defaults to 'utf8'
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       return jetpack.readAsync('file.txt', 'utf8'); // explicitly said
     })
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       done();
     });
   });
 
   it('reads file as a Buffer', function (done) {
-    var contentSync;
-
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('file.txt', new Buffer([11, 22]));
-    };
-
     var expectations = function (content) {
       expect(Buffer.isBuffer(content)).toBe(true);
       expect(content.length).toBe(2);
@@ -57,28 +41,20 @@ describe('read |', function () {
       expect(content[1]).toBe(22);
     };
 
+    fse.outputFileSync('file.txt', new Buffer([11, 22]));
+
     // SYNC
-    preparations();
-    contentSync = jetpack.read('file.txt', 'buffer');
-    expectations(contentSync);
+    expectations(jetpack.read('file.txt', 'buffer'));
 
     // ASYNC
-    preparations();
     jetpack.readAsync('file.txt', 'buffer')
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       done();
     });
   });
 
   it('reads file as a Buffer (deprecated)', function (done) {
-    var contentSync;
-
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('file.txt', new Buffer([11, 22]));
-    };
-
     var expectations = function (content) {
       expect(Buffer.isBuffer(content)).toBe(true);
       expect(content.length).toBe(2);
@@ -86,61 +62,48 @@ describe('read |', function () {
       expect(content[1]).toBe(22);
     };
 
+    fse.outputFileSync('file.txt', new Buffer([11, 22]));
+
     // SYNC
-    preparations();
-    contentSync = jetpack.read('file.txt', 'buf');
-    expectations(contentSync);
+    expectations(jetpack.read('file.txt', 'buf'));
 
     // ASYNC
-    preparations();
     jetpack.readAsync('file.txt', 'buf')
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       done();
     });
   });
 
   it('reads file as JSON', function (done) {
-    var contentSync;
     var obj = {
       utf8: 'ąćłźż'
     };
-
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('file.json', JSON.stringify(obj));
-    };
-
     var expectations = function (content) {
       expect(content).toEqual(obj);
     };
 
+    fse.outputFileSync('file.json', JSON.stringify(obj));
+
     // SYNC
-    preparations();
-    contentSync = jetpack.read('file.json', 'json');
-    expectations(contentSync);
+    expectations(jetpack.read('file.json', 'json'));
 
     // ASYNC
-    preparations();
     jetpack.readAsync('file.json', 'json')
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       done();
     });
   });
 
   it('gives nice error message when JSON parsing failed', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('file.json', '{ "abc: 123 }'); // Malformed JSON
-    };
-
     var expectations = function (err) {
       expect(err.message).toContain('JSON parsing failed while reading');
     };
 
+    fse.outputFileSync('file.json', '{ "abc: 123 }'); // Malformed JSON
+
     // SYNC
-    preparations();
     try {
       jetpack.read('file.json', 'json');
     } catch (err) {
@@ -148,7 +111,6 @@ describe('read |', function () {
     }
 
     // ASYNC
-    preparations();
     jetpack.readAsync('file.json', 'json')
     .catch(function (err) {
       expectations(err);
@@ -157,31 +119,23 @@ describe('read |', function () {
   });
 
   it('reads file as JSON with Date parsing', function (done) {
-    var contentSync;
     var obj = {
       utf8: 'ąćłźż',
       date: new Date()
     };
-
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('file.json', JSON.stringify(obj));
-    };
-
     var expectations = function (content) {
       expect(content).toEqual(obj);
     };
 
+    fse.outputFileSync('file.json', JSON.stringify(obj));
+
     // SYNC
-    preparations();
-    contentSync = jetpack.read('file.json', 'jsonWithDates');
-    expectations(contentSync);
+    expectations(jetpack.read('file.json', 'jsonWithDates'));
 
     // ASYNC
-    preparations();
     jetpack.readAsync('file.json', 'jsonWithDates')
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       done();
     });
   });
@@ -192,27 +146,22 @@ describe('read |', function () {
     };
 
     // SYNC
-    var contentSync = jetpack.read('nonexistent.txt');
-    expectations(contentSync);
+    expectations(jetpack.read('nonexistent.txt'));
 
     // ASYNC
     jetpack.readAsync('nonexistent.txt')
-    .then(function (contentAsync) {
-      expectations(contentAsync);
+    .then(function (content) {
+      expectations(content);
       done();
     });
   });
 
   it('throws if given path is a directory', function (done) {
-    var preparations = function () {
-      fse.mkdirsSync('dir');
-    };
-
     var expectations = function (err) {
       expect(err.code).toBe('EISDIR');
     };
 
-    preparations();
+    fse.mkdirsSync('dir');
 
     // SYNC
     try {
@@ -231,29 +180,20 @@ describe('read |', function () {
   });
 
   it('respects internal CWD of jetpack instance', function (done) {
-    var jetContext;
-    var dataSync;
-
-    var preparations = function () {
-      fse.outputFileSync('a/file.txt', 'abc');
-    };
-
     var expectations = function (data) {
       expect(data).toBe('abc');
     };
 
-    preparations();
-
-    jetContext = jetpack.cwd('a');
+    var jetContext = jetpack.cwd('a');
+    fse.outputFileSync('a/file.txt', 'abc');
 
     // SYNC
-    dataSync = jetContext.read('file.txt');
-    expectations(dataSync);
+    expectations(jetContext.read('file.txt'));
 
     // ASYNC
     jetContext.readAsync('file.txt')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
+    .then(function (data) {
+      expectations(data);
       done();
     });
   });

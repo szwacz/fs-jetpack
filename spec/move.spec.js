@@ -15,7 +15,6 @@ describe('move |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b.txt').not.toExist();
       expect('c.txt').toBeFileWithContent('abc');
@@ -41,7 +40,6 @@ describe('move |', function () {
       fse.outputFileSync('a/b/c.txt', 'abc');
       fse.mkdirsSync('x');
     };
-
     var expectations = function () {
       expect('a').not.toExist();
       expect('x/y/b/c.txt').toBeFileWithContent('abc');
@@ -66,7 +64,6 @@ describe('move |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a.txt').not.toExist();
       expect('a/b/z.txt').toBeFileWithContent('abc');
@@ -113,7 +110,6 @@ describe('move |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a/b.txt', 'abc');
     };
-
     var expectations = function () {
       expect('a/b.txt').not.toExist();
       expect('a/x.txt').toBeFileWithContent('abc');

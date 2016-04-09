@@ -16,7 +16,6 @@ describe('dir |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('x').toBeDirectory();
       };
@@ -40,7 +39,6 @@ describe('dir |', function () {
         helper.clearWorkingDir();
         fse.mkdirsSync('x');
       };
-
       var expectations = function () {
         expect('x').toBeDirectory();
       };
@@ -63,7 +61,6 @@ describe('dir |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('a/b/c').toBeDirectory();
       };
@@ -89,7 +86,6 @@ describe('dir |', function () {
         helper.clearWorkingDir();
         fse.mkdirsSync('a/b');
       };
-
       var expectations = function () {
         expect('a/b').toExist();
       };
@@ -113,7 +109,6 @@ describe('dir |', function () {
         helper.clearWorkingDir();
         fse.outputFileSync('a/b/file.txt', 'abc');
       };
-
       var expectations = function () {
         expect('a/b/file.txt').not.toExist();
         expect('a').toExist();
@@ -139,7 +134,6 @@ describe('dir |', function () {
       helper.clearWorkingDir();
       fse.outputFileSync('a', 'abc');
     };
-
     var expectations = function () {
       expect('a').toBeDirectory();
     };
@@ -162,7 +156,6 @@ describe('dir |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function () {
       expect('a/b').toBeDirectory();
     };
@@ -187,21 +180,19 @@ describe('dir |', function () {
     var preparations = function () {
       helper.clearWorkingDir();
     };
-
     var expectations = function (jetpackContext) {
       expect(jetpackContext.cwd()).toBe(pathUtil.resolve('a'));
     };
 
     // SYNC
     preparations();
-    var jetpackContextSync = jetpack.dir('a');
-    expectations(jetpackContextSync);
+    expectations(jetpack.dir('a'));
 
     // ASYNC
     preparations();
     jetpack.dirAsync('a')
-    .then(function (jetpackContextAsync) {
-      expectations(jetpackContextAsync);
+    .then(function (jetpackContext) {
+      expectations(jetpackContext);
       done();
     });
   });
@@ -215,7 +206,6 @@ describe('dir |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('x').toBeDirectory();
       };
@@ -246,31 +236,29 @@ describe('dir |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('a').toHaveMode('511');
       };
 
       // SYNC
-      // mode as string
+      // mode as a string
       preparations();
       jetpack.dir('a', { mode: '511' });
       expectations();
 
-
-      // mode as number
+      // mode as a number
       preparations();
       jetpack.dir('a', { mode: parseInt('511', 8) });
       expectations();
 
       // ASYNC
-      // mode as string
+      // mode as a string
       preparations();
       jetpack.dirAsync('a', { mode: '511' })
       .then(function () {
         expectations();
 
-        // mode as number
+        // mode as a number
         preparations();
         return jetpack.dirAsync('a', { mode: parseInt('511', 8) });
       })
@@ -284,7 +272,6 @@ describe('dir |', function () {
       var preparations = function () {
         helper.clearWorkingDir();
       };
-
       var expectations = function () {
         expect('a').toHaveMode('711');
         expect('a/b').toHaveMode('711');
@@ -309,7 +296,6 @@ describe('dir |', function () {
         helper.clearWorkingDir();
         fse.mkdirSync('a', '777');
       };
-
       var expectations = function () {
         expect('a').toHaveMode('511');
       };
@@ -333,7 +319,6 @@ describe('dir |', function () {
         helper.clearWorkingDir();
         fse.mkdirSync('a', '700');
       };
-
       var expectations = function () {
         expect('a').toHaveMode('700');
       };
