@@ -1,11 +1,7 @@
 {
   "extends": "airbnb/legacy",
   "rules": {
-    "func-names": 0,
-    "no-param-reassign": 1,
-    "vars-on-top": 1,
-    "consistent-return": 1,
-    "block-scoped-var": 1,
-    "default-case": 1
+    "no-console": 2,
+    "func-names": 0
   }
 }
