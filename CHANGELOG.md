@@ -1,3 +1,6 @@
+0.9.0 (in progress)
+* Changed some edge cases for `dir()` and `file()`.
+
 0.8.0 (2016-04-09)
 -------------------
 * **(breaking change)** `find()` now distinguishes between files and directories and by default searches only for files (previously searched for both).

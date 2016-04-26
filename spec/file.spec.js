@@ -196,26 +196,24 @@ describe('file |', function () {
     });
   });
 
-  it('if given path is directory, should delete it and place file instead', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-      // Create nested directories to be sure we can delete non-empty dir.
-      fse.outputFileSync('a/b/c.txt', 'abc');
+  it('halts if given path is not a file', function (done) {
+    var expectations = function (err) {
+      expect(err.message).toContain('exists but is not a file.');
     };
-    var expectations = function () {
-      expect('a').toBeFileWithContent('');
-    };
+
+    fse.mkdirsSync('a');
 
     // SYNC
-    preparations();
-    jetpack.file('a');
-    expectations();
+    try {
+      jetpack.file('a');
+    } catch (err) {
+      expectations(err);
+    }
 
     // ASYNC
-    preparations();
     jetpack.fileAsync('a')
-    .then(function () {
-      expectations();
+    .catch(function (err) {
+      expectations(err);
       done();
     });
   });

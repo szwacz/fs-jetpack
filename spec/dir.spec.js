@@ -129,25 +129,25 @@ describe('dir |', function () {
     });
   });
 
-  it('if given path is file, deletes it and places dir instead', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-      fse.outputFileSync('a', 'abc');
+  it('halts if given path is something other than directory', function (done) {
+    var expectations = function (err) {
+      expect(err.message).toContain('exists but is not a directory.');
     };
-    var expectations = function () {
-      expect('a').toBeDirectory();
-    };
+
+    fse.outputFileSync('a', 'abc');
 
     // SYNC
-    preparations();
-    jetpack.dir('a');
-    expectations();
+    try {
+      jetpack.dir('a');
+      throw new Error('to make sure this code throws');
+    } catch (err) {
+      expectations(err);
+    }
 
     // ASYNC
-    preparations();
     jetpack.dirAsync('a')
-    .then(function () {
-      expectations();
+    .catch(function (err) {
+      expectations(err);
       done();
     });
   });
