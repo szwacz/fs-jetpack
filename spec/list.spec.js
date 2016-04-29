@@ -68,20 +68,25 @@ describe('list |', function () {
     });
   });
 
-  it('returns null if given path is a file', function (done) {
-    var expectations = function (list) {
-      expect(list).toBe(null);
+  it('throws if given path is not a directory', function (done) {
+    var expectations = function (err) {
+      expect(err.code).toBe('ENOTDIR');
     };
 
     fse.outputFileSync('file.txt', 'abc');
 
     // SYNC
-    expectations(jetpack.list('file.txt'));
+    try {
+      jetpack.list('file.txt');
+      throw new Error('to make sure this code throws');
+    } catch (err) {
+      expectations(err);
+    }
 
     // ASYNC
     jetpack.listAsync('file.txt')
-    .then(function (list) {
-      expectations(list);
+    .catch(function (err) {
+      expectations(err);
       done();
     });
   });

@@ -1,5 +1,5 @@
 0.9.0 (in progress)
-* Changed some edge cases for `dir()` and `file()`.
+* More sane edge cases for `dir()`, `file()` and `list()`.
 
 0.8.0 (2016-04-09)
 -------------------
