@@ -52,18 +52,23 @@ describe('list |', function () {
     });
   });
 
-  it("returns null if path doesn't exist", function (done) {
-    var expectations = function (data) {
-      expect(data).toBe(null);
+  it("throws if path doesn't exist", function (done) {
+    var expectations = function (err) {
+      expect(err.code).toBe('ENOENT');
     };
 
     // SYNC
-    expectations(jetpack.list('nonexistent'));
+    try {
+      jetpack.list('nonexistent');
+      throw new Error('to make sure this code throws');
+    } catch (err) {
+      expectations(err);
+    }
 
     // ASYNC
     jetpack.listAsync('nonexistent')
-    .then(function (data) {
-      expectations(data);
+    .catch(function (err) {
+      expectations(err);
       done();
     });
   });
