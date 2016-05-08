@@ -140,9 +140,9 @@ describe('read |', function () {
     });
   });
 
-  it("returns null if file doesn't exist", function (done) {
+  it("returns undefined if file doesn't exist", function (done) {
     var expectations = function (content) {
-      expect(content).toBe(null);
+      expect(content).toBe(undefined);
     };
 
     // SYNC

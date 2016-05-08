@@ -1,6 +1,6 @@
 0.9.0 (in progress)
 * More sane edge cases for `dir()`, `file()` and `list()`.
-* `inspect()` and `inspectTree()` returns `undefined` instead of `null` if path doesn't exist.
+* `read()`, `inspect()` and `inspectTree()` returns `undefined` instead of `null` if path doesn't exist.
 
 0.8.0 (2016-04-09)
 -------------------

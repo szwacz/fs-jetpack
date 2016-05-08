@@ -472,7 +472,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ## <a name="read"></a> read(path, [returnAs])
 asynchronous: **readAsync(path, [returnAs])**  
 
-Reads content of file. If file on given path doesn't exist returns `null` instead of throwing error.
+Reads content of file.
 
 **parameters:**  
 `path` path to file.  
@@ -484,7 +484,7 @@ Reads content of file. If file on given path doesn't exist returns `null` instea
 * `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into Date objects.
 
 **returns:**  
-File content in specified format, or `null` if file doesn't exist.
+File content in specified format, or `undefined` if file doesn't exist.
 
 
 ## <a name="remove"></a> remove([path])
