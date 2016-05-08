@@ -174,12 +174,13 @@ describe('find |', function () {
   it("throws if path doesn't exist", function (done) {
     var expectations = function (err) {
       expect(err.code).toBe('ENOENT');
-      expect(err.message).toMatch(/^Path you want to find stuff in doesn't exist/);
+      expect(err.message).toContain("Path you want to find stuff in doesn't exist");
     };
 
     // SYNC
     try {
       jetpack.find('a', { matching: '*.txt' });
+      throw new Error('to make sure this code throws');
     } catch (err) {
       expectations(err);
     }

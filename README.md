@@ -364,7 +364,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 * `symlinks` (dafault `false`) if set to `true` will just inspect symlink itself and not follow it.
 
 **returns:**
-`null` if given path doens't exist.  
+`undefined` if given path doens't exist.  
 Otherwise `Object` of structure:
 ```javascript
 {
@@ -395,7 +395,7 @@ Calls [inspect](#inspect) recursively on given path so it creates tree of all di
 * `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
 
 **returns:**  
-`null` if given path doesn't exist.
+`undefined` if given path doesn't exist.
 Otherwise tree of inspect objects like:
 ```javascript
 {

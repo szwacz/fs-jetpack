@@ -165,9 +165,9 @@ describe('inspectTree |', function () {
     });
   });
 
-  it("returns null if path doesn't exist", function (done) {
+  it("returns undefined if path doesn't exist", function (done) {
     var expectations = function (data) {
-      expect(data).toBe(null);
+      expect(data).toBe(undefined);
     };
 
     // SYNC
