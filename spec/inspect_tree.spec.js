@@ -83,58 +83,6 @@ describe('inspectTree |', function () {
     });
   });
 
-  it('can compute checksum of a whole tree', function (done) {
-    var expectations = function (data) {
-      // md5 of
-      // 'a.txt' + '900150983cd24fb0d6963f7d28e17f72' +
-      // 'b.txt' + '025e4da7edac35ede583f5e8d51aa7ec'
-      expect(data.md5).toBe('b0ff9df854172efe752cb36b96c8bccd');
-      // md5 of 'abc'
-      expect(data.children[0].md5).toBe('900150983cd24fb0d6963f7d28e17f72');
-      // md5 of 'defg'
-      expect(data.children[1].md5).toBe('025e4da7edac35ede583f5e8d51aa7ec');
-    };
-
-    fse.outputFileSync('dir/a.txt', 'abc');
-    fse.outputFileSync('dir/b.txt', 'defg');
-
-    // SYNC
-    expectations(jetpack.inspectTree('dir', { checksum: 'md5' }));
-
-    // ASYNC
-    jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
-    .then(function (tree) {
-      expectations(tree);
-      done();
-    });
-  });
-
-  it('can deal with empty directories while computing checksum', function (done) {
-    var expectations = function (data) {
-      // md5 of
-      // 'empty_dir' + 'd41d8cd98f00b204e9800998ecf8427e' +
-      // 'file.txt' + '900150983cd24fb0d6963f7d28e17f72'
-      expect(data.md5).toBe('4715a354a7871a1db629b379e6267b95');
-      // md5 of empty directory -> md5 of empty string
-      expect(data.children[0].md5).toBe('d41d8cd98f00b204e9800998ecf8427e');
-      // md5 of 'abc'
-      expect(data.children[1].md5).toBe('900150983cd24fb0d6963f7d28e17f72');
-    };
-
-    fse.mkdirsSync('dir/empty_dir');
-    fse.outputFileSync('dir/file.txt', 'abc');
-
-    // SYNC
-    expectations(jetpack.inspectTree('dir', { checksum: 'md5' }));
-
-    // ASYNC
-    jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
-    .then(function (tree) {
-      expectations(tree);
-      done();
-    });
-  });
-
   it('can output relative path for every tree node', function (done) {
     var expectations = function (data) {
       // data will look like...

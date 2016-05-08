@@ -127,49 +127,6 @@ describe('inspect |', function () {
     });
   });
 
-  describe('checksums |', function () {
-    [
-      {
-        name: 'md5',
-        content: 'abc',
-        expected: '900150983cd24fb0d6963f7d28e17f72'
-      },
-      {
-        name: 'sha1',
-        content: 'abc',
-        expected: 'a9993e364706816aba3e25717850c26c9cd0d89d'
-      },
-      {
-        name: 'sha256',
-        content: 'abc',
-        expected: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
-      },
-      {
-        name: 'md5',
-        content: '', // just to check if we are counting checksums of empty file correctly
-        expected: 'd41d8cd98f00b204e9800998ecf8427e'
-      }
-    ].forEach(function (test) {
-      it(test.name, function (done) {
-        var expectations = function (data) {
-          expect(data[test.name]).toBe(test.expected);
-        };
-
-        fse.outputFileSync('file.txt', test.content);
-
-        // SYNC
-        expectations(jetpack.inspect('file.txt', { checksum: test.name }));
-
-        // ASYNC
-        jetpack.inspectAsync('file.txt', { checksum: test.name })
-        .then(function (data) {
-          expectations(data);
-          done();
-        });
-      });
-    });
-  });
-
   describe('*nix specific', function () {
     if (process.platform === 'win32') {
       return;
