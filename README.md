@@ -435,7 +435,7 @@ Lists the contents of directory. Equivalent of `fs.readdir`.
 `path` (optional) path to directory you would like to list. If not specified defaults to CWD.
 
 **returns:**  
-Array of file names inside given path, or `null` if given path doesn't exist.
+Array of file names inside given path, or `undefined` if given path doesn't exist.
 
 
 ## <a name="move"></a> move(from, to)
