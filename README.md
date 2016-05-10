@@ -58,11 +58,10 @@ var obj = jetpack.read('file.json', 'json');
 
 ## Throws errors at you as the last resort
 Everyone who did something with files for sure seen (and probably hates) *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
-1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
-2. For read/inspect operations, if file or directory doesn't exist `null` is returned instead of throwing.
+1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create lacking directories.  
+2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
 
-## Jetpack can do more in less code (examples)
-All methods play nicely with each other. Here are few examples what it gives you.  
+## All methods play nicely with each other (examples)
 **Note:** All examples are synchronous. Unfortunately asynchronous equivalents won't be that pretty.
 
 #### Great for build scripts
@@ -513,19 +512,6 @@ myStuffDir.remove();
 ```
 
 
-## <a name="symlink"></a> symlink(symlinkValue, path)
-asynchronous: **symlinkAsync(symlinkValue, path)**  
-
-Creates symbolic link.
-
-**parameters:**  
-`symlinkValue` path where symbolic link should point.  
-`path` path where symbolic link should be put.  
-
-**returns:**  
-Nothing.
-
-
 ## <a name="rename"></a> rename(path, newName)
 asynchronous: **renameAsync(path, newName)**  
 
@@ -534,6 +520,19 @@ Renames given file or directory.
 **parameters:**  
 `path` path to thing you want to change name.  
 `newName` new name for this thing (not full path, just a name).
+
+**returns:**  
+Nothing.
+
+
+## <a name="symlink"></a> symlink(symlinkValue, path)
+asynchronous: **symlinkAsync(symlinkValue, path)**  
+
+Creates symbolic link.
+
+**parameters:**  
+`symlinkValue` path where symbolic link should point.  
+`path` path where symbolic link should be put.  
 
 **returns:**  
 Nothing.
