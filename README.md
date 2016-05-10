@@ -410,9 +410,9 @@ Otherwise tree of inspect objects like:
         {
             name: 'empty',
             type: 'dir',
-            size: 0, // the directory is empty
+            size: 0,
             relativePath: './dir',
-            md5: null, // can't calculate checksum of empty directory
+            md5: 'd41d8cd98f00b204e9800998ecf8427e',
             children: []
         },{
             name: 'file.txt',

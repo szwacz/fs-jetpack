@@ -81,26 +81,19 @@ describe('inspect and inspectTree checksums', function () {
     });
   });
 
-  it('can deal with empty directories while computing checksum', function (done) {
+  it('can count for empty directory', function (done) {
     var expectations = function (data) {
-      // md5 of
-      // 'empty_dir' + 'd41d8cd98f00b204e9800998ecf8427e' +
-      // 'file.txt' + '900150983cd24fb0d6963f7d28e17f72'
-      expect(data.md5).toBe('4715a354a7871a1db629b379e6267b95');
-      // md5 of empty directory -> md5 of empty string
-      expect(data.children[0].md5).toBe('d41d8cd98f00b204e9800998ecf8427e');
-      // md5 of 'abc'
-      expect(data.children[1].md5).toBe('900150983cd24fb0d6963f7d28e17f72');
+      // md5 of empty string
+      expect(data.md5).toBe('d41d8cd98f00b204e9800998ecf8427e');
     };
 
-    fse.mkdirsSync('dir/empty_dir');
-    fse.outputFileSync('dir/file.txt', 'abc');
+    fse.mkdirsSync('empty_dir');
 
     // SYNC
-    expectations(jetpack.inspectTree('dir', { checksum: 'md5' }));
+    expectations(jetpack.inspectTree('empty_dir', { checksum: 'md5' }));
 
     // ASYNC
-    jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
+    jetpack.inspectTreeAsync('empty_dir', { checksum: 'md5' })
     .then(function (tree) {
       expectations(tree);
       done();
