@@ -131,28 +131,27 @@ jetpack.readAsync('file.txt')
 ```
 
 **Methods:**
-* [append](#append)
-* [copy](#copy)
-* [createReadStream](#create-read-stream)
-* [createWriteStream](#create-write-stream)
-* [cwd](#cwd)
-* [dir](#dir)
-* [exists](#exists)
-* [file](#file)
-* [find](#find)
-* [inspect](#inspect)
-* [inspectTree](#inspect-tree)
-* [list](#list)
-* [move](#move)
-* [path](#path)
-* [read](#read)
-* [remove](#remove)
-* [rename](#rename)
-* [symlink](#symlink)
-* [write](#write)
+- [append](#appendpath-data-options)
+- [copy](#copyfrom-to-options)
+- [createReadStream](#createreadstreampath-options)
+- [createWriteStream](#createwritestreampath-options)
+- [cwd](#cwdpath)
+- [dir](#dirpath-criteria)
+- [exists](#existspath)
+- [file](#filepath-criteria)
+- [find](#findpath-searchoptions)
+- [inspect](#inspectpath-options)
+- [inspectTree](#inspecttreepath-options)
+- [list](#listpath)
+- [move](#movefrom-to)
+- [path](#pathparts)
+- [read](#readpath-returnas)
+- [remove](#removepath)
+- [rename](#renamepath-newname)
+- [symlink](#symlinksymlinkvalue-path)
+- [write](#writepath-data-options)
 
-
-## <a name="append"></a> append(path, data, [options])
+## append(path, data, [options])
 asynchronous: **appendAsync(path, data, [options])**
 
 Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it (or them).
@@ -167,7 +166,7 @@ Appends given data to the end of file. If file (or any parent directory) doesn't
 Nothing.
 
 
-## <a name="copy"></a> copy(from, to, [options])
+## copy(from, to, [options])
 asynchronous: **copyAsync(from, to, [options])**  
 
 Copies given file or directory (with everything inside).
@@ -205,18 +204,18 @@ jetpack.copy('dir1/dir2', 'copied-dir2', {
 ```
 
 
-## <a name="create-read-stream"></a> createReadStream(path, [options])
+## createReadStream(path, [options])
 
 Just an alias to vanilla [fs.createReadStream](http://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options).
 
 
-## <a name="create-write-stream"></a> createWriteStream(path, [options])
+## createWriteStream(path, [options])
 
 Just an alias to vanilla [fs.createWriteStream](http://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options).
 
 
 
-## <a name="cwd"></a> cwd([path...])
+## cwd([path...])
 Returns Current Working Directory (CWD) for this instance of jetpack, or creates new jetpack object with given path as its internal CWD.  
 **Note:** fs-jetpack never changes value of `process.cwd()`, the CWD we are talking about here is internal value inside every jetpack instance.
 
@@ -250,7 +249,7 @@ console.log(sillyCwd.cwd()); // '/one/two/three/a/b/c'
 ```
 
 
-## <a name="dir"></a> dir(path, [criteria])
+## dir(path, [criteria])
 asynchronous: **dirAsync(path, [criteria])**  
 
 Ensures that directory on given path exists and meets given criteria. If any criterium is not met it will be after this call.
@@ -280,7 +279,7 @@ jetpack
 ```
 
 
-## <a name="exists"></a> exists(path)
+## exists(path)
 asynchronous: **existsAsync(path)**  
 
 Checks whether something exists on given `path`. This method returns values more specific than `true/false` to protect from errors like "I was expecting directory, but it was a file".
@@ -292,7 +291,7 @@ Checks whether something exists on given `path`. This method returns values more
 * `"other"` if none of the above.
 
 
-## <a name="file"></a> file(path, [criteria])
+## file(path, [criteria])
 asynchronous: **fileAsync(path, [criteria])**  
 
 Ensures that file exists and meets given criteria. If any criterium is not met it will be after this call.
@@ -317,7 +316,7 @@ jetpack.file('hello.txt', { mode: '777', content: 'Hello World!' });
 ```
 
 
-## <a name="find"></a> find([path], searchOptions)
+## find([path], searchOptions)
 asynchronous: **findAsync([path], searchOptions)**
 
 Finds in directory specified by `path` all files fulfilling `searchOptions`. Returned paths are relative to current CWD of jetpack instance.
@@ -348,7 +347,7 @@ var myStuffDir = jetpack.cwd('my-stuff');
 myStuffDir.find({ matching: ['*.md'] });
 ```
 
-## <a name="inspect"></a> inspect(path, [options])
+## inspect(path, [options])
 asynchronous: **inspectAsync(path, [options])**  
 
 Inspects given path (replacement for `fs.stat`). Returned object by default contains only very basic, not platform-dependent properties (so you have something e.g. your unit tests can rely on), you can enable more properties through options object.
@@ -382,7 +381,7 @@ Otherwise `Object` of structure:
 ```
 
 
-## <a name="inspect-tree"></a> inspectTree(path, [options])
+## inspectTree(path, [options])
 asynchronous: **inspectTreeAsync(path, [options])**  
 
 Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
@@ -425,7 +424,7 @@ Otherwise tree of inspect objects like:
 ```
 
 
-## <a name="list"></a> list([path])
+## list([path])
 asynchronous: **listAsync(path, [useInspect])**  
 
 Lists the contents of directory. Equivalent of `fs.readdir`.
@@ -437,7 +436,7 @@ Lists the contents of directory. Equivalent of `fs.readdir`.
 Array of file names inside given path, or `undefined` if given path doesn't exist.
 
 
-## <a name="move"></a> move(from, to)
+## move(from, to)
 asynchronous: **moveAsync(from, to)**  
 
 Moves given path to new location.
@@ -450,7 +449,7 @@ Moves given path to new location.
 Nothing.
 
 
-## <a name="path"></a> path(parts...)
+## path(parts...)
 Returns path resolved to internal CWD of this jetpack object.
 
 **parameters:**  
@@ -468,7 +467,7 @@ jetpack.path('..', 'four'); // this will return '/one/four'
 ```
 
 
-## <a name="read"></a> read(path, [returnAs])
+## read(path, [returnAs])
 asynchronous: **readAsync(path, [returnAs])**  
 
 Reads content of file.
@@ -486,7 +485,7 @@ Reads content of file.
 File content in specified format, or `undefined` if file doesn't exist.
 
 
-## <a name="remove"></a> remove([path])
+## remove([path])
 asynchronous: **removeAsync([path])**  
 
 Deletes given path, no matter what it is (file or directory). If path already doesn't exist ends without throwing, so you can use it as 'ensure path doesn't exist'.
@@ -512,7 +511,7 @@ myStuffDir.remove();
 ```
 
 
-## <a name="rename"></a> rename(path, newName)
+## rename(path, newName)
 asynchronous: **renameAsync(path, newName)**  
 
 Renames given file or directory.
@@ -525,7 +524,7 @@ Renames given file or directory.
 Nothing.
 
 
-## <a name="symlink"></a> symlink(symlinkValue, path)
+## symlink(symlinkValue, path)
 asynchronous: **symlinkAsync(symlinkValue, path)**  
 
 Creates symbolic link.
@@ -538,7 +537,7 @@ Creates symbolic link.
 Nothing.
 
 
-## <a name="write"></a> write(path, data, [options])
+## write(path, data, [options])
 asynchronous: **writeAsync(path, data, [options])**  
 
 Writes data to file.
