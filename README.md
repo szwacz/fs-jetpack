@@ -1,7 +1,7 @@
 fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.org/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack)
 ==========
 
-Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more conveninet API to work with file system.
+Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more convenient API to work with file system.
 
 #### [Jump to API Docs](#api)
 
@@ -29,7 +29,7 @@ Thanks to that the API is also coherent...
 var data = jetpack.read('file.txt');
 console.log(data);
 
-// Want to make that call asnychronous? Just add the word "Async"
+// Want to make that call asynchronous? Just add the word "Async"
 // and it will give you promise instead of ready value.
 jetpack.readAsync('file.txt')
 .then(function (data) {
@@ -58,7 +58,7 @@ var obj = jetpack.read('file.json', 'json');
 
 ## Throws errors at you as the last resort
 Everyone who did something with files for sure seen (and probably hates) *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
-1. For wrte/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
+1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
 2. For read/inspect operations, if file or directory doesn't exist `null` is returned instead of throwing.
 
 ## Jetpack can do more in less code (examples)
@@ -185,7 +185,7 @@ Nothing.
 
 **examples:**
 ```javascript
-// Copies a file (and replaces it if one already exists in 'copied' direcotry)
+// Copies a file (and replaces it if one already exists in 'copied' directory)
 jetpack.copy('file.txt', 'copied/file.txt', { overwrite: true });
 
 // Copies only .md files inside 'dir' to 'copied-dir'
@@ -284,7 +284,7 @@ jetpack
 ## <a name="exists"></a> exists(path)
 asynchronous: **existsAsync(path)**  
 
-Checks whether something exists on given `path`. This method returns values more specyfic than `true/false` to protect from errors like "I was expecting directory, but it was a file".
+Checks whether something exists on given `path`. This method returns values more specific than `true/false` to protect from errors like "I was expecting directory, but it was a file".
 
 **returns:**  
 * `false` if path doesn't exist.
@@ -360,8 +360,8 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 * `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. If given path is directory this field is ignored.
 * `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
-* `absolutePath` (dafault `false`) if set to `true` will add absolute path to this resource.
-* `symlinks` (dafault `false`) if set to `true` will just inspect symlink itself and not follow it.
+* `absolutePath` (default `false`) if set to `true` will add absolute path to this resource.
+* `symlinks` (default `false`) if set to `true` will just inspect symlink itself and not follow it.
 
 **returns:**
 `undefined` if given path doens't exist.  
