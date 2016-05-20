@@ -2,6 +2,8 @@
 
 'use strict';
 
+var Q = require('q');
+
 describe('read |', function () {
   var fse = require('fs-extra');
   var helper = require('./support/spec_helper');
@@ -147,11 +149,18 @@ describe('read |', function () {
 
     // SYNC
     expectations(jetpack.read('nonexistent.txt'));
+    expectations(jetpack.read('nonexistent.txt'), 'json');
+    expectations(jetpack.read('nonexistent.txt'), 'buffer');
 
     // ASYNC
-    jetpack.readAsync('nonexistent.txt')
-    .then(function (content) {
-      expectations(content);
+    Q.spread([
+      jetpack.readAsync('nonexistent.txt'),
+      jetpack.readAsync('nonexistent.txt', 'json'),
+      jetpack.readAsync('nonexistent.txt', 'buffer')
+    ], function (content1, content2, content3) {
+      expectations(content1);
+      expectations(content2);
+      expectations(content3);
       done();
     });
   });
