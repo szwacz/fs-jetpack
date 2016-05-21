@@ -1,3 +1,7 @@
+0.9.1 (2016-05-21)
+-------------------
+* Bug-fixed `jetpack.read('nonexistent_file', 'json')`.
+
 0.9.0 (2016-05-10)
 -------------------
 * **(breaking change)** `read()`, `list()`, `inspect()` and `inspectTree()` returns `undefined` instead of `null` if path doesn't exist.
