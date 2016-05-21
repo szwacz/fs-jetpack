@@ -149,8 +149,8 @@ describe('read |', function () {
 
     // SYNC
     expectations(jetpack.read('nonexistent.txt'));
-    expectations(jetpack.read('nonexistent.txt'), 'json');
-    expectations(jetpack.read('nonexistent.txt'), 'buffer');
+    expectations(jetpack.read('nonexistent.txt', 'json'));
+    expectations(jetpack.read('nonexistent.txt', 'buffer'));
 
     // ASYNC
     Q.spread([
