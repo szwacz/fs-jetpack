@@ -2,11 +2,11 @@
 
 'use strict';
 
-describe('inspect and inspectTree checksums', function () {
-  var fse = require('fs-extra');
-  var helper = require('./support/spec_helper');
-  var jetpack = require('..');
+var fse = require('fs-extra');
+var helper = require('./support/spec_helper');
+var jetpack = require('..');
 
+describe('inspect and inspectTree checksums', function () {
   beforeEach(helper.beforeEach);
   afterEach(helper.afterEach);
 

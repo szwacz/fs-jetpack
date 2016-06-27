@@ -2,11 +2,11 @@
 
 'use strict';
 
-describe('find | can look for directories as well', function () {
-  var fse = require('fs-extra');
-  var helper = require('./support/spec_helper');
-  var jetpack = require('..');
+var fse = require('fs-extra');
+var helper = require('./support/spec_helper');
+var jetpack = require('..');
 
+describe('find | can look for directories as well', function () {
   var preparations = function () {
     fse.outputFileSync('a/b/foo1', 'abc');
     fse.mkdirsSync('a/b/foo2');

@@ -2,11 +2,11 @@
 
 'use strict';
 
-describe('atomic write |', function () {
-  var fse = require('fs-extra');
-  var helper = require('./support/spec_helper');
-  var jetpack = require('..');
+var fse = require('fs-extra');
+var helper = require('./support/spec_helper');
+var jetpack = require('..');
 
+describe('atomic write |', function () {
   var path = 'file.txt';
   var newPath = path + '.__new__';
 

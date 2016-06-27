@@ -2,12 +2,12 @@
 
 'use strict';
 
-describe('list() integration tests', function () {
-  var pathUtil = require('path');
-  var fse = require('fs-extra');
-  var helper = require('../support/spec_helper');
-  var jetpack = require('../..');
+var pathUtil = require('path');
+var fse = require('fs-extra');
+var helper = require('../support/spec_helper');
+var jetpack = require('../..');
 
+describe('list() integration tests', function () {
   beforeEach(helper.beforeEach);
   afterEach(helper.afterEach);
 

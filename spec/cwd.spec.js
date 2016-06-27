@@ -2,10 +2,10 @@
 
 'use strict';
 
-describe('cwd', function () {
-  var pathUtil = require('path');
-  var jetpack = require('..');
+var pathUtil = require('path');
+var jetpack = require('..');
 
+describe('cwd', function () {
   it('returns the same path as process.cwd for main instance of jetpack', function () {
     expect(jetpack.cwd()).toBe(process.cwd());
   });

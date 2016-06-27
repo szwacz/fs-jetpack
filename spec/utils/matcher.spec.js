@@ -2,9 +2,9 @@
 
 'use strict';
 
-describe('matcher |', function () {
-  var matcher = require('../../lib/utils/matcher');
+var matcher = require('../../lib/utils/matcher');
 
+describe('matcher |', function () {
   it('can test against one pattern passed as a string', function () {
     var test = matcher.create('a');
     expect(test('/a')).toBe(true);

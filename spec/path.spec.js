@@ -2,10 +2,10 @@
 
 'use strict';
 
-describe('path', function () {
-  var pathUtil = require('path');
-  var jetpack = require('..');
+var pathUtil = require('path');
+var jetpack = require('..');
 
+describe('path', function () {
   it('if empty returns same path as cwd()', function () {
     expect(jetpack.path()).toBe(jetpack.cwd());
     expect(jetpack.path('')).toBe(jetpack.cwd());

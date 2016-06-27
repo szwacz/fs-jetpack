@@ -1,5 +1,8 @@
 {
-  "extends": "airbnb/legacy",
+  "extends": "airbnb-base/legacy",
+  "env": {
+    "node": true
+  },
   "rules": {
     "no-console": 2,
     "func-names": 0,

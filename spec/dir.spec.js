@@ -2,12 +2,12 @@
 
 'use strict';
 
-describe('dir |', function () {
-  var fse = require('fs-extra');
-  var pathUtil = require('path');
-  var helper = require('./support/spec_helper');
-  var jetpack = require('..');
+var fse = require('fs-extra');
+var pathUtil = require('path');
+var helper = require('./support/spec_helper');
+var jetpack = require('..');
 
+describe('dir |', function () {
   beforeEach(helper.beforeEach);
   afterEach(helper.afterEach);
 

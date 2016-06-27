@@ -3,12 +3,11 @@
 'use strict';
 
 var Q = require('q');
+var fse = require('fs-extra');
+var helper = require('./support/spec_helper');
+var jetpack = require('..');
 
 describe('read |', function () {
-  var fse = require('fs-extra');
-  var helper = require('./support/spec_helper');
-  var jetpack = require('..');
-
   beforeEach(helper.beforeEach);
   afterEach(helper.afterEach);
 

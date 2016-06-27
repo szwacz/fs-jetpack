@@ -10,8 +10,9 @@
     "rimraf": "^2.2.8"
   },
   "devDependencies": {
-    "eslint": "^2.6.0",
-    "eslint-config-airbnb": "^6.2.0",
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.9.2",
     "fs-extra": "^0.16.3",
     "jasmine": "^2.2.1",
     "pre-commit": "^1.1.2"
