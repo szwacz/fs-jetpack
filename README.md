@@ -425,7 +425,7 @@ Otherwise tree of inspect objects like:
 
 
 ## list([path])
-asynchronous: **listAsync(path, [useInspect])**  
+asynchronous: **listAsync(path)**  
 
 Lists the contents of directory. Equivalent of `fs.readdir`.
 
