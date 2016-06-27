@@ -1,3 +1,7 @@
+0.9.2 (2016-06-27)
+-------------------
+* Updated third party dependencies to quell minimatch intallation warnings.
+
 0.9.1 (2016-05-21)
 -------------------
 * Bug-fixed `jetpack.read('nonexistent_file', 'json')`.
