@@ -16,55 +16,61 @@ describe('tree walker |', function () {
     var syncData = [];
     var streamData = [];
     var st;
-    var absoluteStartingPath = pathUtil.resolve('abc');
+    var absoluteStartingPath = pathUtil.resolve('a');
 
     var expectations = function (data) {
-      expect(data).toEqual([
-        {
-          path: pathUtil.resolve('abc'),
-          item: {
-            type: 'dir',
-            name: 'abc'
-          }
-        },
-        {
-          path: pathUtil.resolve('abc/a.txt'),
-          item: {
-            type: 'file',
-            name: 'a.txt',
-            size: 1
-          }
-        },
-        {
-          path: pathUtil.resolve('abc/xyz'),
-          item: {
-            type: 'dir',
-            name: 'xyz'
-          }
-        },
-        {
-          path: pathUtil.resolve('abc/xyz/x.txt'),
-          item: {
-            type: 'file',
-            name: 'x.txt',
-            size: 1
-          }
-        },
-        {
-          path: pathUtil.resolve('abc/xyz/y.txt'),
-          item: {
-            type: 'file',
-            name: 'y.txt',
-            size: 1
-          }
+      expect(data[0]).toEqual({
+        path: pathUtil.resolve('a'),
+        item: {
+          type: 'dir',
+          name: 'a'
         }
-      ]);
+      });
+      expect(data[1]).toEqual({
+        path: pathUtil.resolve('a/a.txt'),
+        item: {
+          type: 'file',
+          name: 'a.txt',
+          size: 1
+        }
+      });
+      expect(data[2]).toEqual({
+        path: pathUtil.resolve('a/b'),
+        item: {
+          type: 'dir',
+          name: 'b'
+        }
+      });
+      expect(data[3]).toEqual({
+        path: pathUtil.resolve('a/b/c'),
+        item: {
+          type: 'dir',
+          name: 'c'
+        }
+      });
+      expect(data[4]).toEqual({
+        path: pathUtil.resolve('a/b/z1.txt'),
+        item: {
+          type: 'file',
+          name: 'z1.txt',
+          size: 2
+        }
+      });
+      expect(data[5]).toEqual({
+        path: pathUtil.resolve('a/b/z2.txt'),
+        item: {
+          type: 'file',
+          name: 'z2.txt',
+          size: 2
+        }
+      });
     };
 
     // preparations
-    fse.outputFileSync('abc/a.txt', 'a');
-    fse.outputFileSync('abc/xyz/x.txt', 'x');
-    fse.outputFileSync('abc/xyz/y.txt', 'y');
+    fse.outputFileSync('a/a.txt', 'a');
+    fse.outputFileSync('a/b/z1.txt', 'z1');
+    fse.outputFileSync('a/b/z2.txt', 'z2');
+    fse.mkdirsSync('a/b/c');
 
     // SYNC
     walker.sync(absoluteStartingPath, {}, function (path, item) {
