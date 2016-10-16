@@ -93,6 +93,66 @@ describe('tree walker |', function () {
     });
   });
 
+  it("won't penetrate folder tree deeper than maxLevelsDeep option tells", function (done) {
+    var syncData = [];
+    var streamData = [];
+    var st;
+    var absoluteStartingPath = pathUtil.resolve('a');
+    var options = {
+      maxLevelsDeep: 1
+    };
+
+    var expectations = function (data) {
+      expect(data[0]).toEqual({
+        path: pathUtil.resolve('a'),
+        item: {
+          type: 'dir',
+          name: 'a'
+        }
+      });
+      expect(data[1]).toEqual({
+        path: pathUtil.resolve('a/a.txt'),
+        item: {
+          type: 'file',
+          name: 'a.txt',
+          size: 1
+        }
+      });
+      expect(data[2]).toEqual({
+        path: pathUtil.resolve('a/b'),
+        item: {
+          type: 'dir',
+          name: 'b'
+        }
+      });
+      expect(data[3]).toEqual(undefined); // Shouldn't report file a/b/z1.txt
+    };
+
+    // preparations
+    fse.outputFileSync('a/a.txt', 'a');
+    fse.outputFileSync('a/b/z1.txt', 'z1');
+
+    // SYNC
+    walker.sync(absoluteStartingPath, options, function (path, item) {
+      syncData.push({ path: path, item: item });
+    });
+    expectations(syncData);
+
+    // ASYNC
+    st = walker.stream(absoluteStartingPath, options)
+    .on('readable', function () {
+      var a = st.read();
+      if (a) {
+        streamData.push(a);
+      }
+    })
+    .on('error', console.error)
+    .on('end', function () {
+      expectations(streamData);
+      done();
+    });
+  });
+
   it('will do fine with empty directory as entry point', function (done) {
     var syncData = [];
     var streamData = [];
@@ -219,7 +279,11 @@ describe('tree walker |', function () {
     var streamData = [];
     var st;
     var absoluteStartingPath = pathUtil.resolve('abc');
-    var inspectOptions = { checksum: 'md5' };
+    var options = {
+      inspectOptions: {
+        checksum: 'md5'
+      }
+    };
 
     var expectations = function (data) {
       expect(data).toEqual([
@@ -246,13 +310,13 @@ describe('tree walker |', function () {
     fse.outputFileSync('abc/a.txt', 'a');
 
     // SYNC
-    walker.sync(absoluteStartingPath, inspectOptions, function (path, item) {
+    walker.sync(absoluteStartingPath, options, function (path, item) {
       syncData.push({ path: path, item: item });
     });
     expectations(syncData);
 
     // ASYNC
-    st = walker.stream(absoluteStartingPath, inspectOptions)
+    st = walker.stream(absoluteStartingPath, options)
     .on('readable', function () {
       var a = st.read();
       if (a) {
