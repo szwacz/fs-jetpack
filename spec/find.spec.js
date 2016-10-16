@@ -29,6 +29,27 @@ describe('find |', function () {
     });
   });
 
+  it('if recursive option set will exclude subfolders from search', function (done) {
+    var expectations = function (found) {
+      var normalizedFound = helper.convertToUnixPathSeparators(found);
+      expect(normalizedFound).toEqual(['x/file.txt']);
+    };
+
+    fse.outputFileSync('x/file.txt', 'abc');
+    fse.outputFileSync('x/y/file.txt', '123');
+    fse.outputFileSync('x/y/b/file.txt', '456');
+
+    // SYNC
+    expectations(jetpack.find('x', { matching: '*.txt', recursive: false }));
+
+    // ASYNC
+    jetpack.findAsync('x', { matching: '*.txt', recursive: false })
+    .then(function (found) {
+      expectations(found);
+      done();
+    });
+  });
+
   it('defaults to CWD if no path provided', function (done) {
     var expectations = function (found) {
       var normalizedFound = helper.convertToUnixPathSeparators(found);
