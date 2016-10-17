@@ -327,6 +327,7 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 * `matching` glob patterns of files you would like to find.
 * `files` (default `true`) whether or not should search for files.
 * `directories` (default `false`) whether or not should search for directories.
+* `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
 
 **returns:**  
 `Array` of found files.
