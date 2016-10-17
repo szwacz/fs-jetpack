@@ -1,3 +1,8 @@
+0.10.0 (2016-10-17)
+-------------------
+* `copyAsync()` uses only streams (much more memory efficient).
+* `find()` supports `recursive` option.
+
 0.9.2 (2016-06-27)
 -------------------
 * Updated third party dependencies to quell minimatch intallation warnings.
