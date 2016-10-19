@@ -28,7 +28,11 @@ exports.convertToUnixPathSeparators = function (thing) {
   return thing.replace(/\\/g, '/');
 };
 
-exports.mode = function (path) {
-  var mode = fs.statSync(path).mode.toString(8);
+exports.parseMode = function (modeAsNumber) {
+  var mode = modeAsNumber.toString(8);
   return mode.substring(mode.length - 3);
+};
+
+exports.mode = function (path) {
+  return exports.parseMode(fs.statSync(path).mode);
 };
