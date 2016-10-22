@@ -194,8 +194,6 @@ describe('dir', function () {
 
 
   if (process.platform !== 'win32') {
-    // Tests assume umask is not greater than 022
-
     describe('sets mode to newly created directory (unix only)', function () {
       var expectations = function () {
         expect(helper.mode('a')).to.equal('511');
