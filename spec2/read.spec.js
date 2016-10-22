@@ -4,7 +4,7 @@ var expect = require('chai').expect;
 var helper = require('./helper');
 var jetpack = require('..');
 
-describe('read |', function () {
+describe('read', function () {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
