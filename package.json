@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test": "jasmine",
-    "test2": "mocha ./spec2/**/*.spec.js",
+    "test2": "mocha './spec2/**/*.spec.js'",
     "lint": "eslint ."
   },
   "main": "main.js",
