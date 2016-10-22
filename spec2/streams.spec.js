@@ -3,7 +3,7 @@ var expect = require('chai').expect;
 var helper = require('./helper');
 var jetpack = require('..');
 
-describe('streams |', function () {
+describe('streams', function () {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
