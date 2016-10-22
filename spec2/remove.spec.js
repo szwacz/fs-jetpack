@@ -1,0 +1,159 @@
+var fse = require('fs-extra');
+var expect = require('chai').expect;
+var helper = require('./helper');
+var jetpack = require('..');
+
+describe('remove', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
+
+  describe("doesn't throw if path already doesn't exist", function () {
+    it('sync', function () {
+      jetpack.remove('dir');
+    });
+
+    it('async', function (done) {
+      jetpack.removeAsync('dir')
+      .then(function () {
+        done();
+      });
+    });
+  });
+
+  describe('should delete file', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.txt', 'abc');
+    };
+
+    var expectations = function () {
+      expect('file.txt').not.to.be.path();
+    };
+
+    it('sync', function () {
+      preparations();
+      jetpack.remove('file.txt');
+      expectations();
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.removeAsync('file.txt')
+      .then(function () {
+        expectations();
+        done();
+      });
+    });
+  });
+
+  describe('removes directory with stuff inside', function () {
+    var preparations = function () {
+      fse.mkdirsSync('a/b/c');
+      fse.outputFileSync('a/f.txt', 'abc');
+      fse.outputFileSync('a/b/f.txt', '123');
+    };
+
+    var expectations = function () {
+      expect('a').not.to.be.a.path();
+    };
+
+    it('sync', function () {
+      preparations();
+      jetpack.remove('a');
+      expectations();
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.removeAsync('a')
+      .then(function () {
+        expectations();
+        done();
+      });
+    });
+  });
+
+  describe('respects internal CWD of jetpack instance', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/b/c.txt', '123');
+    };
+
+    var expectations = function () {
+      expect('a').to.be.a.directory();
+      expect('a/b').not.to.be.a.path();
+    };
+
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.remove('b');
+      expectations();
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.removeAsync('b')
+      .then(function () {
+        expectations();
+        done();
+      });
+    });
+  });
+
+  describe('can be called witn no parameters, what will remove CWD directory', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/b/c.txt', 'abc');
+    };
+
+    var expectations = function () {
+      expect('a').not.to.be.a.path();
+    };
+
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.remove();
+      expectations();
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.removeAsync()
+      .then(function () {
+        expectations();
+        done();
+      });
+    });
+  });
+
+  describe('removes only symlinks, never real content where symlinks point', function () {
+    var preparations = function () {
+      fse.outputFileSync('have_to_stay_file', 'abc');
+      fse.mkdirsSync('to_remove');
+      fse.symlinkSync('../have_to_stay_file', 'to_remove/symlink');
+      // Make sure we symlinked it properly.
+      expect(fse.readFileSync('to_remove/symlink', 'utf8')).to.equal('abc');
+    };
+
+    var expectations = function () {
+      expect('have_to_stay_file').to.have.content('abc');
+      expect('to_remove').not.to.be.a.path();
+    };
+
+    it('sync', function () {
+      preparations();
+      jetpack.remove('to_remove');
+      expectations();
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.removeAsync('to_remove')
+      .then(function () {
+        expectations();
+        done();
+      });
+    });
+  });
+});
