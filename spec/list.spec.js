@@ -1,113 +1,136 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('list |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('list', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it('lists file names in given path', function (done) {
-    var expectations = function (data) {
-      expect(data).toEqual(['empty', 'empty.txt', 'file.txt', 'subdir']);
+  describe('lists file names in given path', function () {
+    var preparations = function () {
+      fse.mkdirsSync('dir/empty');
+      fse.outputFileSync('dir/empty.txt', '');
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.outputFileSync('dir/subdir/file.txt', 'defg');
     };
 
-    fse.mkdirsSync('dir/empty');
-    fse.outputFileSync('dir/empty.txt', '');
-    fse.outputFileSync('dir/file.txt', 'abc');
-    fse.outputFileSync('dir/subdir/file.txt', 'defg');
+    var expectations = function (data) {
+      expect(data).to.eql(['empty', 'empty.txt', 'file.txt', 'subdir']);
+    };
 
-    // SYNC
-    expectations(jetpack.list('dir'));
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.list('dir'));
+    });
 
-    // ASYNC
-    jetpack.listAsync('dir')
-    .then(function (listAsync) {
-      expectations(listAsync);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.listAsync('dir')
+      .then(function (listAsync) {
+        expectations(listAsync);
+        done();
+      });
     });
   });
 
-  it('lists CWD if no path parameter passed', function (done) {
-    var expectations = function (data) {
-      expect(data).toEqual(['a', 'b']);
+  describe('lists CWD if no path parameter passed', function () {
+    var preparations = function () {
+      fse.mkdirsSync('dir/a');
+      fse.outputFileSync('dir/b');
     };
 
-    var jetContext = jetpack.cwd('dir');
+    var expectations = function (data) {
+      expect(data).to.eql(['a', 'b']);
+    };
 
-    fse.mkdirsSync('dir/a');
-    fse.outputFileSync('dir/b');
+    it('sync', function () {
+      var jetContext = jetpack.cwd('dir');
+      preparations();
+      expectations(jetContext.list());
+    });
 
-    // SYNC
-    expectations(jetContext.list());
-
-    // ASYNC
-    jetContext.listAsync()
-    .then(function (list) {
-      expectations(list);
-      done();
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('dir');
+      preparations();
+      jetContext.listAsync()
+      .then(function (list) {
+        expectations(list);
+        done();
+      });
     });
   });
 
-  it("returns undefined if path doesn't exist", function (done) {
+  describe("returns undefined if path doesn't exist", function () {
     var expectations = function (data) {
-      expect(data).toBe(undefined);
+      expect(data).to.equal(undefined);
     };
 
-    // SYNC
-    expectations(jetpack.list('nonexistent'));
+    it('sync', function () {
+      expectations(jetpack.list('nonexistent'));
+    });
 
-    // ASYNC
-    jetpack.listAsync('nonexistent')
-    .then(function (data) {
-      expectations(data);
-      done();
+    it('async', function (done) {
+      jetpack.listAsync('nonexistent')
+      .then(function (data) {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  it('throws if given path is not a directory', function (done) {
+  describe('throws if given path is not a directory', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.txt', 'abc');
+    };
+
     var expectations = function (err) {
-      expect(err.code).toBe('ENOTDIR');
+      expect(err.code).to.equal('ENOTDIR');
     };
 
-    fse.outputFileSync('file.txt', 'abc');
+    it('sync', function () {
+      preparations();
+      try {
+        jetpack.list('file.txt');
+        throw new Error('Expected error to be thrown');
+      } catch (err) {
+        expectations(err);
+      }
+    });
 
-    // SYNC
-    try {
-      jetpack.list('file.txt');
-      throw new Error('to make sure this code throws');
-    } catch (err) {
-      expectations(err);
-    }
-
-    // ASYNC
-    jetpack.listAsync('file.txt')
-    .catch(function (err) {
-      expectations(err);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.listAsync('file.txt')
+      .catch(function (err) {
+        expectations(err);
+        done();
+      });
     });
   });
 
-  it('respects internal CWD of jetpack instance', function (done) {
-    var expectations = function (data) {
-      expect(data).toEqual(['c.txt']);
+  describe('respects internal CWD of jetpack instance', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/b/c.txt', 'abc');
     };
 
-    var jetContext = jetpack.cwd('a');
+    var expectations = function (data) {
+      expect(data).to.eql(['c.txt']);
+    };
 
-    fse.outputFileSync('a/b/c.txt', 'abc');
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      expectations(jetContext.list('b'));
+    });
 
-    // SYNC
-    expectations(jetContext.list('b'));
-
-    // ASYNC
-    jetContext.listAsync('b')
-    .then(function (data) {
-      expectations(data);
-      done();
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.listAsync('b')
+      .then(function (data) {
+        expectations(data);
+        done();
+      });
     });
   });
 });

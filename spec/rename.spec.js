@@ -1,86 +1,89 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var path = require('./path_assertions');
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('rename |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('rename', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it('renames file', function (done) {
+  describe('renames file', function () {
     var preparations = function () {
-      helper.clearWorkingDir();
       fse.outputFileSync('a/b.txt', 'abc');
     };
+
     var expectations = function () {
-      expect('a/b.txt').not.toExist();
-      expect('a/x.txt').toBeFileWithContent('abc');
+      path('a/b.txt').shouldNotExist();
+      path('a/x.txt').shouldBeFileWithContent('abc');
     };
 
-    // SYNC
-    preparations();
-    jetpack.rename('a/b.txt', 'x.txt');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetpack.renameAsync('a/b.txt', 'x.txt')
-    .then(function () {
+    it('sync', function () {
+      preparations();
+      jetpack.rename('a/b.txt', 'x.txt');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.renameAsync('a/b.txt', 'x.txt')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 
-  it('renames directory', function (done) {
+  describe('renames directory', function () {
     var preparations = function () {
-      helper.clearWorkingDir();
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
+
     var expectations = function () {
-      expect('a/b').not.toExist();
-      expect('a/x').toBeDirectory();
+      path('a/b').shouldNotExist();
+      path('a/x').shouldBeDirectory();
     };
 
-    // SYNC
-    preparations();
-    jetpack.rename('a/b', 'x');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetpack.renameAsync('a/b', 'x')
-    .then(function () {
+    it('sync', function () {
+      preparations();
+      jetpack.rename('a/b', 'x');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.renameAsync('a/b', 'x')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 
-  it('respects internal CWD of jetpack instance', function (done) {
+  describe('respects internal CWD of jetpack instance', function () {
     var preparations = function () {
-      helper.clearWorkingDir();
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
+
     var expectations = function () {
-      expect('a/b').not.toExist();
-      expect('a/x').toBeDirectory();
+      path('a/b').shouldNotExist();
+      path('a/x').shouldBeDirectory();
     };
 
-    var jetContext = jetpack.cwd('a');
-
-    // SYNC
-    preparations();
-    jetContext.rename('b', 'x');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetContext.renameAsync('b', 'x')
-    .then(function () {
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.rename('b', 'x');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.renameAsync('b', 'x')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 });

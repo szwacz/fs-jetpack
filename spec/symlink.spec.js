@@ -1,82 +1,75 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('symlink |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('symlink', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it('can create a symlink', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-    };
+  describe('can create a symlink', function () {
     var expectations = function () {
-      expect(fse.lstatSync('symlink').isSymbolicLink()).toBe(true);
-      expect(fse.readlinkSync('symlink')).toBe('some_path');
+      expect(fse.lstatSync('symlink').isSymbolicLink()).to.equal(true);
+      expect(fse.readlinkSync('symlink')).to.equal('some_path');
     };
 
-    // SYNC
-    preparations();
-    jetpack.symlink('some_path', 'symlink');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetpack.symlinkAsync('some_path', 'symlink')
-    .then(function () {
+    it('sync', function () {
+      jetpack.symlink('some_path', 'symlink');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      jetpack.symlinkAsync('some_path', 'symlink')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 
-  it('can create nonexistent parent directories', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-    };
+  describe('can create nonexistent parent directories', function () {
     var expectations = function () {
-      expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
+      expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).to.equal(true);
     };
 
-    // SYNC
-    preparations();
-    jetpack.symlink('whatever', 'a/b/symlink');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetpack.symlinkAsync('whatever', 'a/b/symlink')
-    .then(function () {
+    it('sync', function () {
+      jetpack.symlink('whatever', 'a/b/symlink');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      jetpack.symlinkAsync('whatever', 'a/b/symlink')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 
-  it('respects internal CWD of jetpack instance', function (done) {
+  describe('respects internal CWD of jetpack instance', function () {
     var preparations = function () {
-      helper.clearWorkingDir();
       fse.mkdirsSync('a/b');
     };
+
     var expectations = function () {
-      expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).toBe(true);
+      expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).to.equal(true);
     };
 
-    var jetContext = jetpack.cwd('a/b');
-
-    // SYNC
-    preparations();
-    jetContext.symlink('whatever', 'symlink');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetContext.symlinkAsync('whatever', 'symlink')
-    .then(function () {
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a/b');
+      preparations();
+      jetContext.symlink('whatever', 'symlink');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a/b');
+      preparations();
+      jetContext.symlinkAsync('whatever', 'symlink')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 });
