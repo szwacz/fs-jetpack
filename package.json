@@ -11,19 +11,19 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "chai-fs": "^0.1.0",
     "eslint": "^2.13.1",
     "eslint-config-airbnb-base": "^3.0.1",
     "eslint-plugin-import": "^1.9.2",
     "fs-extra": "^0.16.3",
+    "istanbul": "^0.4.5",
     "jasmine": "^2.2.1",
     "mocha": "^3.1.2",
     "pre-commit": "^1.1.2",
     "temp": "^0.8.3"
   },
   "scripts": {
-    "test": "jasmine",
-    "test2": "mocha './spec2/**/*.spec.js'",
+    "test": "istanbul cover jasmine",
+    "test2": "istanbul cover node_modules/.bin/_mocha -- './spec2/**/*.spec.js'",
     "lint": "eslint ."
   },
   "main": "main.js",
