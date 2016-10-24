@@ -1,5 +1,5 @@
 var fse = require('fs-extra');
-var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -13,7 +13,7 @@ describe('append', function () {
     };
 
     var expectations = function () {
-      expect('file.txt').to.have.content('abcxyz');
+      path('file.txt').shouldBeFileWithContent('abcxyz');
     };
 
     it('sync', function () {
@@ -38,10 +38,7 @@ describe('append', function () {
     };
 
     var expectations = function () {
-      var buf = fse.readFileSync('file.bin');
-      expect(buf[0]).to.equal(11);
-      expect(buf[1]).to.equal(22);
-      expect(buf.length).to.equal(2);
+      path('file.bin').shouldBeFileWithContent(new Buffer([11, 22]));
     };
 
     it('sync', function () {
@@ -62,7 +59,7 @@ describe('append', function () {
 
   describe("if file doesn't exist creates it", function () {
     var expectations = function () {
-      expect('file.txt').to.have.content('xyz');
+      path('file.txt').shouldBeFileWithContent('xyz');
     };
 
     it('sync', function () {
@@ -81,7 +78,7 @@ describe('append', function () {
 
   describe("if parent directory doesn't exist creates it", function () {
     var expectations = function () {
-      expect('dir/dir/file.txt').to.have.content('xyz');
+      path('dir/dir/file.txt').shouldBeFileWithContent('xyz');
     };
 
     it('sync', function () {
@@ -104,7 +101,7 @@ describe('append', function () {
     };
 
     var expectations = function () {
-      expect('a/b.txt').to.have.content('abcxyz');
+      path('a/b.txt').shouldBeFileWithContent('abcxyz');
     };
 
     it('sync', function () {
@@ -128,7 +125,7 @@ describe('append', function () {
   if (process.platform !== 'win32') {
     describe('sets file mode on created file (unix only)', function () {
       var expectations = function () {
-        expect(helper.mode('file.txt')).to.eql('711');
+        path('file.txt').shouldHaveMode('711');
       };
 
       it('sync', function () {

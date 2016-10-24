@@ -1,5 +1,5 @@
 var fse = require('fs-extra');
-var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -16,7 +16,7 @@ describe('streams', function () {
     input = jetpack.createReadStream('a.txt');
     output = jetpack.createWriteStream('b.txt');
     output.on('finish', function () {
-      expect('b.txt').to.have.content('abc');
+      path('b.txt').shouldBeFileWithContent('abc');
       done();
     });
     input.pipe(output);
@@ -33,7 +33,7 @@ describe('streams', function () {
     input = dir.createReadStream('a.txt');
     output = dir.createWriteStream('b.txt');
     output.on('finish', function () {
-      expect('dir/b.txt').to.have.content('abc');
+      path('dir/b.txt').shouldBeFileWithContent('abc');
       done();
     });
     input.pipe(output);

@@ -1,6 +1,7 @@
 var Q = require('q');
 var fse = require('fs-extra');
 var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -10,7 +11,7 @@ describe('write', function () {
 
   describe('writes data from string', function () {
     var expectations = function () {
-      expect('file.txt').to.have.content('abc');
+      path('file.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -29,10 +30,7 @@ describe('write', function () {
 
   describe('writes data from Buffer', function () {
     var expectations = function () {
-      var content = fse.readFileSync('file.txt');
-      expect(content.length).to.equal(2);
-      expect(content[0]).to.equal(11);
-      expect(content[1]).to.equal(22);
+      path('file.txt').shouldBeFileWithContent(new Buffer([11, 22]));
     };
 
     it('sync', function () {
@@ -132,7 +130,7 @@ describe('write', function () {
 
   describe('can create nonexistent parent directories', function () {
     var expectations = function () {
-      expect('a/b/c.txt').to.have.content('abc');
+      path('a/b/c.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -151,7 +149,7 @@ describe('write', function () {
 
   describe('respects internal CWD of jetpack instance', function () {
     var expectations = function () {
-      expect('a/b/c.txt').to.have.content('abc');
+      path('a/b/c.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {

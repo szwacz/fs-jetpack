@@ -1,5 +1,5 @@
 var fse = require('fs-extra');
-var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -13,8 +13,8 @@ describe('rename', function () {
     };
 
     var expectations = function () {
-      expect('a/b.txt').not.to.be.a.path();
-      expect('a/x.txt').to.have.content('abc');
+      path('a/b.txt').shouldNotExist();
+      path('a/x.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -39,8 +39,8 @@ describe('rename', function () {
     };
 
     var expectations = function () {
-      expect('a/b').not.to.be.a.path();
-      expect('a/x').to.be.a.directory();
+      path('a/b').shouldNotExist();
+      path('a/x').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -65,8 +65,8 @@ describe('rename', function () {
     };
 
     var expectations = function () {
-      expect('a/b').not.to.be.a.path();
-      expect('a/x').to.be.a.directory();
+      path('a/b').shouldNotExist();
+      path('a/x').shouldBeDirectory();
     };
 
     it('sync', function () {

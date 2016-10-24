@@ -1,5 +1,6 @@
 var fse = require('fs-extra');
 var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -26,7 +27,7 @@ describe('remove', function () {
     };
 
     var expectations = function () {
-      expect('file.txt').not.to.be.path();
+      path('file.txt').shouldNotExist();
     };
 
     it('sync', function () {
@@ -53,7 +54,7 @@ describe('remove', function () {
     };
 
     var expectations = function () {
-      expect('a').not.to.be.a.path();
+      path('a').shouldNotExist();
     };
 
     it('sync', function () {
@@ -78,8 +79,8 @@ describe('remove', function () {
     };
 
     var expectations = function () {
-      expect('a').to.be.a.directory();
-      expect('a/b').not.to.be.a.path();
+      path('a').shouldBeDirectory();
+      path('a/b').shouldNotExist();
     };
 
     it('sync', function () {
@@ -106,7 +107,7 @@ describe('remove', function () {
     };
 
     var expectations = function () {
-      expect('a').not.to.be.a.path();
+      path('a').shouldNotExist();
     };
 
     it('sync', function () {
@@ -137,8 +138,8 @@ describe('remove', function () {
     };
 
     var expectations = function () {
-      expect('have_to_stay_file').to.have.content('abc');
-      expect('to_remove').not.to.be.a.path();
+      path('have_to_stay_file').shouldBeFileWithContent('abc');
+      path('to_remove').shouldNotExist();
     };
 
     it('sync', function () {

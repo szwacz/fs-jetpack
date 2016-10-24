@@ -1,5 +1,6 @@
 var fse = require('fs-extra');
 var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -13,8 +14,8 @@ describe('copy', function () {
     };
 
     var expectations = function () {
-      expect('file.txt').to.have.content('abc');
-      expect('file_copied.txt').to.have.content('abc');
+      path('file.txt').shouldBeFileWithContent('abc');
+      path('file_copied.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -39,8 +40,8 @@ describe('copy', function () {
     };
 
     var expectations = function () {
-      expect('file.txt').to.have.content('abc');
-      expect('dir/dir/file.txt').to.have.content('abc');
+      path('file.txt').shouldBeFileWithContent('abc');
+      path('dir/dir/file.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -65,7 +66,7 @@ describe('copy', function () {
     };
 
     var expectations = function () {
-      expect('copied/dir').to.be.a.directory();
+      path('copied/dir').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -92,9 +93,9 @@ describe('copy', function () {
     };
 
     var expectations = function () {
-      expect('copied/a/f1.txt').to.have.content('abc');
-      expect('copied/a/b/c').to.be.a.directory();
-      expect('copied/a/b/f2.txt').to.have.content('123');
+      path('copied/a/f1.txt').shouldBeFileWithContent('abc');
+      path('copied/a/b/c').shouldBeDirectory();
+      path('copied/a/b/f2.txt').shouldBeFileWithContent('123');
     };
 
     it('sync', function () {
@@ -116,7 +117,7 @@ describe('copy', function () {
   describe("generates nice error if source path doesn't exist", function () {
     var expectations = function (err) {
       expect(err.code).to.equal('ENOENT');
-      expect(err.message).to.match(/^Path to copy doesn't exist/);
+      expect(err.message).to.have.string("Path to copy doesn't exist");
     };
 
     it('sync', function () {
@@ -143,8 +144,8 @@ describe('copy', function () {
     };
 
     var expectations = function () {
-      expect('a/b.txt').to.have.content('abc');
-      expect('a/x.txt').to.have.content('abc');
+      path('a/b.txt').shouldBeFileWithContent('abc');
+      path('a/x.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -174,7 +175,7 @@ describe('copy', function () {
 
       var expectations = function (err) {
         expect(err.code).to.equal('EEXIST');
-        expect(err.message).to.match(/^Destination path already exists/);
+        expect(err.message).to.have.string('Destination path already exists');
       };
 
       it('sync', function () {
@@ -204,8 +205,8 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('a/file.txt').to.have.content('abc');
-        expect('b/file.txt').to.have.content('abc');
+        path('a/file.txt').shouldBeFileWithContent('abc');
+        path('b/file.txt').shouldBeFileWithContent('abc');
       };
 
       it('sync', function () {
@@ -235,10 +236,10 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('copy/file.txt').to.have.content('1');
-        expect('copy/file.md').not.to.be.a.path();
-        expect('copy/a/file.txt').to.have.content('2');
-        expect('copy/a/file.md').not.to.be.a.path();
+        path('copy/file.txt').shouldBeFileWithContent('1');
+        path('copy/file.md').shouldNotExist();
+        path('copy/a/file.txt').shouldBeFileWithContent('2');
+        path('copy/a/file.md').shouldNotExist();
       };
 
       it('sync', function () {
@@ -265,9 +266,9 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('copy/file.txt').not.to.be.a.path();
-        expect('copy/a/file.txt').to.have.content('2');
-        expect('copy/a/b/file.txt').not.to.be.a.path();
+        path('copy/file.txt').shouldNotExist();
+        path('copy/a/file.txt').shouldBeFileWithContent('2');
+        path('copy/a/b/file.txt').shouldNotExist();
       };
 
       it('sync', function () {
@@ -293,8 +294,8 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('copy/a.txt').to.be.a.file();
-        expect('copy/b/a.txt').not.to.be.a.path();
+        path('copy/a.txt').shouldBeFileWithContent('123');
+        path('copy/b/a.txt').shouldNotExist();
       };
 
       it('sync', function () {
@@ -320,8 +321,8 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('a-copy').not.to.be.a.path();
-        expect('x-copy').to.be.a.file();
+        path('a-copy').shouldNotExist();
+        path('x-copy').shouldBeFileWithContent('456');
       };
 
       it('sync', function () {
@@ -353,10 +354,10 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('copy/dir/a/b').to.be.a.directory();
-        expect('copy/dir/a/x').not.to.be.a.path();
-        expect('copy/dir/a/y').not.to.be.a.path();
-        expect('copy/dir/a/z').not.to.be.a.path();
+        path('copy/dir/a/b').shouldBeDirectory();
+        path('copy/dir/a/x').shouldNotExist();
+        path('copy/dir/a/y').shouldNotExist();
+        path('copy/dir/a/z').shouldNotExist();
       };
 
       it('sync', function () {
@@ -402,9 +403,9 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect('copy/file.txt').to.have.content('123');
-        expect('copy/y/.dot').to.have.content('dot');
-        expect('copy/y/z').to.be.a.directory();
+        path('copy/file.txt').shouldBeFileWithContent('123');
+        path('copy/y/.dot').shouldBeFileWithContent('dot');
+        path('copy/y/z').shouldBeDirectory();
       };
 
       it('sync', function () {
@@ -488,8 +489,8 @@ describe('copy', function () {
       };
 
       var expectations = function () {
-        expect(helper.mode('x/b')).to.equal('700');
-        expect(helper.mode('x/b/c.txt')).to.equal('711');
+        path('x/b').shouldHaveMode('700');
+        path('x/b/c.txt').shouldHaveMode('711');
       };
 
       it('sync', function () {

@@ -1,6 +1,7 @@
 var fse = require('fs-extra');
 var pathUtil = require('path');
 var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -10,7 +11,7 @@ describe('dir', function () {
 
   describe("creates directory if it doesn't exist", function () {
     var expectations = function () {
-      expect('x').to.be.a.directory();
+      path('x').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -33,7 +34,7 @@ describe('dir', function () {
     };
 
     var expectations = function () {
-      expect('x').to.be.a.directory();
+      path('x').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -54,7 +55,7 @@ describe('dir', function () {
 
   describe('creates nested directories if necessary', function () {
     var expectations = function () {
-      expect('a/b/c').to.be.a.directory();
+      path('a/b/c').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -78,8 +79,8 @@ describe('dir', function () {
     };
 
     var expectations = function () {
-      expect('a/b').to.be.a.directory();
-      expect('a/c.txt').to.have.content('abc');
+      path('a/b').shouldBeDirectory();
+      path('a/c.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -104,8 +105,8 @@ describe('dir', function () {
     };
 
     var expectations = function () {
-      expect('a/b/file.txt').not.to.be.a.path();
-      expect('a').to.be.a.directory();
+      path('a/b/file.txt').shouldNotExist();
+      path('a').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -130,7 +131,7 @@ describe('dir', function () {
     };
 
     var expectations = function (err) {
-      expect(err.message).to.match(/exists but is not a directory/);
+      expect(err.message).to.have.string('exists but is not a directory');
     };
 
     it('sync', function () {
@@ -155,7 +156,7 @@ describe('dir', function () {
 
   describe('respects internal CWD of jetpack instance', function () {
     var expectations = function () {
-      expect('a/b').to.be.a.directory();
+      path('a/b').shouldBeDirectory();
     };
 
     it('sync', function () {
@@ -196,7 +197,7 @@ describe('dir', function () {
   if (process.platform !== 'win32') {
     describe('sets mode to newly created directory (unix only)', function () {
       var expectations = function () {
-        expect(helper.mode('a')).to.equal('511');
+        path('a').shouldHaveMode('511');
       };
 
       it('sync, mode passed as string', function () {
@@ -228,8 +229,8 @@ describe('dir', function () {
 
     describe('sets desired mode to every created directory (unix only)', function () {
       var expectations = function () {
-        expect(helper.mode('a')).to.equal('711');
-        expect(helper.mode('a/b')).to.equal('711');
+        path('a').shouldHaveMode('711');
+        path('a/b').shouldHaveMode('711');
       };
 
       it('sync', function () {
@@ -251,7 +252,7 @@ describe('dir', function () {
         fse.mkdirSync('a', '777');
       };
       var expectations = function () {
-        expect(helper.mode('a')).to.equal('511');
+        path('a').shouldHaveMode('511');
       };
 
       it('sync', function () {
@@ -274,8 +275,9 @@ describe('dir', function () {
       var preparations = function () {
         fse.mkdirSync('a', '700');
       };
+
       var expectations = function () {
-        expect(helper.mode('a')).to.equal('700');
+        path('a').shouldHaveMode('700');
       };
 
       it('sync', function () {
@@ -296,7 +298,7 @@ describe('dir', function () {
   } else {
     describe('specyfying mode have no effect and throws no error (windows only)', function () {
       var expectations = function () {
-        expect('x').to.be.a.directory();
+        path('x').shouldBeDirectory();
       };
 
       it('sync', function () {

@@ -1,5 +1,6 @@
 var fse = require('fs-extra');
 var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -9,7 +10,7 @@ describe('file', function () {
 
   describe("creates file if it doesn't exist", function () {
     var expectations = function () {
-      expect('file.txt').to.have.content('');
+      path('file.txt').shouldBeFileWithContent('');
     };
 
     it('sync', function () {
@@ -33,7 +34,7 @@ describe('file', function () {
     };
 
     var expectations = function () {
-      expect('file.txt').to.have.content('abc');
+      path('file.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -55,7 +56,7 @@ describe('file', function () {
 
   describe('can save file content given as string', function () {
     var expectations = function () {
-      expect('file.txt').to.have.content('ąbć');
+      path('file.txt').shouldBeFileWithContent('ąbć');
     };
 
     it('sync', function () {
@@ -75,10 +76,7 @@ describe('file', function () {
 
   describe('can save file content given as buffer', function () {
     var expectations = function () {
-      var buf = fse.readFileSync('file');
-      expect(buf[0]).to.equal(11);
-      expect(buf[1]).to.equal(22);
-      expect(buf.length).to.equal(2);
+      path('file').shouldBeFileWithContent(new Buffer([11, 22]));
     };
 
     it('sync', function () {
@@ -165,7 +163,7 @@ describe('file', function () {
     };
 
     var expectations = function () {
-      expect('file.txt').to.have.content('123');
+      path('file.txt').shouldBeFileWithContent('123');
     };
 
     it('sync', function () {
@@ -217,7 +215,7 @@ describe('file', function () {
 
   describe("if directory for file doesn't exist creates it as well", function () {
     var expectations = function () {
-      expect('a/b/c.txt').to.have.content('');
+      path('a/b/c.txt').shouldBeFileWithContent('');
     };
 
     it('sync', function () {
@@ -256,7 +254,7 @@ describe('file', function () {
 
   describe('respects internal CWD of jetpack instance', function () {
     var expectations = function () {
-      expect('a/b.txt').to.have.content('');
+      path('a/b.txt').shouldBeFileWithContent('');
     };
 
     it('sync', function () {
@@ -279,7 +277,7 @@ describe('file', function () {
   if (process.platform !== 'win32') {
     describe('sets mode of newly created file (unix only)', function () {
       var expectations = function () {
-        expect(helper.mode('file.txt')).to.equal('711');
+        path('file.txt').shouldHaveMode('711');
       };
 
       it('sync, mode passed as string', function () {
@@ -317,7 +315,7 @@ describe('file', function () {
       };
 
       var expectations = function () {
-        expect(helper.mode('file.txt')).to.equal('511');
+        path('file.txt').shouldHaveMode('511');
       };
 
       it('sync', function () {
@@ -343,7 +341,7 @@ describe('file', function () {
       };
 
       var expectations = function () {
-        expect(helper.mode('file.txt')).to.equal('700');
+        path('file.txt').shouldHaveMode('700');
       };
 
       it('sync, ensure exists', function () {

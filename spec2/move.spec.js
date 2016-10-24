@@ -1,5 +1,6 @@
 var fse = require('fs-extra');
 var expect = require('chai').expect;
+var path = require('./path_assertions');
 var helper = require('./helper');
 var jetpack = require('..');
 
@@ -13,8 +14,8 @@ describe('move', function () {
     };
 
     var expectations = function () {
-      expect('a/b.txt').not.to.be.a.path();
-      expect('c.txt').to.have.content('abc');
+      path('a/b.txt').shouldNotExist();
+      path('c.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -40,8 +41,8 @@ describe('move', function () {
     };
 
     var expectations = function () {
-      expect('a').not.to.be.a.path();
-      expect('x/y/b/c.txt').to.have.content('abc');
+      path('a').shouldNotExist();
+      path('x/y/b/c.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -66,8 +67,8 @@ describe('move', function () {
     };
 
     var expectations = function () {
-      expect('a.txt').not.to.be.a.path();
-      expect('a/b/z.txt').to.have.content('abc');
+      path('a.txt').shouldNotExist();
+      path('a/b/z.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
@@ -89,7 +90,7 @@ describe('move', function () {
   describe("generates nice error when source path doesn't exist", function () {
     var expectations = function (err) {
       expect(err.code).to.equal('ENOENT');
-      expect(err.message).to.match(/^Path to move doesn't exist/);
+      expect(err.message).to.have.string("Path to move doesn't exist");
     };
 
     it('sync', function () {
@@ -116,8 +117,8 @@ describe('move', function () {
     };
 
     var expectations = function () {
-      expect('a/b.txt').not.to.be.a.path();
-      expect('a/x.txt').to.have.content('abc');
+      path('a/b.txt').shouldNotExist();
+      path('a/x.txt').shouldBeFileWithContent('abc');
     };
 
     it('sync', function () {
