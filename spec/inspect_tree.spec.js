@@ -254,7 +254,7 @@ describe('inspectTree', function () {
         }, {
           name: 'symlinked_file.txt',
           type: 'symlink',
-          pointsAt: 'dir/file.txt'
+          pointsAt: helper.osSep('dir/file.txt')
         }]
       });
     };

@@ -1,4 +1,3 @@
-var pathUtil = require('path');
 var temp = require('temp');
 
 var originalCwd = process.cwd();
@@ -15,20 +14,19 @@ exports.switchBackToCorrectCwd = function () {
   process.chdir(originalCwd);
 };
 
-exports.convertToUnixPathSeparators = function (thing) {
-  if (Array.isArray(thing)) {
-    return thing.map(function (path) {
-      return path.replace(/\\/g, '/');
-    });
-  }
-  return thing.replace(/\\/g, '/');
-};
-
-exports.resolveAndNormalizePath = function (path) {
-  return exports.convertToUnixPathSeparators(pathUtil.resolve(path));
-};
-
 exports.parseMode = function (modeAsNumber) {
   var mode = modeAsNumber.toString(8);
   return mode.substring(mode.length - 3);
+};
+
+// Converts paths to windows or unix formats depending on platform running.
+exports.osSep = function (path) {
+  if (Array.isArray(path)) {
+    return path.map(exports.osSep);
+  }
+
+  if (process.platform === 'win32') {
+    return path.replace(/\//g, '\\');
+  }
+  return path.replace(/\\/g, '/');
 };

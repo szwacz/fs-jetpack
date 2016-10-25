@@ -13,8 +13,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['a/b/file.txt']);
+      var normalizedPaths = helper.osSep(['a/b/file.txt']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -40,8 +40,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['x/file.txt']);
+      var normalizedPaths = helper.osSep(['x/file.txt']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -65,8 +65,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['a/b/file.txt']);
+      var normalizedPaths = helper.osSep(['a/b/file.txt']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -117,13 +117,13 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      normalizedFound.sort();
-      expect(normalizedFound).to.eql([
+      var normalizedPaths = helper.osSep([
         'a/b/c/file.txt',
         'a/b/file.txt',
         'a/x/y/z'
       ]);
+      found.sort();
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -148,8 +148,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['x/y/a/b/file.txt']);
+      var normalizedPaths = helper.osSep(['x/y/a/b/file.txt']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -174,8 +174,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['x/y/file.txt']);
+      var normalizedPaths = helper.osSep(['x/y/file.txt']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -202,8 +202,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['x/y/a/b']);
+      var normalizedPaths = helper.osSep(['x/y/a/b']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -244,7 +244,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      expect(found).to.eql(['a/b/foo1']);
+      var normalizedPaths = helper.osSep(['a/b/foo1']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -269,7 +270,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      expect(found).to.eql(['a/b/foo1', 'a/b/foo2']);
+      var normalizedPaths = helper.osSep(['a/b/foo1', 'a/b/foo2']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -301,7 +303,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      expect(found).to.eql(['a/b/foo2']);
+      var normalizedPaths = helper.osSep(['a/b/foo2']);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {
@@ -421,8 +424,8 @@ describe('find', function () {
     };
 
     var expectations = function (found) {
-      var normalizedFound = helper.convertToUnixPathSeparators(found);
-      expect(normalizedFound).to.eql(['b/c/d.txt']); // NOT a/b/c/d.txt
+      var normalizedPaths = helper.osSep(['b/c/d.txt']); // NOT a/b/c/d.txt
+      expect(found).to.eql(normalizedPaths);
     };
 
     it('sync', function () {

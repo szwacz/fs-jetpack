@@ -20,14 +20,14 @@ describe('tree walker', function () {
     var expectations = function (data) {
       expect(data).to.eql([
         {
-          path: helper.resolveAndNormalizePath('a'),
+          path: helper.osSep('a'),
           item: {
             type: 'dir',
             name: 'a'
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/a.txt'),
+          path: helper.osSep('a/a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
@@ -35,21 +35,21 @@ describe('tree walker', function () {
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/b'),
+          path: helper.osSep('a/b'),
           item: {
             type: 'dir',
             name: 'b'
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/b/c'),
+          path: helper.osSep('a/b/c'),
           item: {
             type: 'dir',
             name: 'c'
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/b/z1.txt'),
+          path: helper.osSep('a/b/z1.txt'),
           item: {
             type: 'file',
             name: 'z1.txt',
@@ -57,7 +57,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/b/z2.txt'),
+          path: helper.osSep('a/b/z2.txt'),
           item: {
             type: 'file',
             name: 'z2.txt',
@@ -68,7 +68,7 @@ describe('tree walker', function () {
     };
 
     it('sync', function () {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('a');
+      var absoluteStartingPath = helper.osSep('a');
       var data = [];
       preparations();
       walker.sync(absoluteStartingPath, {}, function (path, item) {
@@ -78,7 +78,7 @@ describe('tree walker', function () {
     });
 
     it('async', function (done) {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('a');
+      var absoluteStartingPath = helper.osSep('a');
       var data = [];
       var st;
       preparations();
@@ -110,14 +110,14 @@ describe('tree walker', function () {
     var expectations = function (data) {
       expect(data).to.eql([
         {
-          path: helper.resolveAndNormalizePath('a'),
+          path: helper.osSep('a'),
           item: {
             type: 'dir',
             name: 'a'
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/a.txt'),
+          path: helper.osSep('a/a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
@@ -125,7 +125,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: helper.resolveAndNormalizePath('a/b'),
+          path: helper.osSep('a/b'),
           item: {
             type: 'dir',
             name: 'b'
@@ -135,7 +135,7 @@ describe('tree walker', function () {
     };
 
     it('sync', function () {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('a');
+      var absoluteStartingPath = helper.osSep('a');
       var data = [];
       preparations();
       walker.sync(absoluteStartingPath, options, function (path, item) {
@@ -145,7 +145,7 @@ describe('tree walker', function () {
     });
 
     it('async', function (done) {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('a');
+      var absoluteStartingPath = helper.osSep('a');
       var data = [];
       var st;
       preparations();
@@ -172,7 +172,7 @@ describe('tree walker', function () {
     var expectations = function (data) {
       expect(data).to.eql([
         {
-          path: helper.resolveAndNormalizePath('abc'),
+          path: helper.osSep('abc'),
           item: {
             type: 'dir',
             name: 'abc'
@@ -182,7 +182,7 @@ describe('tree walker', function () {
     };
 
     it('sync', function () {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc');
+      var absoluteStartingPath = helper.osSep('abc');
       var data = [];
       preparations();
       walker.sync(absoluteStartingPath, {}, function (path, item) {
@@ -192,7 +192,7 @@ describe('tree walker', function () {
     });
 
     it('async', function (done) {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc');
+      var absoluteStartingPath = helper.osSep('abc');
       var data = [];
       var st;
       preparations();
@@ -219,7 +219,7 @@ describe('tree walker', function () {
     var expectations = function (data) {
       expect(data).to.eql([
         {
-          path: helper.resolveAndNormalizePath('abc.txt'),
+          path: helper.osSep('abc.txt'),
           item: {
             type: 'file',
             name: 'abc.txt',
@@ -230,7 +230,7 @@ describe('tree walker', function () {
     };
 
     it('sync', function () {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc.txt');
+      var absoluteStartingPath = helper.osSep('abc.txt');
       var data = [];
       preparations();
       walker.sync(absoluteStartingPath, {}, function (path, item) {
@@ -240,7 +240,7 @@ describe('tree walker', function () {
     });
 
     it('async', function (done) {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc.txt');
+      var absoluteStartingPath = helper.osSep('abc.txt');
       var data = [];
       var st;
       preparations();
@@ -263,14 +263,14 @@ describe('tree walker', function () {
     var expectations = function (data) {
       expect(data).to.eql([
         {
-          path: helper.resolveAndNormalizePath('abc.txt'),
+          path: helper.osSep('abc.txt'),
           item: undefined
         }
       ]);
     };
 
     it('sync', function () {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc.txt');
+      var absoluteStartingPath = helper.osSep('abc.txt');
       var data = [];
       walker.sync(absoluteStartingPath, {}, function (path, item) {
         data.push({ path: path, item: item });
@@ -279,7 +279,7 @@ describe('tree walker', function () {
     });
 
     it('async', function (done) {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc.txt');
+      var absoluteStartingPath = helper.osSep('abc.txt');
       var data = [];
       var st;
       st = walker.stream(absoluteStartingPath, {})
@@ -311,14 +311,14 @@ describe('tree walker', function () {
     var expectations = function (data) {
       expect(data).to.eql([
         {
-          path: helper.resolveAndNormalizePath('abc'),
+          path: helper.osSep('abc'),
           item: {
             type: 'dir',
             name: 'abc'
           }
         },
         {
-          path: helper.resolveAndNormalizePath('abc/a.txt'),
+          path: helper.osSep('abc/a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
@@ -330,7 +330,7 @@ describe('tree walker', function () {
     };
 
     it('sync', function () {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc');
+      var absoluteStartingPath = helper.osSep('abc');
       var data = [];
       preparations();
       walker.sync(absoluteStartingPath, options, function (path, item) {
@@ -340,7 +340,7 @@ describe('tree walker', function () {
     });
 
     it('async', function (done) {
-      var absoluteStartingPath = helper.resolveAndNormalizePath('abc');
+      var absoluteStartingPath = helper.osSep('abc');
       var data = [];
       var st;
       preparations();
