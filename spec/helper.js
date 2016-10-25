@@ -1,3 +1,4 @@
+var pathUtil = require('path');
 var temp = require('temp');
 
 var originalCwd = process.cwd();
@@ -21,6 +22,10 @@ exports.convertToUnixPathSeparators = function (thing) {
     });
   }
   return thing.replace(/\\/g, '/');
+};
+
+exports.resolveAndNormalizePath = function (path) {
+  return exports.convertToUnixPathSeparators(pathUtil.resolve(path));
 };
 
 exports.parseMode = function (modeAsNumber) {
