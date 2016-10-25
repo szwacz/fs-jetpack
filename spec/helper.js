@@ -1,16 +1,20 @@
-var temp = require('temp');
+var tmp = require('tmp');
 
+var dummyTestDirectory;
 var originalCwd = process.cwd();
 
-// Automatically track and cleanup files at exit.
-temp.track();
+tmp.setGracefulCleanup();
 
 exports.setCleanTestCwd = function () {
-  var dummyTestDirectory = temp.mkdirSync('fs-jetpack-test');
-  process.chdir(dummyTestDirectory);
+  dummyTestDirectory = tmp.dirSync({ prefix: 'fs-jetpack-test-', unsafeCleanup: true });
+  process.chdir(dummyTestDirectory.name);
 };
 
 exports.switchBackToCorrectCwd = function () {
+  if (dummyTestDirectory) {
+    dummyTestDirectory.removeCallback();
+    dummyTestDirectory = undefined;
+  }
   process.chdir(originalCwd);
 };
 
