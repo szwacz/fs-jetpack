@@ -22,7 +22,8 @@
     "temp": "^0.8.3"
   },
   "scripts": {
-    "test": "istanbul cover node_modules/.bin/_mocha -- './spec/**/*.spec.js'",
+    "test": "mocha 'spec/**/*.spec.js'",
+    "test-with-coverage": "istanbul cover node_modules/.bin/_mocha -- 'spec/**/*.spec.js'",
     "lint": "eslint ."
   },
   "main": "main.js",
