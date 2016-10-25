@@ -28,7 +28,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: pathUtil.resolve('a/a.txt'),
+          path: pathUtil.resolve('a', 'a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
@@ -118,7 +118,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: pathUtil.resolve('a/a.txt'),
+          path: pathUtil.resolve('a', 'a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
@@ -126,7 +126,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: pathUtil.resolve('a/b'),
+          path: pathUtil.resolve('a', 'b'),
           item: {
             type: 'dir',
             name: 'b'
