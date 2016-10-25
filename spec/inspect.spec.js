@@ -195,7 +195,7 @@ describe('inspect', function () {
       expect(data).to.eql({
         name: 'symlinked_file.txt',
         type: 'symlink',
-        pointsAt: 'dir/file.txt'
+        pointsAt: helper.osSep('dir/file.txt')
       });
     };
 

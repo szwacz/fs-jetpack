@@ -432,7 +432,7 @@ describe('copy', function () {
     };
     var expectations = function () {
       expect(fse.lstatSync('copied/symlink').isSymbolicLink()).to.equal(true);
-      expect(fse.readlinkSync('copied/symlink')).to.equal('some/file');
+      expect(fse.readlinkSync('copied/symlink')).to.equal(helper.osSep('some/file'));
     };
 
     it('sync', function () {
@@ -461,7 +461,7 @@ describe('copy', function () {
 
     var expectations = function () {
       expect(fse.lstatSync('copied/symlink').isSymbolicLink()).to.equal(true);
-      expect(fse.readlinkSync('copied/symlink')).to.equal('some/file');
+      expect(fse.readlinkSync('copied/symlink')).to.equal(helper.osSep('some/file'));
     };
 
     it('sync', function () {

@@ -36,21 +36,21 @@ describe('tree walker', function () {
           }
         },
         {
-          path: pathUtil.resolve('a/b'),
+          path: pathUtil.resolve('a', 'b'),
           item: {
             type: 'dir',
             name: 'b'
           }
         },
         {
-          path: pathUtil.resolve('a/b/c'),
+          path: pathUtil.resolve('a', 'b', 'c'),
           item: {
             type: 'dir',
             name: 'c'
           }
         },
         {
-          path: pathUtil.resolve('a/b/z1.txt'),
+          path: pathUtil.resolve('a', 'b', 'z1.txt'),
           item: {
             type: 'file',
             name: 'z1.txt',
@@ -58,7 +58,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: pathUtil.resolve('a/b/z2.txt'),
+          path: pathUtil.resolve('a', 'b', 'z2.txt'),
           item: {
             type: 'file',
             name: 'z2.txt',
@@ -319,7 +319,7 @@ describe('tree walker', function () {
           }
         },
         {
-          path: pathUtil.resolve('abc/a.txt'),
+          path: pathUtil.resolve('abc', 'a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
