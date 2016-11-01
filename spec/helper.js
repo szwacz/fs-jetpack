@@ -8,13 +8,10 @@ var originalCwd = process.cwd();
 var createdDirectories = [];
 
 process.on('exit', function () {
+  // In case something went wrong and some temp
+  // directories are still on the disk.
   createdDirectories.forEach(function (path) {
-    try {
-      fse.removeSync(path);
-    } catch (err) {
-      console.error('Failed attempt to delete temp directory' + path);
-      console.error(err);
-    }
+    fse.removeSync(path);
   });
 });
 
@@ -27,7 +24,9 @@ exports.setCleanTestCwd = function () {
 };
 
 exports.switchBackToCorrectCwd = function () {
+  var path = createdDirectories.pop();
   process.chdir(originalCwd);
+  fse.removeSync(path);
 };
 
 exports.parseMode = function (modeAsNumber) {
