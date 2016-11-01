@@ -1,3 +1,5 @@
+/* eslint no-console:0 */
+
 var os = require('os');
 var crypto = require('crypto');
 var fse = require('fs-extra');
@@ -5,20 +7,27 @@ var fse = require('fs-extra');
 var originalCwd = process.cwd();
 var createdDirectories = [];
 
+process.on('exit', function () {
+  createdDirectories.forEach(function (path) {
+    try {
+      fse.removeSync(path);
+    } catch (err) {
+      console.error('Failed attempt to delete temp directory' + path);
+      console.error(err);
+    }
+  });
+});
+
 exports.setCleanTestCwd = function () {
   var random = crypto.randomBytes(16).toString('hex');
   var path = os.tmpdir() + '/fs-jetpack-test-' + random;
   fse.mkdirSync(path);
-  process.chdir(path);
   createdDirectories.push(path);
+  process.chdir(path);
 };
 
 exports.switchBackToCorrectCwd = function () {
   process.chdir(originalCwd);
-  createdDirectories = createdDirectories.filter(function (path) {
-    fse.removeSync(path);
-    return false;
-  });
 };
 
 exports.parseMode = function (modeAsNumber) {
