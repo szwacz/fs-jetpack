@@ -1,21 +1,24 @@
-var tmp = require('tmp');
+var os = require('os');
+var crypto = require('crypto');
+var fse = require('fs-extra');
 
-var dummyTestDirectory;
 var originalCwd = process.cwd();
-
-tmp.setGracefulCleanup();
+var createdDirectories = [];
 
 exports.setCleanTestCwd = function () {
-  dummyTestDirectory = tmp.dirSync({ prefix: 'fs-jetpack-test-', unsafeCleanup: true });
-  process.chdir(dummyTestDirectory.name);
+  var random = crypto.randomBytes(16).toString('hex');
+  var path = os.tmpdir() + '/fs-jetpack-test-' + random;
+  fse.mkdirSync(path);
+  process.chdir(path);
+  createdDirectories.push(path);
 };
 
 exports.switchBackToCorrectCwd = function () {
-  if (dummyTestDirectory) {
-    dummyTestDirectory.removeCallback();
-    dummyTestDirectory = undefined;
-  }
   process.chdir(originalCwd);
+  createdDirectories = createdDirectories.filter(function (path) {
+    fse.removeSync(path);
+    return false;
+  });
 };
 
 exports.parseMode = function (modeAsNumber) {
