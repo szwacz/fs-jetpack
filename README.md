@@ -3,7 +3,7 @@ fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=m
 
 Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more convenient API to work with file system.
 
-#### [Jump to API Docs](#api)
+Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 
 ## Installation
 ```
@@ -15,115 +15,18 @@ npm install fs-jetpack
 var jetpack = require('fs-jetpack');
 ```
 
+# API
 
-# What's cool about jetpack?
-
-## Promises instead of callbacks
 API has the same set of synchronous and asynchronous methods. All async methods are promise based.
 
 Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference.
 
-Thanks to that the API is also coherent...
 ```js
-// If method has no 'Async' suffix it gives you answer right away.
+// Synchronous
 var data = jetpack.read('file.txt');
 console.log(data);
 
-// Want to make that call asynchronous? Just add the word "Async"
-// and it will give you promise instead of ready value.
-jetpack.readAsync('file.txt')
-.then(function (data) {
-    console.log(data);
-});
-```
-
-## Every jetpack instance has its internal CWD
-You can create many jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
-```js
-var src = jetpack.cwd('path/to/source');
-var dest = jetpack.cwd('path/to/destination');
-src.copy('foo.txt', dest.path('bar.txt'));
-```
-
-## JSON is a first class citizen
-You can write JavaScript object directly to disk and it will be transformed to JSON automatically.
-```js
-var obj = { greet: "Hello World!" };
-jetpack.write('file.json', obj);
-```
-Then you can get your object back just by telling read method that it's a JSON.
-```js
-var obj = jetpack.read('file.json', 'json');
-```
-
-## Throws errors at you as the last resort
-Everyone who did something with files for sure seen (and probably hates) *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
-1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create lacking directories.  
-2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
-
-## All methods play nicely with each other (examples)
-**Note:** All examples are synchronous. Unfortunately asynchronous equivalents won't be that pretty.
-
-#### Great for build scripts
-```js
-var src = jetpack.cwd('path/to/source');
-var dest = jetpack.dir('path/to/destination', { empty: true });
-
-src.copy('.', dest.path(), {
-    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
-});
-
-var config = src.read('config.json', 'json');
-config.env = 'production';
-dest.write('config.json', config);
-```
-
-#### Files creation in declarative style
-Let's say you want to create folder structure:
-```
-.
-|- greets
-   |- greet.txt
-   |- greet.json
-|- greets-i18n
-   |- polish.txt
-```
-Peace of cake with jetpack!
-```js
-jetpack
-.dir('greets')
-    .file('greet.txt', { content: 'Hello world!' })
-    .file('greet.json', { content: { greet: 'Hello world!' } })
-    .cwd('..')
-.dir('greets-i18n')
-    .file('polish.txt', { content: 'Witaj świecie!' });
-```
-
-#### Delete all tmp files inside directory tree
-```js
-jetpack.find('my-dir', {
-    matching: '*.tmp'
-})
-.forEach(jetpack.remove);
-```
-
-#### Check if two files have the same content
-```js
-var file1 = jetpack.inspect('file1', { checksum: 'md5' });
-var file2 = jetpack.inspect('file2', { checksum: 'md5' });
-var areTheSame = (file1.md5 === file2.md5);
-```
-
-
-# <a name="api"></a> API Docs
-
-API methods have blocking and non-blocking equivalents:
-```js
-// Synchronous call
-var data = jetpack.read('file.txt');
-console.log(data);
-
-// Asynchronous call
+// Asynchronous
 jetpack.readAsync('file.txt')
 .then(function (data) {
     console.log(data);
