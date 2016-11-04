@@ -1,4 +1,5 @@
-# What is cool about fs-jetpack?
+# Cool things about fs-jetpack in examples
+**Note:** All examples here are synchronous for simplicity. You can easily make them asynchronous just by adding 'Async' to method names and expecting returned promise instead of ready value.
 
 ## Every jetpack instance has its internal CWD
 You can create many jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
@@ -24,9 +25,6 @@ Everyone who did something with files for sure seen (and probably hates) *"ENOEN
 1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create lacking directories.  
 2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
 
-# All methods play nicely with each other
-**Note:** All examples are synchronous. Unfortunately asynchronous equivalents won't be that pretty.
-
 ## Jetpack is great for build scripts
 ```js
 var src = jetpack.cwd('path/to/source');
@@ -41,7 +39,7 @@ config.env = 'production';
 dest.write('config.json', config);
 ```
 
-## Files creation in declarative style
+## All methods play nicely with each other
 Let's say you want to create folder structure:
 ```
 .
@@ -62,7 +60,7 @@ jetpack
     .file('polish.txt', { content: 'Witaj świecie!' });
 ```
 
-## Find and delete all `.tmp` files inside `my-dir` (and its subdirectories)
+## Find and delete all `.tmp` files inside `my-dir`
 ```js
 jetpack.find('my-dir', {
     matching: '*.tmp'
