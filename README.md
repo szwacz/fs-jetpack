@@ -15,21 +15,23 @@ npm install fs-jetpack
 var jetpack = require('fs-jetpack');
 ```
 
+
 # API
 
-API has the same set of synchronous and asynchronous methods. All async methods are promise based.
+API has the same set of synchronous and asynchronous methods. All async methods are promise based (no callbacks).
 
 Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference.
 
+Also it's just convenient...
 ```js
-// Synchronous
+// If you don't see the word "Async", then method returns value immediately.
 var data = jetpack.read('file.txt');
 console.log(data);
 
-// Asynchronous
+// When you see "Async", method returns promise which when resolved returns value.
 jetpack.readAsync('file.txt')
 .then(function (data) {
-    console.log(data);
+  console.log(data);
 });
 ```
 
@@ -54,14 +56,15 @@ jetpack.readAsync('file.txt')
 - [symlink](#symlinksymlinkvalue-path)
 - [write](#writepath-data-options)
 
+
 ## append(path, data, [options])
 asynchronous: **appendAsync(path, data, [options])**
 
-Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it (or them).
+Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it/them.
 
 **parameters:**  
 `path` the path to file.  
-`data` data to append (could be `String` or `Buffer`).  
+`data` data to append (can be `String` or `Buffer`).  
 `options` (optional) `Object` with possible fields:
 * `mode` if the file doesn't exist yet, will be created with given mode. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
@@ -78,7 +81,7 @@ Copies given file or directory (with everything inside).
 `from` path to location you want to copy.  
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
-* `overwrite` (default: `false`) Whether to overwrite destination path if it exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
+* `overwrite` (default: `false`) Whether to overwrite destination path if arready exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
 * `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else (see examples below).
 
 **returns:**  
@@ -98,7 +101,7 @@ jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '*.txt'] });
 // Supports negation patterns as well
 jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '!top-secret.md'] });
 
-// All patterns are anchored to dir you want to copy, not to CWD.
+// All patterns are anchored to directory you want to copy, not to CWD.
 // So in this example directory 'dir1/dir2/images' will be copied
 // to 'copied-dir2/images'
 jetpack.copy('dir1/dir2', 'copied-dir2', {
@@ -119,7 +122,8 @@ Just an alias to vanilla [fs.createWriteStream](http://nodejs.org/api/fs.html#fs
 
 
 ## cwd([path...])
-Returns Current Working Directory (CWD) for this instance of jetpack, or creates new jetpack object with given path as its internal CWD.  
+Returns Current Working Directory (CWD) for this instance of jetpack, or creates new jetpack object with given path as its internal CWD.
+
 **Note:** fs-jetpack never changes value of `process.cwd()`, the CWD we are talking about here is internal value inside every jetpack instance.
 
 **parameters:**  
@@ -164,7 +168,7 @@ Ensures that directory on given path exists and meets given criteria. If any cri
 * `mode` ensures directory has specified mode. If not set and directory already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
 **returns:**  
-New CWD context with directory specified in `path` as CWD.  
+New CWD context with directory specified in `path` as CWD (see docs of `cwd()` method for explanation).  
 
 **examples:**
 ```javascript
@@ -202,7 +206,7 @@ Ensures that file exists and meets given criteria. If any criterium is not met i
 **parameters:**  
 `path` path to file to examine.  
 `criteria` (optional) criteria to be met by the file. Is an `Object` with possible fields:
-* `content` sets file content. Could be `String`, `Buffer`, `Object` or `Array`. If `Object` or `Array` given to this parameter data will be written as JSON.
+* `content` sets file content. Can be `String`, `Buffer`, `Object` or `Array`. If `Object` or `Array` given to this parameter data will be written as JSON.
 * `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
 * `mode` ensures file has specified mode. If not set and file already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
 
@@ -227,13 +231,13 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 **parameters:**  
 `path` (optional, defaults to `'.'`) path to start search in (all subdirectories will be searched).  
 `searchOptions` is an `Object` with possible fields:
-* `matching` glob patterns of files you would like to find.
+* `matching` glob patterns of files you want to find.
 * `files` (default `true`) whether or not should search for files.
 * `directories` (default `false`) whether or not should search for directories.
 * `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
 
 **returns:**  
-`Array` of found files.
+`Array` of found paths.
 
 **examples:**
 ```javascript
@@ -270,17 +274,17 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 Otherwise `Object` of structure:
 ```javascript
 {
-    name: "my_dir",
-    type: "file", // possible values: "file", "dir"
-    size: 123, // size in bytes, this is returned only for files
-    // if checksum option was specified:
-    md5: '900150983cd24fb0d6963f7d28e17f72',
-    // if mode option was set to true:
-    mode: 33204,
-    // if times option was set to true:
-    accessTime: [object Date],
-    modifyTime: [object Date],
-    changeTime: [object Date]
+  name: "my_dir",
+  type: "file", // possible values: "file", "dir"
+  size: 123, // size in bytes, this is returned only for files
+  // if checksum option was specified:
+  md5: '900150983cd24fb0d6963f7d28e17f72',
+  // if mode option was set to true:
+  mode: 33204,
+  // if times option was set to true:
+  accessTime: [object Date],
+  modifyTime: [object Date],
+  changeTime: [object Date]
 }
 ```
 
@@ -291,7 +295,7 @@ asynchronous: **inspectTreeAsync(path, [options])**
 Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
 
 **parameters:**  
-`path` the path to inspect.  
+`path` the starting path to inspect.  
 `options` (optional). Possible values:
 * `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
 * `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
@@ -421,12 +425,17 @@ asynchronous: **renameAsync(path, newName)**
 Renames given file or directory.
 
 **parameters:**  
-`path` path to thing you want to change name.  
+`path` path to thing you want to change name of.  
 `newName` new name for this thing (not full path, just a name).
 
 **returns:**  
 Nothing.
 
+**examples:**
+```javascript
+// The file "my_work/important.md" will be renamed to "my_work/very_important.md"
+jetpack.rename('my_work/important.txt', 'very_important.md');
+```
 
 ## symlink(symlinkValue, path)
 asynchronous: **symlinkAsync(symlinkValue, path)**  
