@@ -1,5 +1,5 @@
 # Cool things about fs-jetpack in examples
-**Note:** All examples here are synchronous for simplicity. You can easily make them asynchronous just by adding 'Async' to method names and expecting returned promise instead of ready value.
+**Note:** All examples here are synchronous for simplicity. You can easily make them asynchronous just by adding 'Async' to method names and expecting promise to be returned instead of ready value.
 
 ## Every jetpack instance has its internal CWD
 You can create many jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
