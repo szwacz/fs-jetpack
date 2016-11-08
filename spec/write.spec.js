@@ -1,7 +1,7 @@
 var Q = require('q');
 var fse = require('fs-extra');
 var expect = require('chai').expect;
-var path = require('./path_assertions');
+var path = require('./assert_path');
 var helper = require('./helper');
 var jetpack = require('..');
 

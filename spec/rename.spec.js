@@ -1,5 +1,5 @@
 var fse = require('fs-extra');
-var path = require('./path_assertions');
+var path = require('./assert_path');
 var helper = require('./helper');
 var jetpack = require('..');
 
