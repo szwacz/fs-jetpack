@@ -74,3 +74,9 @@ var file1 = jetpack.inspect('file1', { checksum: 'md5' });
 var file2 = jetpack.inspect('file2', { checksum: 'md5' });
 var areTheSame = (file1.md5 === file2.md5);
 ```
+
+## More secure writes to disk
+For essential data you might consider "atomic write" feature. To read more about "why" and "how" please see: [Transactionally writing files in Node.js](http://stackoverflow.com/questions/17047994/transactionally-writing-files-in-node-js) Jetpack implements this simple trick and makes it available as an option.
+```js
+jetpack.write('important_config.json', { atomic: true });
+```
