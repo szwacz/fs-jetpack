@@ -1,31 +1,49 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
 var pathUtil = require('path');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var path = require('./path_assertions');
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('dir |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('dir', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  describe('ensure dir exists |', function () {
-    it("creates dir if it doesn't exist", function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        expect('x').toBeDirectory();
-      };
+  describe("creates directory if it doesn't exist", function () {
+    var expectations = function () {
+      path('x').shouldBeDirectory();
+    };
 
-      // SYNC
+    it('sync', function () {
+      jetpack.dir('x');
+      expectations();
+    });
+
+    it('async', function (done) {
+      jetpack.dirAsync('x')
+      .then(function () {
+        expectations();
+        done();
+      });
+    });
+  });
+
+  describe('does nothing if directory already exists', function () {
+    var preparations = function () {
+      fse.mkdirsSync('x');
+    };
+
+    var expectations = function () {
+      path('x').shouldBeDirectory();
+    };
+
+    it('sync', function () {
       preparations();
       jetpack.dir('x');
       expectations();
+    });
 
-      // ASYNC
+    it('async', function (done) {
       preparations();
       jetpack.dirAsync('x')
       .then(function () {
@@ -33,45 +51,19 @@ describe('dir |', function () {
         done();
       });
     });
+  });
 
-    it('does nothing if dir already exists', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-        fse.mkdirsSync('x');
-      };
-      var expectations = function () {
-        expect('x').toBeDirectory();
-      };
+  describe('creates nested directories if necessary', function () {
+    var expectations = function () {
+      path('a/b/c').shouldBeDirectory();
+    };
 
-      // SYNC
-      preparations();
-      jetpack.dir('x');
-      expectations();
-
-      // ASYNC
-      preparations();
-      jetpack.dirAsync('x')
-      .then(function () {
-        expectations();
-        done();
-      });
-    });
-
-    it('creates nested directories if necessary', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        expect('a/b/c').toBeDirectory();
-      };
-
-      // SYNC
-      preparations();
+    it('sync', function () {
       jetpack.dir('a/b/c');
       expectations();
+    });
 
-      // ASYNC
-      preparations();
+    it('async', function (done) {
       jetpack.dirAsync('a/b/c')
       .then(function () {
         expectations();
@@ -80,22 +72,24 @@ describe('dir |', function () {
     });
   });
 
-  describe('ensures dir empty |', function () {
-    it('not bothers about emptiness if not specified', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-        fse.mkdirsSync('a/b');
-      };
-      var expectations = function () {
-        expect('a/b').toExist();
-      };
+  describe("doesn't touch directory content by default", function () {
+    var preparations = function () {
+      fse.mkdirsSync('a/b');
+      fse.outputFileSync('a/c.txt', 'abc');
+    };
 
-      // SYNC
+    var expectations = function () {
+      path('a/b').shouldBeDirectory();
+      path('a/c.txt').shouldBeFileWithContent('abc');
+    };
+
+    it('sync', function () {
       preparations();
       jetpack.dir('a');
       expectations();
+    });
 
-      // ASYNC
+    it('async', function (done) {
       preparations();
       jetpack.dirAsync('a')
       .then(function () {
@@ -103,23 +97,25 @@ describe('dir |', function () {
         done();
       });
     });
+  });
 
-    it('makes dir empty', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-        fse.outputFileSync('a/b/file.txt', 'abc');
-      };
-      var expectations = function () {
-        expect('a/b/file.txt').not.toExist();
-        expect('a').toExist();
-      };
+  describe('makes directory empty if that option specified', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/b/file.txt', 'abc');
+    };
 
-      // SYNC
+    var expectations = function () {
+      path('a/b/file.txt').shouldNotExist();
+      path('a').shouldBeDirectory();
+    };
+
+    it('sync', function () {
       preparations();
       jetpack.dir('a', { empty: true });
       expectations();
+    });
 
-      // ASYNC
+    it('async', function (done) {
       preparations();
       jetpack.dirAsync('a', { empty: true })
       .then(function () {
@@ -129,212 +125,194 @@ describe('dir |', function () {
     });
   });
 
-  it('halts if given path is something other than directory', function (done) {
+  describe('throws if given path is something other than directory', function () {
+    var preparations = function () {
+      fse.outputFileSync('a', 'abc');
+    };
+
     var expectations = function (err) {
-      expect(err.message).toContain('exists but is not a directory.');
+      expect(err.message).to.have.string('exists but is not a directory');
     };
 
-    fse.outputFileSync('a', 'abc');
+    it('sync', function () {
+      preparations();
+      try {
+        jetpack.dir('a');
+        throw new Error('Expected error to be thrown');
+      } catch (err) {
+        expectations(err);
+      }
+    });
 
-    // SYNC
-    try {
-      jetpack.dir('a');
-      throw new Error('to make sure this code throws');
-    } catch (err) {
-      expectations(err);
-    }
-
-    // ASYNC
-    jetpack.dirAsync('a')
-    .catch(function (err) {
-      expectations(err);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.dirAsync('a')
+      .catch(function (err) {
+        expectations(err);
+        done();
+      });
     });
   });
 
-  it('respects internal CWD of jetpack instance', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-    };
+  describe('respects internal CWD of jetpack instance', function () {
     var expectations = function () {
-      expect('a/b').toBeDirectory();
+      path('a/b').shouldBeDirectory();
     };
 
-    var jetContext = jetpack.cwd('a');
-
-    // SYNC
-    preparations();
-    jetContext.dir('b');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetContext.dirAsync('b')
-    .then(function () {
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      jetContext.dir('b');
       expectations();
-      done();
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      jetContext.dirAsync('b')
+      .then(function () {
+        expectations();
+        done();
+      });
     });
   });
 
-  it('returns jetack instance pointing on this directory', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-    };
+  describe('returns jetack instance pointing on this directory', function () {
     var expectations = function (jetpackContext) {
-      expect(jetpackContext.cwd()).toBe(pathUtil.resolve('a'));
+      expect(jetpackContext.cwd()).to.equal(pathUtil.resolve('a'));
     };
 
-    // SYNC
-    preparations();
-    expectations(jetpack.dir('a'));
-
-    // ASYNC
-    preparations();
-    jetpack.dirAsync('a')
-    .then(function (jetpackContext) {
-      expectations(jetpackContext);
-      done();
+    it('sync', function () {
+      expectations(jetpack.dir('a'));
     });
-  });
 
-  describe('windows specyfic |', function () {
-    if (process.platform !== 'win32') {
-      return;
-    }
-
-    it('specyfying mode have no effect, and throws no error', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        expect('x').toBeDirectory();
-      };
-
-      // SYNC
-      preparations();
-      jetpack.dir('x', { mode: '511' });
-      expectations();
-
-      // ASYNC
-      preparations();
-      jetpack.dirAsync('x', { mode: '511' })
-      .then(function () {
-        expectations();
+    it('async', function (done) {
+      jetpack.dirAsync('a')
+      .then(function (jetpackContext) {
+        expectations(jetpackContext);
         done();
       });
     });
   });
 
-  describe('*nix specyfic |', function () {
-    if (process.platform === 'win32') {
-      return;
-    }
 
-    // Tests assume umask is not greater than 022
-
-    it('sets mode to newly created directory', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
+  if (process.platform !== 'win32') {
+    describe('sets mode to newly created directory (unix only)', function () {
       var expectations = function () {
-        expect('a').toHaveMode('511');
+        path('a').shouldHaveMode('511');
       };
 
-      // SYNC
-      // mode as a string
-      preparations();
-      jetpack.dir('a', { mode: '511' });
-      expectations();
-
-      // mode as a number
-      preparations();
-      jetpack.dir('a', { mode: parseInt('511', 8) });
-      expectations();
-
-      // ASYNC
-      // mode as a string
-      preparations();
-      jetpack.dirAsync('a', { mode: '511' })
-      .then(function () {
+      it('sync, mode passed as string', function () {
+        jetpack.dir('a', { mode: '511' });
         expectations();
+      });
 
-        // mode as a number
-        preparations();
-        return jetpack.dirAsync('a', { mode: parseInt('511', 8) });
-      })
-      .then(function () {
+      it('sync, mode passed as number', function () {
+        jetpack.dir('a', { mode: parseInt('511', 8) });
         expectations();
-        done();
+      });
+
+      it('async, mode passed as string', function (done) {
+        jetpack.dirAsync('a', { mode: '511' })
+        .then(function () {
+          expectations();
+          done();
+        });
+      });
+
+      it('async, mode passed as number', function (done) {
+        jetpack.dirAsync('a', { mode: parseInt('511', 8) })
+        .then(function () {
+          expectations();
+          done();
+        });
       });
     });
 
-    it('sets that mode to every created directory', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
+    describe('sets desired mode to every created directory (unix only)', function () {
       var expectations = function () {
-        expect('a').toHaveMode('711');
-        expect('a/b').toHaveMode('711');
+        path('a').shouldHaveMode('711');
+        path('a/b').shouldHaveMode('711');
       };
 
-      // SYNC
-      preparations();
-      jetpack.dir('a/b', { mode: '711' });
-      expectations();
-
-      // ASYNC
-      preparations();
-      jetpack.dirAsync('a/b', { mode: '711' })
-      .then(function () {
+      it('sync', function () {
+        jetpack.dir('a/b', { mode: '711' });
         expectations();
-        done();
+      });
+
+      it('async', function (done) {
+        jetpack.dirAsync('a/b', { mode: '711' })
+        .then(function () {
+          expectations();
+          done();
+        });
       });
     });
 
-    it('changes mode of existing directory to desired', function (done) {
+    describe('changes mode of existing directory to desired (unix only)', function () {
       var preparations = function () {
-        helper.clearWorkingDir();
         fse.mkdirSync('a', '777');
       };
       var expectations = function () {
-        expect('a').toHaveMode('511');
+        path('a').shouldHaveMode('511');
       };
 
-      // SYNC
-      preparations();
-      jetpack.dir('a', { mode: '511' });
-      expectations();
-
-      // ASYNC
-      preparations();
-      jetpack.dirAsync('a', { mode: '511' })
-      .then(function () {
+      it('sync', function () {
+        preparations();
+        jetpack.dir('a', { mode: '511' });
         expectations();
-        done();
+      });
+
+      it('async', function (done) {
+        preparations();
+        jetpack.dirAsync('a', { mode: '511' })
+        .then(function () {
+          expectations();
+          done();
+        });
       });
     });
 
-    it('leaves mode of directory intact if this option was not specified', function (done) {
+    describe('leaves mode of directory intact by default (unix only)', function () {
       var preparations = function () {
-        helper.clearWorkingDir();
         fse.mkdirSync('a', '700');
       };
+
       var expectations = function () {
-        expect('a').toHaveMode('700');
+        path('a').shouldHaveMode('700');
       };
 
-      // SYNC
-      preparations();
-      jetpack.dir('a');
-      expectations();
-
-      // ASYNC
-      preparations();
-      jetpack.dirAsync('a')
-      .then(function () {
+      it('sync', function () {
+        preparations();
+        jetpack.dir('a');
         expectations();
-        done();
+      });
+
+      it('async', function (done) {
+        preparations();
+        jetpack.dirAsync('a')
+        .then(function () {
+          expectations();
+          done();
+        });
       });
     });
-  });
+  } else {
+    describe('specyfying mode have no effect and throws no error (windows only)', function () {
+      var expectations = function () {
+        path('x').shouldBeDirectory();
+      };
+
+      it('sync', function () {
+        jetpack.dir('x', { mode: '511' });
+        expectations();
+      });
+
+      it('async', function (done) {
+        jetpack.dirAsync('x', { mode: '511' })
+        .then(function () {
+          expectations();
+          done();
+        });
+      });
+    });
+  }
 });

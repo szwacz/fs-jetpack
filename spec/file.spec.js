@@ -1,164 +1,147 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var path = require('./path_assertions');
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('file |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('file', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  describe('ensure file exists |', function () {
-    it("file doesn't exist before call", function (done) {
-      var prepartions = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        expect('file.txt').toBeFileWithContent('');
-      };
+  describe("creates file if it doesn't exist", function () {
+    var expectations = function () {
+      path('file.txt').shouldBeFileWithContent('');
+    };
 
-      // SYNC
-      prepartions();
+    it('sync', function () {
       jetpack.file('file.txt');
       expectations();
-
-      // ASYNC
-      prepartions();
-      jetpack.fileAsync('file.txt')
-      .then(function () {
-        expectations();
-        done();
-      });
     });
 
-    it('file already exists', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-        fse.outputFileSync('file.txt', 'abc');
-      };
-      var expectations = function () {
-        expect('file.txt').toBeFileWithContent('abc');
-      };
-
-      // SYNC
-      preparations();
-      jetpack.file('file.txt');
-      expectations();
-
-      // ASYNC
-      preparations();
+    it('async', function (done) {
       jetpack.fileAsync('file.txt')
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
   });
 
-  describe('ensures file content |', function () {
-    it('from string', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        expect('file.txt').toBeFileWithContent('ąbć');
-      };
+  describe('leaves file intact if it already exists', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.txt', 'abc');
+    };
 
-      // SYNC
+    var expectations = function () {
+      path('file.txt').shouldBeFileWithContent('abc');
+    };
+
+    it('sync', function () {
       preparations();
+      jetpack.file('file.txt');
+      expectations();
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.fileAsync('file.txt')
+      .then(function () {
+        expectations();
+        done();
+      })
+      .catch(done);
+    });
+  });
+
+  describe('can save file content given as string', function () {
+    var expectations = function () {
+      path('file.txt').shouldBeFileWithContent('ąbć');
+    };
+
+    it('sync', function () {
       jetpack.file('file.txt', { content: 'ąbć' });
       expectations();
+    });
 
-      // ASYNC
-      preparations();
+    it('async', function (done) {
       jetpack.fileAsync('file.txt', { content: 'ąbć' })
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
+  });
 
-    it('from buffer', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        var buf = fse.readFileSync('file');
-        expect(buf[0]).toBe(11);
-        expect(buf[1]).toBe(22);
-        expect(buf.length).toBe(2);
-      };
+  describe('can save file content given as buffer', function () {
+    var expectations = function () {
+      path('file').shouldBeFileWithContent(new Buffer([11, 22]));
+    };
 
-      // SYNC
-      preparations();
+    it('sync', function () {
       jetpack.file('file', { content: new Buffer([11, 22]) });
       expectations();
+    });
 
-      // ASYNC
-      preparations();
+    it('async', function (done) {
       jetpack.fileAsync('file', { content: new Buffer([11, 22]) })
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
+  });
 
-    it('from object (json)', function (done) {
-      var obj = {
-        a: 'abc',
-        b: 123
-      };
+  describe('can save file content given as plain JS object (will be saved as JSON)', function () {
+    var obj = {
+      a: 'abc',
+      b: 123
+    };
 
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        var data = JSON.parse(fse.readFileSync('file.txt', 'utf8'));
-        expect(data).toEqual(obj);
-      };
+    var expectations = function () {
+      var data = JSON.parse(fse.readFileSync('file.txt', 'utf8'));
+      expect(data).to.eql(obj);
+    };
 
-      // SYNC
-      preparations();
+    it('sync', function () {
       jetpack.file('file.txt', { content: obj });
       expectations();
+    });
 
-      // ASYNC
-      preparations();
+    it('async', function (done) {
       jetpack.fileAsync('file.txt', { content: obj })
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
+  });
 
-    it('written JSON data can be indented', function (done) {
-      var obj = {
-        a: 'abc',
-        b: 123
-      };
+  describe('written JSON data can be indented', function () {
+    var obj = {
+      a: 'abc',
+      b: 123
+    };
 
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        var sizeA = fse.statSync('a.json').size;
-        var sizeB = fse.statSync('b.json').size;
-        var sizeC = fse.statSync('c.json').size;
-        expect(sizeB).toBeGreaterThan(sizeA);
-        expect(sizeC).toBeGreaterThan(sizeB);
-      };
+    var expectations = function () {
+      var sizeA = fse.statSync('a.json').size;
+      var sizeB = fse.statSync('b.json').size;
+      var sizeC = fse.statSync('c.json').size;
+      expect(sizeB).to.be.above(sizeA);
+      expect(sizeC).to.be.above(sizeB);
+    };
 
-      // SYNC
-      preparations();
+    it('sync', function () {
       jetpack.file('a.json', { content: obj, jsonIndent: 0 });
       jetpack.file('b.json', { content: obj }); // Default indent = 2
       jetpack.file('c.json', { content: obj, jsonIndent: 4 });
       expectations();
+    });
 
-      // ASYNC
-      preparations();
+    it('async', function (done) {
       jetpack.fileAsync('a.json', { content: obj, jsonIndent: 0 })
       .then(function () {
         return jetpack.fileAsync('b.json', { content: obj }); // Default indent = 2
@@ -169,240 +152,243 @@ describe('file |', function () {
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
+  });
 
-    it('replaces content of already existing file', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-        fse.writeFileSync('file.txt', 'abc');
-      };
-      var expectations = function () {
-        expect('file.txt').toBeFileWithContent('123');
-      };
+  describe('replaces content of already existing file', function () {
+    var preparations = function () {
+      fse.writeFileSync('file.txt', 'abc');
+    };
 
-      // SYNC
+    var expectations = function () {
+      path('file.txt').shouldBeFileWithContent('123');
+    };
+
+    it('sync', function () {
       preparations();
       jetpack.file('file.txt', { content: '123' });
       expectations();
+    });
 
-      // ASYNC
+    it('async', function (done) {
       preparations();
       jetpack.fileAsync('file.txt', { content: '123' })
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
   });
 
-  it('halts if given path is not a file', function (done) {
+  describe('throws if given path is not a file', function () {
+    var preparations = function () {
+      fse.mkdirsSync('a');
+    };
+
     var expectations = function (err) {
-      expect(err.message).toContain('exists but is not a file.');
+      expect(err.message).to.have.string('exists but is not a file.');
     };
 
-    fse.mkdirsSync('a');
-
-    // SYNC
-    try {
-      jetpack.file('a');
-    } catch (err) {
-      expectations(err);
-    }
-
-    // ASYNC
-    jetpack.fileAsync('a')
-    .catch(function (err) {
-      expectations(err);
-      done();
+    it('sync', function () {
+      preparations();
+      try {
+        jetpack.file('a');
+        throw new Error('Expected error to be thrown');
+      } catch (err) {
+        expectations(err);
+      }
     });
-  });
 
-  it("if directory for file doesn't exist creates it too", function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-    };
-    var expectations = function () {
-      expect('a/b/c.txt').toBeFileWithContent('');
-    };
-
-    // SYNC
-    preparations();
-    jetpack.file('a/b/c.txt');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetpack.fileAsync('a/b/c.txt')
-    .then(function () {
-      expectations();
-      done();
-    });
-  });
-
-  it('returns currently used jetpack instance', function (done) {
-    // SYNC
-    expect(jetpack.file('file.txt')).toBe(jetpack);
-
-    // ASYNC
-    jetpack.fileAsync('file.txt')
-    .then(function (jetpackContext) {
-      expect(jetpackContext).toBe(jetpack);
-      done();
-    });
-  });
-
-  it('respects internal CWD of jetpack instance', function (done) {
-    var preparations = function () {
-      helper.clearWorkingDir();
-    };
-    var expectations = function () {
-      expect('a/b.txt').toBeFileWithContent('');
-    };
-
-    var jetContext = jetpack.cwd('a');
-
-    // SYNC
-    preparations();
-    jetContext.file('b.txt');
-    expectations();
-
-    // ASYNC
-    preparations();
-    jetContext.fileAsync('b.txt')
-    .then(function () {
-      expectations();
-      done();
-    });
-  });
-
-  describe('windows specyfic |', function () {
-    if (process.platform !== 'win32') {
-      return;
-    }
-
-    it('specyfying mode should have no effect, and throw no error', function (done) {
-      // SYNC
-      jetpack.file('file.txt', { mode: '511' });
-
-      helper.clearWorkingDir();
-
-      // ASYNC
-      jetpack.fileAsync('file.txt', { mode: '511' })
-      .then(function () {
+    it('async', function (done) {
+      preparations();
+      jetpack.fileAsync('a')
+      .catch(function (err) {
+        expectations(err);
         done();
-      });
-    });
-  });
-
-  describe('*nix specyfic |', function () {
-    if (process.platform === 'win32') {
-      return;
-    }
-
-    // Tests assume umask is not greater than 022
-
-    it('sets mode of newly created file', function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-      };
-      var expectations = function () {
-        expect('file.txt').toHaveMode('511');
-      };
-
-      // SYNC
-      // mode as string
-      preparations();
-      jetpack.file('file.txt', { mode: '511' });
-      expectations();
-
-      // mode as number
-      preparations();
-      jetpack.file('file.txt', { mode: parseInt('511', 8) });
-      expectations();
-
-      // AYNC
-      // mode as string
-      preparations();
-      jetpack.fileAsync('file.txt', { mode: '511' })
-      .then(function () {
-        expectations();
-
-        // mode as number
-        preparations();
-        return jetpack.fileAsync('file.txt', { mode: parseInt('511', 8) });
       })
+      .catch(done);
+    });
+  });
+
+  describe("if directory for file doesn't exist creates it as well", function () {
+    var expectations = function () {
+      path('a/b/c.txt').shouldBeFileWithContent('');
+    };
+
+    it('sync', function () {
+      jetpack.file('a/b/c.txt');
+      expectations();
+    });
+
+    it('async', function (done) {
+      jetpack.fileAsync('a/b/c.txt')
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
+    });
+  });
+
+  describe('returns currently used jetpack instance', function () {
+    var expectations = function (jetpackContext) {
+      expect(jetpackContext).to.equal(jetpack);
+    };
+
+    it('sync', function () {
+      expectations(jetpack.file('file.txt'));
     });
 
-    it("changes mode of existing file if doesn't match", function (done) {
-      var preparations = function () {
-        helper.clearWorkingDir();
-        fse.writeFileSync('file.txt', 'abc', { mode: '700' });
-      };
-      var expectations = function () {
-        expect('file.txt').toHaveMode('511');
-      };
-
-      // SYNC
-      preparations();
-      jetpack.file('file.txt', { mode: '511' });
-      expectations();
-
-      // ASYNC
-      preparations();
-      jetpack.fileAsync('file.txt', { mode: '511' })
-      .then(function () {
-        expectations();
-        done();
-      });
-    });
-
-    it('leaves mode of file intact if not explicitly specified', function (done) {
-      var preparations = function () {
-        fse.writeFileSync('file.txt', 'abc', { mode: '700' });
-      };
-      var expectations = function () {
-        expect('file.txt').toHaveMode('700');
-      };
-
-      preparations();
-
-      // SYNC
-      // ensure exists
-      jetpack.file('file.txt');
-      expectations();
-
-      // make file empty
-      jetpack.file('file.txt', { empty: true });
-      expectations();
-
-      // set file content
-      jetpack.file('file.txt', { content: '123' });
-      expectations();
-
-      // AYNC
-      // ensure exists
+    it('async', function (done) {
       jetpack.fileAsync('file.txt')
-      .then(function () {
-        expectations();
-
-        // make file empty
-        return jetpack.fileAsync('file.txt', { empty: true });
+      .then(function (jetpackContext) {
+        expectations(jetpackContext);
+        done();
       })
-      .then(function () {
-        expectations();
+      .catch(done);
+    });
+  });
 
-        // set file content
-        return jetpack.fileAsync('file.txt', { content: '123' });
-      })
+  describe('respects internal CWD of jetpack instance', function () {
+    var expectations = function () {
+      path('a/b.txt').shouldBeFileWithContent('');
+    };
+
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      jetContext.file('b.txt');
+      expectations();
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      jetContext.fileAsync('b.txt')
       .then(function () {
         expectations();
         done();
-      });
+      })
+      .catch(done);
     });
   });
+
+  if (process.platform !== 'win32') {
+    describe('sets mode of newly created file (unix only)', function () {
+      var expectations = function () {
+        path('file.txt').shouldHaveMode('711');
+      };
+
+      it('sync, mode passed as string', function () {
+        jetpack.file('file.txt', { mode: '711' });
+        expectations();
+      });
+
+      it('sync, mode passed as number', function () {
+        jetpack.file('file.txt', { mode: parseInt('711', 8) });
+        expectations();
+      });
+
+      it('async, mode passed as string', function (done) {
+        jetpack.fileAsync('file.txt', { mode: '711' })
+        .then(function () {
+          expectations();
+          done();
+        })
+        .catch(done);
+      });
+
+      it('async, mode passed as number', function (done) {
+        jetpack.fileAsync('file.txt', { mode: parseInt('711', 8) })
+        .then(function () {
+          expectations();
+          done();
+        })
+        .catch(done);
+      });
+    });
+
+    describe("changes mode of existing file if it doesn't match (unix only)", function () {
+      var preparations = function () {
+        fse.writeFileSync('file.txt', 'abc', { mode: '700' });
+      };
+
+      var expectations = function () {
+        path('file.txt').shouldHaveMode('511');
+      };
+
+      it('sync', function () {
+        preparations();
+        jetpack.file('file.txt', { mode: '511' });
+        expectations();
+      });
+
+      it('async', function (done) {
+        preparations();
+        jetpack.fileAsync('file.txt', { mode: '511' })
+        .then(function () {
+          expectations();
+          done();
+        })
+        .catch(done);
+      });
+    });
+
+    describe('leaves mode of file intact if not explicitly specified (unix only)', function () {
+      var preparations = function () {
+        fse.writeFileSync('file.txt', 'abc', { mode: '700' });
+      };
+
+      var expectations = function () {
+        path('file.txt').shouldHaveMode('700');
+      };
+
+      it('sync, ensure exists', function () {
+        preparations();
+        jetpack.file('file.txt');
+        expectations();
+      });
+
+      it('sync, ensure content', function () {
+        preparations();
+        jetpack.file('file.txt', { content: 'abc' });
+        expectations();
+      });
+
+      it('async, ensure exists', function (done) {
+        preparations();
+        jetpack.fileAsync('file.txt')
+        .then(function () {
+          expectations();
+          done();
+        })
+        .catch(done);
+      });
+
+      it('async, ensure content', function (done) {
+        preparations();
+        jetpack.fileAsync('file.txt', { content: 'abc' })
+        .then(function () {
+          expectations();
+          done();
+        })
+        .catch(done);
+      });
+    });
+  } else {
+    describe('specyfying mode have no effect and throws no error (windows only)', function () {
+      it('sync', function () {
+        jetpack.file('file.txt', { mode: '711' });
+      });
+
+      it('async', function (done) {
+        jetpack.fileAsync('file.txt', { mode: '711' })
+        .then(function () {
+          done();
+        })
+        .catch(done);
+      });
+    });
+  }
 });

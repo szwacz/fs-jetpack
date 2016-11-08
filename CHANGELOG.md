@@ -1,3 +1,13 @@
+0.10.1 (2016-11-01)
+-------------------
+* Bugfixed case when `copyAsync()` was leaving open read stream if write stream errored.
+* Tests ported from jasmine to mocha.
+
+0.10.0 (2016-10-17)
+-------------------
+* `copyAsync()` uses only streams (much more memory efficient).
+* `find()` supports `recursive` option.
+
 0.9.2 (2016-06-27)
 -------------------
 * Updated third party dependencies to quell minimatch intallation warnings.

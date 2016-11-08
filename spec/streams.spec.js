@@ -1,14 +1,11 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var path = require('./path_assertions');
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('streams |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('streams', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
   it('exposes vanilla stream methods', function (done) {
     var input;
@@ -19,7 +16,7 @@ describe('streams |', function () {
     input = jetpack.createReadStream('a.txt');
     output = jetpack.createWriteStream('b.txt');
     output.on('finish', function () {
-      expect('b.txt').toBeFileWithContent('abc');
+      path('b.txt').shouldBeFileWithContent('abc');
       done();
     });
     input.pipe(output);
@@ -36,7 +33,7 @@ describe('streams |', function () {
     input = dir.createReadStream('a.txt');
     output = dir.createWriteStream('b.txt');
     output.on('finish', function () {
-      expect('dir/b.txt').toBeFileWithContent('abc');
+      path('dir/b.txt').shouldBeFileWithContent('abc');
       done();
     });
     input.pipe(output);

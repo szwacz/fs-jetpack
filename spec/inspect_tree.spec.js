@@ -1,18 +1,20 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('inspectTree |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('inspectTree', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it('inspects whole tree of files', function (done) {
+  describe('inspects whole tree of files', function () {
+    var preparations = function () {
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.outputFileSync('dir/subdir/file.txt', 'defg');
+    };
+
     var expectations = function (data) {
-      expect(data).toEqual({
+      expect(data).to.eql({
         name: 'dir',
         type: 'dir',
         size: 7,
@@ -37,53 +39,64 @@ describe('inspectTree |', function () {
       });
     };
 
-    fse.outputFileSync('dir/file.txt', 'abc');
-    fse.outputFileSync('dir/subdir/file.txt', 'defg');
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('dir'));
+    });
 
-    // SYNC
-    expectations(jetpack.inspectTree('dir'));
-
-    // ASYNC
-    jetpack.inspectTreeAsync('dir')
-    .then(function (tree) {
-      expectations(tree);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('dir')
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
     });
   });
 
-  it('can calculate size of a whole tree', function (done) {
-    var expectations = function (data) {
-      // dir
-      expect(data.size).toBe(7);
-      // dir/empty
-      expect(data.children[0].size).toBe(0);
-      // dir/empty.txt
-      expect(data.children[1].size).toBe(0);
-      // dir/file.txt
-      expect(data.children[2].size).toBe(3);
-      // dir/subdir
-      expect(data.children[3].size).toBe(4);
-      // dir/subdir/file.txt
-      expect(data.children[3].children[0].size).toBe(4);
+  describe('can calculate size of a whole tree', function () {
+    var preparations = function () {
+      fse.mkdirsSync('dir/empty');
+      fse.outputFileSync('dir/empty.txt', '');
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.outputFileSync('dir/subdir/file.txt', 'defg');
     };
 
-    fse.mkdirsSync('dir/empty');
-    fse.outputFileSync('dir/empty.txt', '');
-    fse.outputFileSync('dir/file.txt', 'abc');
-    fse.outputFileSync('dir/subdir/file.txt', 'defg');
+    var expectations = function (data) {
+      // dir
+      expect(data.size).to.equal(7);
+      // dir/empty
+      expect(data.children[0].size).to.equal(0);
+      // dir/empty.txt
+      expect(data.children[1].size).to.equal(0);
+      // dir/file.txt
+      expect(data.children[2].size).to.equal(3);
+      // dir/subdir
+      expect(data.children[3].size).to.equal(4);
+      // dir/subdir/file.txt
+      expect(data.children[3].children[0].size).to.equal(4);
+    };
 
-    // SYNC
-    expectations(jetpack.inspectTree('dir'));
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('dir'));
+    });
 
-    // ASYNC
-    jetpack.inspectTreeAsync('dir')
-    .then(function (tree) {
-      expectations(tree);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('dir')
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
     });
   });
 
-  it('can output relative path for every tree node', function (done) {
+  describe('can output relative path for every tree node', function () {
+    var preparations = function () {
+      fse.outputFileSync('dir/subdir/file.txt', 'defg');
+    };
+
     var expectations = function (data) {
       // data will look like...
       // {
@@ -102,49 +115,61 @@ describe('inspectTree |', function () {
       //     }
       //   ]
       // }
-      expect(data.relativePath).toBe('.');
-      expect(data.children[0].relativePath).toBe('./subdir');
-      expect(data.children[0].children[0].relativePath).toBe('./subdir/file.txt');
+      expect(data.relativePath).to.equal('.');
+      expect(data.children[0].relativePath).to.equal('./subdir');
+      expect(data.children[0].children[0].relativePath).to.equal('./subdir/file.txt');
     };
 
-    fse.outputFileSync('dir/subdir/file.txt', 'defg');
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('dir', { relativePath: true }));
+    });
 
-    // SYNC
-    expectations(jetpack.inspectTree('dir', { relativePath: true }));
-
-    // ASYNC
-    jetpack.inspectTreeAsync('dir', { relativePath: true })
-    .then(function (tree) {
-      expectations(tree);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('dir', { relativePath: true })
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
     });
   });
 
-  it('if given path is a file still works OK', function (done) {
+  describe('if given path is a file just inspects that file', function () {
+    var preparations = function () {
+      fse.outputFileSync('dir/file.txt', 'abc');
+    };
+
     var expectations = function (data) {
-      expect(data).toEqual({
+      expect(data).to.eql({
         name: 'file.txt',
         type: 'file',
         size: 3
       });
     };
 
-    fse.outputFileSync('dir/file.txt', 'abc');
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('dir/file.txt'));
+    });
 
-    // SYNC
-    expectations(jetpack.inspectTree('dir/file.txt'));
-
-    // ASYNC
-    jetpack.inspectTreeAsync('dir/file.txt')
-    .then(function (tree) {
-      expectations(tree);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('dir/file.txt')
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
     });
   });
 
-  it('deals ok with empty directory', function (done) {
+  describe('behaves ok with empty directory', function () {
+    var preparations = function () {
+      fse.mkdirsSync('empty');
+    };
+
     var expectations = function (data) {
-      expect(data).toEqual({
+      expect(data).to.eql({
         name: 'empty',
         type: 'dir',
         size: 0,
@@ -152,86 +177,154 @@ describe('inspectTree |', function () {
       });
     };
 
-    fse.mkdirsSync('empty');
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('empty'));
+    });
 
-    // SYNC
-    expectations(jetpack.inspectTree('empty'));
-
-    // ASYNC
-    jetpack.inspectTreeAsync('empty')
-    .then(function (tree) {
-      expectations(tree);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('empty')
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
     });
   });
 
-  it("returns undefined if path doesn't exist", function (done) {
+  describe("returns undefined if path doesn't exist", function () {
     var expectations = function (data) {
-      expect(data).toBe(undefined);
+      expect(data).to.equal(undefined);
     };
 
-    // SYNC
-    expectations(jetpack.inspectTree('nonexistent'));
+    it('sync', function () {
+      expectations(jetpack.inspectTree('nonexistent'));
+    });
 
-    // ASYNC
-    jetpack.inspectTreeAsync('nonexistent')
-    .then(function (dataAsync) {
-      expectations(dataAsync);
-      done();
+    it('async', function (done) {
+      jetpack.inspectTreeAsync('nonexistent')
+      .then(function (dataAsync) {
+        expectations(dataAsync);
+        done();
+      });
     });
   });
 
-  it('respects internal CWD of jetpack instance', function (done) {
-    var expectations = function (data) {
-      expect(data.name).toBe('b.txt');
+  describe('respects internal CWD of jetpack instance', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/b.txt', 'abc');
     };
 
-    var jetContext = jetpack.cwd('a');
+    var expectations = function (data) {
+      expect(data.name).to.equal('b.txt');
+    };
 
-    fse.outputFileSync('a/b.txt', 'abc');
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      expectations(jetContext.inspectTree('b.txt'));
+    });
 
-    // SYNC
-    expectations(jetContext.inspectTree('b.txt'));
-
-    // ASYNC
-    jetContext.inspectTreeAsync('b.txt')
-    .then(function (data) {
-      expectations(data);
-      done();
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.inspectTreeAsync('b.txt')
+      .then(function (data) {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  describe('*nix specific', function () {
-    if (process.platform === 'win32') {
-      return;
-    }
-
-    it('can deal with symlink', function (done) {
-      var expectations = function (tree) {
-        expect(tree).toEqual({
-          name: 'dir',
-          type: 'dir',
-          size: 3,
-          children: [{
-            name: 'file.txt',
-            type: 'file',
-            size: 3
-          }, {
-            name: 'symlinked_file.txt',
-            type: 'symlink',
-            pointsAt: 'dir/file.txt'
-          }]
-        });
-      };
-
+  describe('can inspect symlink', function () {
+    var preparations = function () {
       fse.outputFileSync('dir/file.txt', 'abc');
       fse.symlinkSync('dir/file.txt', 'dir/symlinked_file.txt');
+    };
 
-      // SYNC
+    var expectations = function (tree) {
+      expect(tree).to.eql({
+        name: 'dir',
+        type: 'dir',
+        size: 3,
+        children: [{
+          name: 'file.txt',
+          type: 'file',
+          size: 3
+        }, {
+          name: 'symlinked_file.txt',
+          type: 'symlink',
+          pointsAt: helper.osSep('dir/file.txt')
+        }]
+      });
+    };
+
+    it('sync', function () {
+      preparations();
       expectations(jetpack.inspectTree('dir'));
+    });
 
-      // ASYNC
+    it('async', function (done) {
+      preparations();
       jetpack.inspectTreeAsync('dir')
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
+    });
+  });
+
+  describe('can compute checksum of a whole tree', function () {
+    var preparations = function () {
+      fse.outputFileSync('dir/a.txt', 'abc');
+      fse.outputFileSync('dir/b.txt', 'defg');
+    };
+
+    var expectations = function (data) {
+      // md5 of
+      // 'a.txt' + '900150983cd24fb0d6963f7d28e17f72' +
+      // 'b.txt' + '025e4da7edac35ede583f5e8d51aa7ec'
+      expect(data.md5).to.equal('b0ff9df854172efe752cb36b96c8bccd');
+      // md5 of 'abc'
+      expect(data.children[0].md5).to.equal('900150983cd24fb0d6963f7d28e17f72');
+      // md5 of 'defg'
+      expect(data.children[1].md5).to.equal('025e4da7edac35ede583f5e8d51aa7ec');
+    };
+
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('dir', { checksum: 'md5' }));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('dir', { checksum: 'md5' })
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      });
+    });
+  });
+
+  describe('can count checksum of empty directory', function () {
+    var preparations = function () {
+      fse.mkdirsSync('empty_dir');
+    };
+
+    var expectations = function (data) {
+      // md5 of empty string
+      expect(data.md5).to.equal('d41d8cd98f00b204e9800998ecf8427e');
+    };
+
+    // SYNC
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('empty_dir', { checksum: 'md5' }));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('empty_dir', { checksum: 'md5' })
       .then(function (tree) {
         expectations(tree);
         done();

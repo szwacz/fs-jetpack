@@ -1,166 +1,177 @@
-/* eslint-env jasmine */
 /* eslint no-console:0 */
 
-'use strict';
-
-var pathUtil = require('path');
 var fse = require('fs-extra');
-var helper = require('../support/spec_helper');
+var pathUtil = require('path');
+var expect = require('chai').expect;
+var helper = require('../helper');
 var walker = require('../../lib/utils/tree_walker');
 
-describe('tree walker |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('tree walker', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it('inspects all files and folders recursively and returns them one by one', function (done) {
-    var syncData = [];
-    var streamData = [];
-    var st;
-    var absoluteStartingPath = pathUtil.resolve('a');
-
-    var expectations = function (data) {
-      expect(data[0]).toEqual({
-        path: pathUtil.resolve('a'),
-        item: {
-          type: 'dir',
-          name: 'a'
-        }
-      });
-      expect(data[1]).toEqual({
-        path: pathUtil.resolve('a/a.txt'),
-        item: {
-          type: 'file',
-          name: 'a.txt',
-          size: 1
-        }
-      });
-      expect(data[2]).toEqual({
-        path: pathUtil.resolve('a/b'),
-        item: {
-          type: 'dir',
-          name: 'b'
-        }
-      });
-      expect(data[3]).toEqual({
-        path: pathUtil.resolve('a/b/c'),
-        item: {
-          type: 'dir',
-          name: 'c'
-        }
-      });
-      expect(data[4]).toEqual({
-        path: pathUtil.resolve('a/b/z1.txt'),
-        item: {
-          type: 'file',
-          name: 'z1.txt',
-          size: 2
-        }
-      });
-      expect(data[5]).toEqual({
-        path: pathUtil.resolve('a/b/z2.txt'),
-        item: {
-          type: 'file',
-          name: 'z2.txt',
-          size: 2
-        }
-      });
+  describe('inspects all files and folders recursively and returns them one by one', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/a.txt', 'a');
+      fse.outputFileSync('a/b/z1.txt', 'z1');
+      fse.outputFileSync('a/b/z2.txt', 'z2');
+      fse.mkdirsSync('a/b/c');
     };
 
-    // preparations
-    fse.outputFileSync('a/a.txt', 'a');
-    fse.outputFileSync('a/b/z1.txt', 'z1');
-    fse.outputFileSync('a/b/z2.txt', 'z2');
-    fse.mkdirsSync('a/b/c');
+    var expectations = function (data) {
+      expect(data).to.eql([
+        {
+          path: pathUtil.resolve('a'),
+          item: {
+            type: 'dir',
+            name: 'a'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'a.txt'),
+          item: {
+            type: 'file',
+            name: 'a.txt',
+            size: 1
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b'),
+          item: {
+            type: 'dir',
+            name: 'b'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b', 'c'),
+          item: {
+            type: 'dir',
+            name: 'c'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b', 'z1.txt'),
+          item: {
+            type: 'file',
+            name: 'z1.txt',
+            size: 2
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b', 'z2.txt'),
+          item: {
+            type: 'file',
+            name: 'z2.txt',
+            size: 2
+          }
+        }
+      ]);
+    };
 
-    // SYNC
-    walker.sync(absoluteStartingPath, {}, function (path, item) {
-      syncData.push({ path: path, item: item });
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('a');
+      var data = [];
+      preparations();
+      walker.sync(absoluteStartingPath, {}, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
     });
-    expectations(syncData);
 
-    // ASYNC
-    st = walker.stream(absoluteStartingPath, {})
-    .on('readable', function () {
-      var a = st.read();
-      if (a) {
-        streamData.push(a);
-      }
-    })
-    .on('error', console.error)
-    .on('end', function () {
-      expectations(streamData);
-      done();
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('a');
+      var data = [];
+      var st;
+      preparations();
+      st = walker.stream(absoluteStartingPath, {})
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  it("won't penetrate folder tree deeper than maxLevelsDeep option tells", function (done) {
-    var syncData = [];
-    var streamData = [];
-    var st;
-    var absoluteStartingPath = pathUtil.resolve('a');
+  describe("won't penetrate folder tree deeper than maxLevelsDeep option tells", function () {
     var options = {
       maxLevelsDeep: 1
     };
 
-    var expectations = function (data) {
-      expect(data[0]).toEqual({
-        path: pathUtil.resolve('a'),
-        item: {
-          type: 'dir',
-          name: 'a'
-        }
-      });
-      expect(data[1]).toEqual({
-        path: pathUtil.resolve('a/a.txt'),
-        item: {
-          type: 'file',
-          name: 'a.txt',
-          size: 1
-        }
-      });
-      expect(data[2]).toEqual({
-        path: pathUtil.resolve('a/b'),
-        item: {
-          type: 'dir',
-          name: 'b'
-        }
-      });
-      expect(data[3]).toEqual(undefined); // Shouldn't report file a/b/z1.txt
+    var preparations = function () {
+      fse.outputFileSync('a/a.txt', 'a');
+      fse.outputFileSync('a/b/z1.txt', 'z1');
     };
 
-    // preparations
-    fse.outputFileSync('a/a.txt', 'a');
-    fse.outputFileSync('a/b/z1.txt', 'z1');
+    var expectations = function (data) {
+      expect(data).to.eql([
+        {
+          path: pathUtil.resolve('a'),
+          item: {
+            type: 'dir',
+            name: 'a'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'a.txt'),
+          item: {
+            type: 'file',
+            name: 'a.txt',
+            size: 1
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b'),
+          item: {
+            type: 'dir',
+            name: 'b'
+          }
+        }
+      ]);
+    };
 
-    // SYNC
-    walker.sync(absoluteStartingPath, options, function (path, item) {
-      syncData.push({ path: path, item: item });
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('a');
+      var data = [];
+      preparations();
+      walker.sync(absoluteStartingPath, options, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
     });
-    expectations(syncData);
 
-    // ASYNC
-    st = walker.stream(absoluteStartingPath, options)
-    .on('readable', function () {
-      var a = st.read();
-      if (a) {
-        streamData.push(a);
-      }
-    })
-    .on('error', console.error)
-    .on('end', function () {
-      expectations(streamData);
-      done();
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('a');
+      var data = [];
+      var st;
+      preparations();
+      st = walker.stream(absoluteStartingPath, options)
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  it('will do fine with empty directory as entry point', function (done) {
-    var syncData = [];
-    var streamData = [];
-    var st;
-    var absoluteStartingPath = pathUtil.resolve('abc');
+  describe('will do fine with empty directory as entry point', function () {
+    var preparations = function () {
+      fse.mkdirsSync('abc');
+    };
 
     var expectations = function (data) {
-      expect(data).toEqual([
+      expect(data).to.eql([
         {
           path: pathUtil.resolve('abc'),
           item: {
@@ -171,38 +182,43 @@ describe('tree walker |', function () {
       ]);
     };
 
-    // preparations
-    fse.mkdirsSync('abc');
-
-    // SYNC
-    walker.sync(absoluteStartingPath, {}, function (path, item) {
-      syncData.push({ path: path, item: item });
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('abc');
+      var data = [];
+      preparations();
+      walker.sync(absoluteStartingPath, {}, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
     });
-    expectations(syncData);
 
-    // ASYNC
-    st = walker.stream(absoluteStartingPath, {})
-    .on('readable', function () {
-      var a = st.read();
-      if (a) {
-        streamData.push(a);
-      }
-    })
-    .on('error', console.error)
-    .on('end', function () {
-      expectations(streamData);
-      done();
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('abc');
+      var data = [];
+      var st;
+      preparations();
+      st = walker.stream(absoluteStartingPath, {})
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  it('will do fine with file as entry point', function (done) {
-    var syncData = [];
-    var streamData = [];
-    var st;
-    var absoluteStartingPath = pathUtil.resolve('abc.txt');
+  describe('will do fine with file as entry point', function () {
+    var preparations = function () {
+      fse.outputFileSync('abc.txt', 'abc');
+    };
 
     var expectations = function (data) {
-      expect(data).toEqual([
+      expect(data).to.eql([
         {
           path: pathUtil.resolve('abc.txt'),
           item: {
@@ -214,38 +230,39 @@ describe('tree walker |', function () {
       ]);
     };
 
-    // preparations
-    fse.outputFileSync('abc.txt', 'abc');
-
-    // SYNC
-    walker.sync(absoluteStartingPath, {}, function (path, item) {
-      syncData.push({ path: path, item: item });
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('abc.txt');
+      var data = [];
+      preparations();
+      walker.sync(absoluteStartingPath, {}, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
     });
-    expectations(syncData);
 
-    // ASYNC
-    st = walker.stream(absoluteStartingPath, {})
-    .on('readable', function () {
-      var a = st.read();
-      if (a) {
-        streamData.push(a);
-      }
-    })
-    .on('error', console.error)
-    .on('end', function () {
-      expectations(streamData);
-      done();
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('abc.txt');
+      var data = [];
+      var st;
+      preparations();
+      st = walker.stream(absoluteStartingPath, {})
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  it('will do fine with nonexistent entry point', function (done) {
-    var syncData = [];
-    var streamData = [];
-    var st;
-    var absoluteStartingPath = pathUtil.resolve('abc.txt');
-
+  describe('will do fine with nonexistent entry point', function () {
     var expectations = function (data) {
-      expect(data).toEqual([
+      expect(data).to.eql([
         {
           path: pathUtil.resolve('abc.txt'),
           item: undefined
@@ -253,40 +270,47 @@ describe('tree walker |', function () {
       ]);
     };
 
-    // SYNC
-    walker.sync(absoluteStartingPath, {}, function (path, item) {
-      syncData.push({ path: path, item: item });
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('abc.txt');
+      var data = [];
+      walker.sync(absoluteStartingPath, {}, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
     });
-    expectations(syncData);
 
-    // ASYNC
-    st = walker.stream(absoluteStartingPath, {})
-    .on('readable', function () {
-      var a = st.read();
-      if (a) {
-        streamData.push(a);
-      }
-    })
-    .on('error', console.error)
-    .on('end', function () {
-      expectations(streamData);
-      done();
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('abc.txt');
+      var data = [];
+      var st;
+      st = walker.stream(absoluteStartingPath, {})
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
     });
   });
 
-  it('supports inspect options', function (done) {
-    var syncData = [];
-    var streamData = [];
-    var st;
-    var absoluteStartingPath = pathUtil.resolve('abc');
+  describe('supports inspect options', function () {
     var options = {
       inspectOptions: {
         checksum: 'md5'
       }
     };
 
+    var preparations = function () {
+      fse.outputFileSync('abc/a.txt', 'a');
+    };
+
     var expectations = function (data) {
-      expect(data).toEqual([
+      expect(data).to.eql([
         {
           path: pathUtil.resolve('abc'),
           item: {
@@ -295,7 +319,7 @@ describe('tree walker |', function () {
           }
         },
         {
-          path: pathUtil.resolve('abc/a.txt'),
+          path: pathUtil.resolve('abc', 'a.txt'),
           item: {
             type: 'file',
             name: 'a.txt',
@@ -306,27 +330,33 @@ describe('tree walker |', function () {
       ]);
     };
 
-    // preparations
-    fse.outputFileSync('abc/a.txt', 'a');
-
-    // SYNC
-    walker.sync(absoluteStartingPath, options, function (path, item) {
-      syncData.push({ path: path, item: item });
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('abc');
+      var data = [];
+      preparations();
+      walker.sync(absoluteStartingPath, options, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
     });
-    expectations(syncData);
 
-    // ASYNC
-    st = walker.stream(absoluteStartingPath, options)
-    .on('readable', function () {
-      var a = st.read();
-      if (a) {
-        streamData.push(a);
-      }
-    })
-    .on('error', console.error)
-    .on('end', function () {
-      expectations(streamData);
-      done();
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('abc');
+      var data = [];
+      var st;
+      preparations();
+      st = walker.stream(absoluteStartingPath, options)
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
     });
   });
 });

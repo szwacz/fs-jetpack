@@ -1,208 +1,259 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var Q = require('q');
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var helper = require('./helper');
 var jetpack = require('..');
 
-describe('read |', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+describe('read', function () {
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it('reads file as a string', function (done) {
-    var expectations = function (content) {
-      expect(content).toBe('abc');
+  describe('reads file as a string', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.txt', 'abc');
     };
 
-    fse.outputFileSync('file.txt', 'abc');
+    var expectations = function (content) {
+      expect(content).to.equal('abc');
+    };
 
-    // SYNC
-    expectations(jetpack.read('file.txt')); // defaults to 'utf8'
-    expectations(jetpack.read('file.txt', 'utf8')); // explicitly specified
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.read('file.txt')); // defaults to 'utf8'
+      expectations(jetpack.read('file.txt', 'utf8')); // explicitly specified
+    });
 
-    // ASYNC
-    jetpack.readAsync('file.txt') // defaults to 'utf8'
-    .then(function (content) {
-      expectations(content);
-      return jetpack.readAsync('file.txt', 'utf8'); // explicitly said
-    })
-    .then(function (content) {
-      expectations(content);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('file.txt') // defaults to 'utf8'
+      .then(function (content) {
+        expectations(content);
+        return jetpack.readAsync('file.txt', 'utf8'); // explicitly said
+      })
+      .then(function (content) {
+        expectations(content);
+        done();
+      });
     });
   });
 
-  it('reads file as a Buffer', function (done) {
-    var expectations = function (content) {
-      expect(Buffer.isBuffer(content)).toBe(true);
-      expect(content.length).toBe(2);
-      expect(content[0]).toBe(11);
-      expect(content[1]).toBe(22);
+  describe('reads file as a Buffer', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.txt', new Buffer([11, 22]));
     };
 
-    fse.outputFileSync('file.txt', new Buffer([11, 22]));
+    var expectations = function (content) {
+      expect(Buffer.isBuffer(content)).to.equal(true);
+      expect(content.length).to.equal(2);
+      expect(content[0]).to.equal(11);
+      expect(content[1]).to.equal(22);
+    };
 
-    // SYNC
-    expectations(jetpack.read('file.txt', 'buffer'));
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.read('file.txt', 'buffer'));
+    });
 
-    // ASYNC
-    jetpack.readAsync('file.txt', 'buffer')
-    .then(function (content) {
-      expectations(content);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('file.txt', 'buffer')
+      .then(function (content) {
+        expectations(content);
+        done();
+      });
     });
   });
 
-  it('reads file as a Buffer (deprecated)', function (done) {
-    var expectations = function (content) {
-      expect(Buffer.isBuffer(content)).toBe(true);
-      expect(content.length).toBe(2);
-      expect(content[0]).toBe(11);
-      expect(content[1]).toBe(22);
+  describe('reads file as a Buffer (deprecated)', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.txt', new Buffer([11, 22]));
     };
 
-    fse.outputFileSync('file.txt', new Buffer([11, 22]));
+    var expectations = function (content) {
+      expect(Buffer.isBuffer(content)).to.equal(true);
+      expect(content.length).to.equal(2);
+      expect(content[0]).to.equal(11);
+      expect(content[1]).to.equal(22);
+    };
 
-    // SYNC
-    expectations(jetpack.read('file.txt', 'buf'));
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.read('file.txt', 'buf'));
+    });
 
-    // ASYNC
-    jetpack.readAsync('file.txt', 'buf')
-    .then(function (content) {
-      expectations(content);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('file.txt', 'buf')
+      .then(function (content) {
+        expectations(content);
+        done();
+      });
     });
   });
 
-  it('reads file as JSON', function (done) {
+  describe('reads file as JSON', function () {
     var obj = {
       utf8: 'ąćłźż'
     };
+
+    var preparations = function () {
+      fse.outputFileSync('file.json', JSON.stringify(obj));
+    };
+
     var expectations = function (content) {
-      expect(content).toEqual(obj);
+      expect(content).to.eql(obj);
     };
 
-    fse.outputFileSync('file.json', JSON.stringify(obj));
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.read('file.json', 'json'));
+    });
 
-    // SYNC
-    expectations(jetpack.read('file.json', 'json'));
-
-    // ASYNC
-    jetpack.readAsync('file.json', 'json')
-    .then(function (content) {
-      expectations(content);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('file.json', 'json')
+      .then(function (content) {
+        expectations(content);
+        done();
+      });
     });
   });
 
-  it('gives nice error message when JSON parsing failed', function (done) {
+  describe('gives nice error message when JSON parsing failed', function () {
+    var preparations = function () {
+      fse.outputFileSync('file.json', '{ "abc: 123 }'); // Malformed JSON
+    };
+
     var expectations = function (err) {
-      expect(err.message).toContain('JSON parsing failed while reading');
+      expect(err.message).to.have.string('JSON parsing failed while reading');
     };
 
-    fse.outputFileSync('file.json', '{ "abc: 123 }'); // Malformed JSON
+    it('sync', function () {
+      preparations();
+      try {
+        jetpack.read('file.json', 'json');
+        throw new Error('Expected error to be thrown');
+      } catch (err) {
+        expectations(err);
+      }
+    });
 
-    // SYNC
-    try {
-      jetpack.read('file.json', 'json');
-    } catch (err) {
-      expectations(err);
-    }
-
-    // ASYNC
-    jetpack.readAsync('file.json', 'json')
-    .catch(function (err) {
-      expectations(err);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('file.json', 'json')
+      .catch(function (err) {
+        expectations(err);
+        done();
+      });
     });
   });
 
-  it('reads file as JSON with Date parsing', function (done) {
+  describe('reads file as JSON with Date parsing', function () {
     var obj = {
       utf8: 'ąćłźż',
       date: new Date()
     };
-    var expectations = function (content) {
-      expect(content).toEqual(obj);
+
+    var preparations = function () {
+      fse.outputFileSync('file.json', JSON.stringify(obj));
     };
 
-    fse.outputFileSync('file.json', JSON.stringify(obj));
+    var expectations = function (content) {
+      expect(content).to.eql(obj);
+    };
 
-    // SYNC
-    expectations(jetpack.read('file.json', 'jsonWithDates'));
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.read('file.json', 'jsonWithDates'));
+    });
 
-    // ASYNC
-    jetpack.readAsync('file.json', 'jsonWithDates')
-    .then(function (content) {
-      expectations(content);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('file.json', 'jsonWithDates')
+      .then(function (content) {
+        expectations(content);
+        done();
+      });
     });
   });
 
-  it("returns undefined if file doesn't exist", function (done) {
+  describe("returns undefined if file doesn't exist", function () {
     var expectations = function (content) {
-      expect(content).toBe(undefined);
+      expect(content).to.equal(undefined);
     };
 
-    // SYNC
-    expectations(jetpack.read('nonexistent.txt'));
-    expectations(jetpack.read('nonexistent.txt', 'json'));
-    expectations(jetpack.read('nonexistent.txt', 'buffer'));
+    it('sync', function () {
+      expectations(jetpack.read('nonexistent.txt'));
+      expectations(jetpack.read('nonexistent.txt', 'json'));
+      expectations(jetpack.read('nonexistent.txt', 'buffer'));
+    });
 
-    // ASYNC
-    Q.spread([
-      jetpack.readAsync('nonexistent.txt'),
-      jetpack.readAsync('nonexistent.txt', 'json'),
-      jetpack.readAsync('nonexistent.txt', 'buffer')
-    ], function (content1, content2, content3) {
-      expectations(content1);
-      expectations(content2);
-      expectations(content3);
-      done();
+    it('async', function (done) {
+      Q.spread([
+        jetpack.readAsync('nonexistent.txt'),
+        jetpack.readAsync('nonexistent.txt', 'json'),
+        jetpack.readAsync('nonexistent.txt', 'buffer')
+      ], function (content1, content2, content3) {
+        expectations(content1);
+        expectations(content2);
+        expectations(content3);
+        done();
+      });
     });
   });
 
-  it('throws if given path is a directory', function (done) {
+  describe('throws if given path is a directory', function () {
+    var preparations = function () {
+      fse.mkdirsSync('dir');
+    };
+
     var expectations = function (err) {
-      expect(err.code).toBe('EISDIR');
+      expect(err.code).to.equal('EISDIR');
     };
 
-    fse.mkdirsSync('dir');
+    it('sync', function () {
+      preparations();
+      try {
+        jetpack.read('dir');
+        throw new Error('Expected error to be thrown');
+      } catch (err) {
+        expectations(err);
+      }
+    });
 
-    // SYNC
-    try {
-      jetpack.read('dir');
-      throw new Error('to make sure this code throws');
-    } catch (err) {
-      expectations(err);
-    }
-
-    // ASYNC
-    jetpack.readAsync('dir')
-    .catch(function (err) {
-      expectations(err);
-      done();
+    it('async', function (done) {
+      preparations();
+      jetpack.readAsync('dir')
+      .catch(function (err) {
+        expectations(err);
+        done();
+      });
     });
   });
 
-  it('respects internal CWD of jetpack instance', function (done) {
-    var expectations = function (data) {
-      expect(data).toBe('abc');
+  describe('respects internal CWD of jetpack instance', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/file.txt', 'abc');
     };
 
-    var jetContext = jetpack.cwd('a');
-    fse.outputFileSync('a/file.txt', 'abc');
+    var expectations = function (data) {
+      expect(data).to.equal('abc');
+    };
 
-    // SYNC
-    expectations(jetContext.read('file.txt'));
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      expectations(jetContext.read('file.txt'));
+    });
 
-    // ASYNC
-    jetContext.readAsync('file.txt')
-    .then(function (data) {
-      expectations(data);
-      done();
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.readAsync('file.txt')
+      .then(function (data) {
+        expectations(data);
+        done();
+      });
     });
   });
 });

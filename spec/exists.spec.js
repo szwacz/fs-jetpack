@@ -1,87 +1,129 @@
-/* eslint-env jasmine */
-
-'use strict';
-
 var fse = require('fs-extra');
-var helper = require('./support/spec_helper');
+var expect = require('chai').expect;
+var helper = require('./helper');
 var jetpack = require('..');
 
 describe('exists', function () {
-  beforeEach(helper.beforeEach);
-  afterEach(helper.afterEach);
+  beforeEach(helper.setCleanTestCwd);
+  afterEach(helper.switchBackToCorrectCwd);
 
-  it("returns false if file doesn't exist", function (done) {
-    // SYNC
-    expect(jetpack.exists('file.txt')).toBe(false);
+  describe("returns false if file doesn't exist", function () {
+    var expectations = function (exists) {
+      expect(exists).to.equal(false);
+    };
 
-    // ASYNC
-    jetpack.existsAsync('file.txt')
-    .then(function (exists) {
-      expect(exists).toBe(false);
-      done();
+    it('sync', function () {
+      expectations(jetpack.exists('file.txt'));
+    });
+
+    it('async', function (done) {
+      jetpack.existsAsync('file.txt')
+      .then(function (exists) {
+        expectations(exists);
+        done();
+      });
     });
   });
 
-  it("returns 'dir' if directory exists on given path", function (done) {
-    fse.mkdirsSync('a');
+  describe("returns 'dir' if directory exists on given path", function () {
+    var preparations = function () {
+      fse.mkdirsSync('a');
+    };
 
-    // SYNC
-    expect(jetpack.exists('a')).toBe('dir');
+    var expectations = function (exists) {
+      expect(exists).to.equal('dir');
+    };
 
-    // ASYNC
-    jetpack.existsAsync('a')
-    .then(function (exists) {
-      expect(exists).toBe('dir');
-      done();
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.exists('a'));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.existsAsync('a')
+      .then(function (exists) {
+        expectations(exists);
+        done();
+      });
     });
   });
 
-  it("returns 'file' if file exists on given path", function (done) {
-    fse.outputFileSync('text.txt', 'abc');
-
-    // SYNC
-    expect(jetpack.exists('text.txt')).toBe('file');
-
-    // ASYNC
-    jetpack.existsAsync('text.txt')
-    .then(function (exists) {
-      expect(exists).toBe('file');
-      done();
-    });
-  });
-
-  it('respects internal CWD of jetpack instance', function (done) {
-    var jetContext = jetpack.cwd('a');
-
-    fse.outputFileSync('a/text.txt', 'abc');
-
-    // SYNC
-    expect(jetContext.exists('text.txt')).toBe('file');
-
-    // ASYNC
-    jetContext.existsAsync('text.txt')
-    .then(function (exists) {
-      expect(exists).toBe('file');
-      done();
-    });
-  });
-
-  describe('edge cases', function () {
-    it("ENOTDIR error changes into 'false'", function (done) {
-      // We have here malformed path: /some/dir/file.txt/some_dir
-      // (so file is in the middle of path, not at the end).
-      // This leads to ENOTDIR error, but technically speaking this
-      // path doesn't exist so let's just return false.
-
+  describe("returns 'file' if file exists on given path", function () {
+    var preparations = function () {
       fse.outputFileSync('text.txt', 'abc');
+    };
 
-      // SYNC
-      expect(jetpack.exists('text.txt/something')).toBe(false);
+    var expectations = function (exists) {
+      expect(exists).to.equal('file');
+    };
 
-      // ASYNC
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.exists('text.txt'));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.existsAsync('text.txt')
+      .then(function (exists) {
+        expectations(exists);
+        done();
+      });
+    });
+  });
+
+  describe('respects internal CWD of jetpack instance', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/text.txt', 'abc');
+    };
+
+    var expectations = function (exists) {
+      expect(exists).to.equal('file');
+    };
+
+    it('sync', function () {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      expectations(jetContext.exists('text.txt'));
+    });
+
+    it('async', function (done) {
+      var jetContext = jetpack.cwd('a');
+      preparations();
+      jetContext.existsAsync('text.txt')
+      .then(function (exists) {
+        expectations(exists);
+        done();
+      });
+    });
+  });
+
+  describe("(edge case) ENOTDIR error changed into 'false'", function () {
+    // We have here malformed path: /some/dir/file.txt/some_dir
+    // (so file is in the middle of path, not at the end).
+    // This leads to ENOTDIR error, but technically speaking this
+    // path doesn't exist so let's just return false.
+    // TODO Not fully sure this is sensible behaviour. It just turns one misleading
+    // state into another. The fact is this path is malformed. Can we do better?
+    var preparations = function () {
+      fse.outputFileSync('text.txt', 'abc');
+    };
+
+    var expectations = function (exists) {
+      expect(exists).to.equal(false);
+    };
+
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.exists('text.txt/something'));
+    });
+
+    it('async', function (done) {
+      preparations();
       jetpack.existsAsync('text.txt/something')
       .then(function (exists) {
-        expect(exists).toBe(false);
+        expectations(exists);
         done();
       });
     });
