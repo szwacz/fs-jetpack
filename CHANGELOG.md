@@ -1,3 +1,7 @@
+0.10.2 (2016-11-08)
+-------------------
+* Fixed `console.log(jetpack)` for node v6.6.0 or newer.
+
 0.10.1 (2016-11-01)
 -------------------
 * Bugfixed case when `copyAsync()` was leaving open read stream if write stream errored.
