@@ -98,6 +98,99 @@ describe('tree walker', function () {
     });
   });
 
+  describe('can walk through many nested directories', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/b/x/z1.txt', 'z1');
+      fse.outputFileSync('a/c/y/z2.txt', 'z2');
+    };
+
+    var expectations = function (data) {
+      expect(data).to.eql([
+        {
+          path: pathUtil.resolve('a'),
+          item: {
+            type: 'dir',
+            name: 'a'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b'),
+          item: {
+            type: 'dir',
+            name: 'b'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b', 'x'),
+          item: {
+            type: 'dir',
+            name: 'x'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'b', 'x', 'z1.txt'),
+          item: {
+            type: 'file',
+            name: 'z1.txt',
+            size: 2
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'c'),
+          item: {
+            type: 'dir',
+            name: 'c'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'c', 'y'),
+          item: {
+            type: 'dir',
+            name: 'y'
+          }
+        },
+        {
+          path: pathUtil.resolve('a', 'c', 'y', 'z2.txt'),
+          item: {
+            type: 'file',
+            name: 'z2.txt',
+            size: 2
+          }
+        }
+      ]);
+    };
+
+    it('sync', function () {
+      var absoluteStartingPath = pathUtil.resolve('a');
+      var data = [];
+      preparations();
+      walker.sync(absoluteStartingPath, {}, function (path, item) {
+        data.push({ path: path, item: item });
+      });
+      expectations(data);
+    });
+
+    it('async', function (done) {
+      var absoluteStartingPath = pathUtil.resolve('a');
+      var data = [];
+      var st;
+      preparations();
+      st = walker.stream(absoluteStartingPath, {})
+      .on('readable', function () {
+        var a = st.read();
+        if (a) {
+          data.push(a);
+        }
+      })
+      .on('error', console.error)
+      .on('end', function () {
+        expectations(data);
+        done();
+      });
+    });
+  });
+
+
   describe("won't penetrate folder tree deeper than maxLevelsDeep option tells", function () {
     var options = {
       maxLevelsDeep: 1
