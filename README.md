@@ -62,7 +62,7 @@ asynchronous: **appendAsync(path, data, [options])**
 
 Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it/them.
 
-**parameters:**  
+**arguments:**  
 `path` the path to file.  
 `data` data to append (can be `String` or `Buffer`).  
 `options` (optional) `Object` with possible fields:
@@ -77,7 +77,7 @@ asynchronous: **copyAsync(from, to, [options])**
 
 Copies given file or directory (with everything inside).
 
-**parameters:**  
+**arguments:**  
 `from` path to location you want to copy.  
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
@@ -126,7 +126,7 @@ Returns Current Working Directory (CWD) for this instance of jetpack, or creates
 
 **Note:** fs-jetpack never changes value of `process.cwd()`, the CWD we are talking about here is internal value inside every jetpack instance.
 
-**parameters:**  
+**arguments:**  
 `path...` (optional) path (or many path parts) to become new CWD. Could be absolute, or relative. If relative path given new CWD will be resolved basing on current CWD of this jetpack instance.
 
 **returns:**  
@@ -161,7 +161,7 @@ asynchronous: **dirAsync(path, [criteria])**
 
 Ensures that directory on given path exists and meets given criteria. If any criterium is not met it will be after this call.
 
-**parameters:**  
+**arguments:**  
 `path` path to directory to examine.  
 `criteria` (optional) criteria to be met by the directory. Is an `Object` with possible fields:
 * `empty` (default: `false`) whether directory should be empty (no other files or directories inside). If set to `true` and directory contains any files or subdirectories all of them will be deleted.
@@ -203,7 +203,7 @@ asynchronous: **fileAsync(path, [criteria])**
 
 Ensures that file exists and meets given criteria. If any criterium is not met it will be after this call.
 
-**parameters:**  
+**arguments:**  
 `path` path to file to examine.  
 `criteria` (optional) criteria to be met by the file. Is an `Object` with possible fields:
 * `content` sets file content. Can be `String`, `Buffer`, `Object` or `Array`. If `Object` or `Array` given to this parameter data will be written as JSON.
@@ -228,7 +228,7 @@ asynchronous: **findAsync([path], searchOptions)**
 
 Finds in directory specified by `path` all files fulfilling `searchOptions`. Returned paths are relative to current CWD of jetpack instance.
 
-**parameters:**  
+**arguments:**  
 `path` (optional, defaults to `'.'`) path to start search in (all subdirectories will be searched).  
 `searchOptions` is an `Object` with possible fields:
 * `matching` glob patterns of files you want to find.
@@ -260,7 +260,7 @@ asynchronous: **inspectAsync(path, [options])**
 
 Inspects given path (replacement for `fs.stat`). Returned object by default contains only very basic, not platform-dependent properties (so you have something e.g. your unit tests can rely on), you can enable more properties through options object.
 
-**parameters:**  
+**arguments:**  
 `path` path to inspect.  
 `options` (optional). Possible values:
 * `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. If given path is directory this field is ignored.
@@ -294,7 +294,7 @@ asynchronous: **inspectTreeAsync(path, [options])**
 
 Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
 
-**parameters:**  
+**arguments:**  
 `path` the starting path to inspect.  
 `options` (optional). Possible values:
 * `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
@@ -337,7 +337,7 @@ asynchronous: **listAsync(path)**
 
 Lists the contents of directory. Equivalent of `fs.readdir`.
 
-**parameters:**  
+**arguments:**  
 `path` (optional) path to directory you would like to list. If not specified defaults to CWD.
 
 **returns:**  
@@ -349,7 +349,7 @@ asynchronous: **moveAsync(from, to)**
 
 Moves given path to new location.
 
-**parameters:**  
+**arguments:**  
 `from` path to directory or file you want to move.  
 `to` path where the thing should be moved.
 
@@ -360,7 +360,7 @@ Nothing.
 ## path(parts...)
 Returns path resolved to internal CWD of this jetpack object.
 
-**parameters:**  
+**arguments:**  
 `parts` strings to join and resolve as path (as many as you like).
 
 **returns:**  
@@ -380,7 +380,7 @@ asynchronous: **readAsync(path, [returnAs])**
 
 Reads content of file.
 
-**parameters:**  
+**arguments:**  
 `path` path to file.  
 `returnAs` (optional) how the content of file should be returned. Is a string with possible values:
 * `'utf8'` (default) content will be returned as UTF-8 String.
@@ -398,7 +398,7 @@ asynchronous: **removeAsync([path])**
 
 Deletes given path, no matter what it is (file or directory). If path already doesn't exist ends without throwing, so you can use it as 'ensure path doesn't exist'.
 
-**parameters:**  
+**arguments:**  
 `path` (optional) path to file or directory you want to remove. If not specified the remove action will be performed on current working directory (CWD).
 
 **returns:**  
@@ -424,7 +424,7 @@ asynchronous: **renameAsync(path, newName)**
 
 Renames given file or directory.
 
-**parameters:**  
+**arguments:**  
 `path` path to thing you want to change name of.  
 `newName` new name for this thing (not full path, just a name).
 
@@ -442,7 +442,7 @@ asynchronous: **symlinkAsync(symlinkValue, path)**
 
 Creates symbolic link.
 
-**parameters:**  
+**arguments:**  
 `symlinkValue` path where symbolic link should point.  
 `path` path where symbolic link should be put.  
 
@@ -455,7 +455,7 @@ asynchronous: **writeAsync(path, data, [options])**
 
 Writes data to file.
 
-**parameters:**  
+**arguments:**  
 `path` path to file.  
 `data` data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputted into file as JSON).  
 `options` (optional) `Object` with possible fields:
