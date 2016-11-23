@@ -1,3 +1,7 @@
+0.10.3 (2016-11-23)
+-------------------
+* Fixed directory tree traversal bug which was causing problems for `findAsync()` and `copyAsync()`.
+
 0.10.2 (2016-11-08)
 -------------------
 * Fixed `console.log(jetpack)` for node v6.6.0 or newer.
