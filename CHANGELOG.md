@@ -1,3 +1,7 @@
+0.10.4 (2016-12-06)
+-------------------
+* Fixed matcher edge cases, improved matcher tests (affects `find()` and `copy()` methods).
+
 0.10.3 (2016-11-23)
 -------------------
 * Fixed directory tree traversal bug which was causing problems for `findAsync()` and `copyAsync()`.
