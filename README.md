@@ -89,17 +89,21 @@ Nothing.
 
 **examples:**
 ```javascript
-// Copies a file (and replaces it if one already exists in 'copied' directory)
-jetpack.copy('file.txt', 'copied/file.txt', { overwrite: true });
+// Copies a file (and replaces it if one already exists in 'foo' directory)
+jetpack.copy('file.txt', 'foo/file.txt', { overwrite: true });
 
-// Copies only .md files inside 'dir' to 'copied-dir'
-jetpack.copy('dir', 'copied-dir', { matching: '*.md' });
+// Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'.
+jetpack.copy('foo', 'bar', { matching: '*.md' });
+// Copies only '.md' and '.txt' files from 'foo' (and subdirectories of 'foo') to 'bar'.
+jetpack.copy('foo', 'bar', { matching: ['*.md', '*.txt'] });
 
-// Can add many globs as an array
-jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '*.txt'] });
-
-// Supports negation patterns as well
-jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '!top-secret.md'] });
+// You can filter previous matches by defining negated pattern further in the order:
+// Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'
+// but will skip file '!top-secret.md'.
+jetpack.copy('foo', 'bar', { matching: ['*.md', '!top-secret.md'] });
+// Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'
+// but will skip all files in 'foo/top-secret' directory.
+jetpack.copy('foo', 'bar', { matching: ['*.md', '!top-secret/**/*'] });
 
 // All patterns are anchored to directory you want to copy, not to CWD.
 // So in this example directory 'dir1/dir2/images' will be copied
@@ -478,10 +482,11 @@ Nothing.
 
 # Matching patterns
 
-API methods [copy](#copyfrom-to-options) and [find](#findpath-searchoptions) have `matching` option. Those are all the possible tokens to use:
+API methods [copy](#copyfrom-to-options) and [find](#findpath-searchoptions) have `matching` option. Those are all the possible tokens to use there:
 
 - `*` - Matches 0 or more characters in a single path portion.
 - `?` - Matches 1 character.
+- `!` - Used as the first character in pattern will invert the matching logic (match everything what **is not** matched by tokens further in this pattern).
 - `[...]` - Matches a range of characters, similar to a RegExp range. If the first character of the range is `!` or `^` then it matches any character not in the range.
 - `@(pattern|pat*|pat?ern)` - Matches exactly one of the patterns provided.
 - `+(pattern|pat*|pat?ern)` - Matches one or more occurrences of the patterns provided.
@@ -490,4 +495,4 @@ API methods [copy](#copyfrom-to-options) and [find](#findpath-searchoptions) hav
 - `!(pattern|pat*|pat?ern)` - Matches anything that does not match any of the patterns provided.
 - `**` - If a "globstar" is alone in a path portion, then it matches zero or more directories and subdirectories.
 
-*(explanation borrowed from [glob docs](https://github.com/isaacs/node-glob), which uses [the same matching library](https://github.com/isaacs/minimatch) as this project)*
+*(explanation borrowed from [glob](https://github.com/isaacs/node-glob) which is using [the same matching library](https://github.com/isaacs/minimatch) as this project)*
