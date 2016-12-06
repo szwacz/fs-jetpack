@@ -444,4 +444,40 @@ describe('find', function () {
       });
     });
   });
+
+  describe('finds dot-dirs and dot-files', function () {
+    var preparations = function () {
+      fse.outputFileSync('.dir/file', 'a');
+      fse.outputFileSync('.dir/.file', 'b');
+      fse.outputFileSync('.foo/.file', 'c');
+    };
+
+    var expectations = function (found) {
+      var normalizedPaths = helper.osSep([
+        '.dir',
+        '.dir/.file'
+      ]);
+      expect(found).to.eql(normalizedPaths);
+    };
+
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.find({
+        matching: ['.dir', '.file', '!.foo/**'],
+        directories: true
+      }));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.findAsync({
+        matching: ['.dir', '.file', '!.foo/**'],
+        directories: true
+      })
+      .then(function (found) {
+        expectations(found);
+        done();
+      });
+    });
+  });
 });
