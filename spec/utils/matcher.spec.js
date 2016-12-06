@@ -44,7 +44,7 @@ describe('matcher', function () {
     });
   });
 
-  describe('possible mask tokens', function () {
+  describe('possible tokens', function () {
     it('*', function () {
       var test = matcher.create('/', ['*']);
       expect(test('/a')).to.equal(true);
@@ -77,11 +77,37 @@ describe('matcher', function () {
       expect(test('/a/b')).to.equal(false);
     });
 
-    it('+(option1|option2)', function () {
-      var test = matcher.create('/', ['*.+(txt|md)']);
-      expect(test('/a.txt')).to.equal(true);
-      expect(test('/b.md')).to.equal(true);
-      expect(test('/c.rtf')).to.equal(false);
+    it('@(pattern|pattern) - exactly one of patterns', function () {
+      var test = matcher.create('/', ['@(foo|bar)']);
+      expect(test('/foo')).to.equal(true);
+      expect(test('/bar')).to.equal(true);
+      expect(test('/foobar')).to.equal(false);
+    });
+
+    it('+(pattern|pattern) - one or more of patterns', function () {
+      var test = matcher.create('/', ['+(foo|bar)']);
+      expect(test('/foo')).to.equal(true);
+      expect(test('/bar')).to.equal(true);
+      expect(test('/foobar')).to.equal(true);
+      expect(test('/foobarbaz')).to.equal(false);
+    });
+
+    it('?(pattern|pattern) - zero or one of patterns', function () {
+      var test = matcher.create('/', ['?(foo|bar)1']);
+      expect(test('/1')).to.equal(true);
+      expect(test('/foo1')).to.equal(true);
+      expect(test('/bar1')).to.equal(true);
+      expect(test('/foobar1')).to.equal(false);
+    });
+
+    it('*(pattern|pattern) - zero or more of patterns', function () {
+      var test = matcher.create('/', ['*(foo|bar)1']);
+      expect(test('/1')).to.equal(true);
+      expect(test('/foo1')).to.equal(true);
+      expect(test('/bar1')).to.equal(true);
+      expect(test('/foobar1')).to.equal(true);
+      expect(test('/barfoo1')).to.equal(true);
+      expect(test('/foofoo1')).to.equal(true);
     });
 
     it('{a,b}', function () {
@@ -98,7 +124,23 @@ describe('matcher', function () {
       expect(test('/abbc')).to.equal(false);
     });
 
-    it('comment character # havs no special meaning', function () {
+    it('[...] - characters range', function () {
+      var test = matcher.create('/', ['[0-9][0-9]']);
+      expect(test('/78')).to.equal(true);
+      expect(test('/a78')).to.equal(false);
+    });
+
+    it('combining different tokens together', function () {
+      var test = matcher.create('/', ['+(f?o|bar*)']);
+      expect(test('/f0o')).to.equal(true);
+      expect(test('/f_o')).to.equal(true);
+      expect(test('/bar')).to.equal(true);
+      expect(test('/bar_')).to.equal(true);
+      expect(test('/f_obar123')).to.equal(true);
+      expect(test('/f__obar123')).to.equal(false);
+    });
+
+    it('comment character # has no special meaning', function () {
       var test = matcher.create('/', ['#a']);
       expect(test('/#a')).to.equal(true);
     });
