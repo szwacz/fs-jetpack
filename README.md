@@ -82,24 +82,28 @@ Copies given file or directory (with everything inside).
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
 * `overwrite` (default: `false`) Whether to overwrite destination path if arready exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
-* `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else (see examples below).
+* `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else ([all possible globs are described further in this readme](#matching-patterns)).
 
 **returns:**  
 Nothing.
 
 **examples:**
 ```javascript
-// Copies a file (and replaces it if one already exists in 'copied' directory)
-jetpack.copy('file.txt', 'copied/file.txt', { overwrite: true });
+// Copies a file (and replaces it if one already exists in 'foo' directory)
+jetpack.copy('file.txt', 'foo/file.txt', { overwrite: true });
 
-// Copies only .md files inside 'dir' to 'copied-dir'
-jetpack.copy('dir', 'copied-dir', { matching: '*.md' });
+// Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'.
+jetpack.copy('foo', 'bar', { matching: '*.md' });
+// Copies only '.md' and '.txt' files from 'foo' (and subdirectories of 'foo') to 'bar'.
+jetpack.copy('foo', 'bar', { matching: ['*.md', '*.txt'] });
 
-// Can add many globs as an array
-jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '*.txt'] });
-
-// Supports negation patterns as well
-jetpack.copy('dir', 'copied-dir', { matching: ['*.md', '!top-secret.md'] });
+// You can filter previous matches by defining negated pattern further in the order:
+// Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'
+// but will skip file '!top-secret.md'.
+jetpack.copy('foo', 'bar', { matching: ['*.md', '!top-secret.md'] });
+// Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'
+// but will skip all files in 'foo/top-secret' directory.
+jetpack.copy('foo', 'bar', { matching: ['*.md', '!top-secret/**/*'] });
 
 // All patterns are anchored to directory you want to copy, not to CWD.
 // So in this example directory 'dir1/dir2/images' will be copied
@@ -231,7 +235,7 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 **arguments:**  
 `path` (optional, defaults to `'.'`) path to start search in (all subdirectories will be searched).  
 `searchOptions` is an `Object` with possible fields:
-* `matching` glob patterns of files you want to find.
+* `matching` glob patterns of files you want to find ([all possible globs are described further in this readme](#matching-patterns)).
 * `files` (default `true`) whether or not should search for files.
 * `directories` (default `false`) whether or not should search for directories.
 * `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
@@ -244,11 +248,22 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 // Finds all files which has 2015 in the name
 jetpack.find('my-work', { matching: '*2015*' });
 
-// Finds all .js files inside 'my-project' but excluding those in 'vendor' subtree.
+// Finds all '.txt' files inside 'foo/bar' directory and its subdirectories
+jetpack.find('foo', { matching: 'bar/**/*.txt' });
+// Finds all '.txt' files inside 'foo/bar' directory WITHOUT subdirectories  
+jetpack.find('foo', { matching: 'bar/*.txt' });
+
+// Finds all '.js' files inside 'my-project' but excluding those in 'vendor' subtree.
 jetpack.find('my-project', { matching: ['*.js', '!vendor/**/*'] });
 
 // Looks for all directories named 'foo' (and will omit all files named 'foo').
 jetpack.find('my-work', { matching: ['foo'], files: false, directories: true });
+
+// Finds all '.txt' files inside 'foo' directory WITHOUT subdirectories  
+jetpack.find('foo', { matching: './*.txt' });
+// This line does the same as the above, but has better performance
+// (skips looking in subdirectories)
+jetpack.find('foo', { matching: '*.txt', recursive: false });
 
 // Path parameter might be omitted and CWD is used as path in that case.
 var myStuffDir = jetpack.cwd('my-stuff');
@@ -464,3 +479,20 @@ Writes data to file.
 
 **returns:**  
 Nothing.
+
+# Matching patterns
+
+API methods [copy](#copyfrom-to-options) and [find](#findpath-searchoptions) have `matching` option. Those are all the possible tokens to use there:
+
+- `*` - Matches 0 or more characters in a single path portion.
+- `?` - Matches 1 character.
+- `!` - Used as the first character in pattern will invert the matching logic (match everything what **is not** matched by tokens further in this pattern).
+- `[...]` - Matches a range of characters, similar to a RegExp range. If the first character of the range is `!` or `^` then it matches any character not in the range.
+- `@(pattern|pat*|pat?ern)` - Matches exactly one of the patterns provided.
+- `+(pattern|pat*|pat?ern)` - Matches one or more occurrences of the patterns provided.
+- `?(pattern|pat*|pat?ern)` - Matches zero or one occurrence of the patterns provided.
+- `*(pattern|pat*|pat?ern)` - Matches zero or more occurrences of the patterns provided.
+- `!(pattern|pat*|pat?ern)` - Matches anything that does not match any of the patterns provided.
+- `**` - If a "globstar" is alone in a path portion, then it matches zero or more directories and subdirectories.
+
+*(explanation borrowed from [glob](https://github.com/isaacs/node-glob) which is using [the same matching library](https://github.com/isaacs/minimatch) as this project)*
