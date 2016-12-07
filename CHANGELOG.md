@@ -1,3 +1,11 @@
+0.10.4 (2016-12-06)
+-------------------
+* Fixed matcher edge cases, improved matcher tests (affects `find()` and `copy()` methods).
+
+0.10.3 (2016-11-23)
+-------------------
+* Fixed directory tree traversal bug which was causing problems for `findAsync()` and `copyAsync()`.
+
 0.10.2 (2016-11-08)
 -------------------
 * Fixed `console.log(jetpack)` for node v6.6.0 or newer.
