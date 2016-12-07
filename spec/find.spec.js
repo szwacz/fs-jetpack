@@ -331,6 +331,39 @@ describe('find', function () {
     });
   });
 
+  describe('looking for directories works ok with only negation globs in set', function () {
+    var preparations = function () {
+      fse.outputFileSync('a/x', '123');
+      fse.outputFileSync('a/y', '789');
+    };
+
+    var expectations = function (found) {
+      var normalizedPaths = helper.osSep(['a/x']);
+      expect(found).to.eql(normalizedPaths);
+    };
+
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.find('a', {
+        matching: ['!y'],
+        directories: true
+      }));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.findAsync('a', {
+        matching: ['!y'],
+        directories: true
+      })
+      .then(function (found) {
+        expectations(found);
+        done();
+      })
+      .catch(done);
+    });
+  });
+
   describe('when you turn off files and directoies returns empty list', function () {
     var preparations = function () {
       fse.outputFileSync('a/b/foo1', 'abc');
