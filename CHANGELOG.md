@@ -1,3 +1,7 @@
+0.10.5 (2016-12-07)
+-------------------
+* Fixed `find()` bug when directories is set to true and only negation glob is used.
+
 0.10.4 (2016-12-06)
 -------------------
 * Fixed matcher edge cases, improved matcher tests (affects `find()` and `copy()` methods).
