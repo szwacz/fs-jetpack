@@ -82,24 +82,50 @@ describe('util validate', function () {
   describe('validates options object', function () {
     it('options object might be undefined', function () {
       expect(function () {
-        validate.option(undefined, 'foo', ['string']);
+        validate.options(undefined, 'foo', ['string']);
       }).not.to.throw();
     });
 
     it('option key in options object is optional (doh!)', function () {
       expect(function () {
-        validate.option({}, 'foo', ['string']);
+        validate.options({}, {
+          foo: ['string']
+        });
       }).not.to.throw();
     });
 
-    it('well... validates', function () {
+    it('throws if option key definition not found', function () {
       expect(function () {
-        validate.option({ foo: 'abc' }, 'foo', ['string']);
+        validate.options({
+          bar: 123
+        }, {
+          foo: ['string']
+        });
+      }).to.throw('Unknown option "bar"');
+    });
+
+    it('validates option', function () {
+      expect(function () {
+        validate.options(
+          {
+            foo: 'abc'
+          },
+          {
+            foo: ['string']
+          }
+        );
       }).not.to.throw();
 
       expect(function () {
-        validate.option({ foo: 123 }, 'foo', ['string']);
-      }).to.throw('Foo must be a string. Received number');
+        validate.options(
+          {
+            foo: 123
+          },
+          {
+            foo: ['string']
+          }
+        );
+      }).to.throw('Options.foo must be a string. Received number');
     });
   });
 });

@@ -1,4 +1,5 @@
 var fse = require('fs-extra');
+var expect = require('chai').expect;
 var path = require('./assert_path');
 var helper = require('./helper');
 var jetpack = require('..');
@@ -118,6 +119,51 @@ describe('append', function () {
       .then(function () {
         expectations();
         done();
+      });
+    });
+  });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.append },
+      { type: 'async', method: jetpack.appendAsync }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, 'xyz');
+          }).to.throw('Path must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"data" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('abc');
+          }).to.throw('Data must be a string or a buffer. Received undefined');
+          expect(function () {
+            test.method('abc', null);
+          }).to.throw('Data must be a string or a buffer. Received null');
+          expect(function () {
+            test.method('abc', []);
+          }).to.throw('Data must be a string or a buffer. Received array');
+        });
+      });
+    });
+
+    describe('"options" object', function () {
+      describe('"mode" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', 'xyz', { mode: true });
+            }).to.throw('Options.mode must be a string or a number. Received boolean');
+          });
+        });
       });
     });
   });
