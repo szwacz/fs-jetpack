@@ -4,7 +4,7 @@ var validate = require('../../lib/utils/validate');
 describe('util validate', function () {
   it('validates its own input', function () {
     expect(function () {
-      validate('thing', 123, ['foo']);
+      validate('foo(thing)', 'thing', 123, ['foo']);
     }).to.throw('Unknown type "foo"');
   });
 
@@ -45,12 +45,12 @@ describe('util validate', function () {
   .forEach(function (test) {
     it('validates that given thing is a(n) ' + test.type, function () {
       expect(function () {
-        validate('thing', test.goodValue, [test.type]);
+        validate('foo(thing)', 'thing', test.goodValue, [test.type]);
       }).not.to.throw();
 
       expect(function () {
-        validate('thing', test.wrongValue, [test.type]);
-      }).to.throw('Thing must be ' + test.article + ' ' + test.type
+        validate('foo(thing)', 'thing', test.wrongValue, [test.type]);
+      }).to.throw('Argument "thing" passed to foo(thing) must be ' + test.article + ' ' + test.type
         + '. Received ' + test.wrongValueType);
     });
   });
@@ -68,64 +68,56 @@ describe('util validate', function () {
   .forEach(function (test) {
     it('can detect wrong type: ' + test.type, function () {
       expect(function () {
-        validate('thing', test.value, [test.expect]);
-      }).to.throw('Thing must be a ' + test.expect + '. Received ' + test.type);
+        validate('foo(thing)', 'thing', test.value, [test.expect]);
+      }).to.throw('Argument "thing" passed to foo(thing) must be a '
+        + test.expect + '. Received ' + test.type);
     });
   });
 
   it('supports more than one allowed type', function () {
     expect(function () {
-      validate('thing', {}, ['string', 'number', 'boolean']);
-    }).to.throw('Thing must be a string or a number or a boolean. Received object');
+      validate('foo(thing)', 'thing', {}, ['string', 'number', 'boolean']);
+    }).to.throw('Argument "thing" passed to foo(thing) must be a string'
+      + ' or a number or a boolean. Received object');
   });
 
   describe('validates options object', function () {
     it('options object might be undefined', function () {
       expect(function () {
-        validate.options(undefined, 'foo', ['string']);
+        validate.options('foo(options)', 'options', undefined, { foo: ['string'] });
       }).not.to.throw();
     });
 
     it('option key in options object is optional (doh!)', function () {
       expect(function () {
-        validate.options({}, {
-          foo: ['string']
-        });
+        validate.options('foo(options)', 'options', {}, { foo: ['string'] });
       }).not.to.throw();
     });
 
     it('throws if option key definition not found', function () {
       expect(function () {
-        validate.options({
-          bar: 123
-        }, {
-          foo: ['string']
-        });
-      }).to.throw('Unknown option "bar"');
+        validate.options('foo(options)', 'options',
+          { bar: 123 },
+          { foo: ['string'] }
+        );
+      }).to.throw('Unknown argument "options.bar" passed to foo(options)');
     });
 
     it('validates option', function () {
       expect(function () {
-        validate.options(
-          {
-            foo: 'abc'
-          },
-          {
-            foo: ['string']
-          }
+        validate.options('foo(options)', 'options',
+          { foo: 'abc' },
+          { foo: ['string'] }
         );
       }).not.to.throw();
 
       expect(function () {
-        validate.options(
-          {
-            foo: 123
-          },
-          {
-            foo: ['string']
-          }
+        validate.options('foo(options)', 'options',
+          { foo: 123 },
+          { foo: ['string'] }
         );
-      }).to.throw('Options.foo must be a string. Received number');
+      }).to.throw('Argument "options.foo" passed to foo(options) must be'
+        + ' a string. Received number');
     });
   });
 });

@@ -125,8 +125,8 @@ describe('append', function () {
 
   describe('input validation', function () {
     var tests = [
-      { type: 'sync', method: jetpack.append },
-      { type: 'async', method: jetpack.appendAsync }
+      { type: 'sync', method: jetpack.append, methodName: 'append' },
+      { type: 'async', method: jetpack.appendAsync, methodName: 'appendAsync' }
     ];
 
     describe('"path" argument', function () {
@@ -134,7 +134,8 @@ describe('append', function () {
         it(test.type, function () {
           expect(function () {
             test.method(undefined, 'xyz');
-          }).to.throw('Path must be a string. Received undefined');
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, data, [options]) must be a string. Received undefined');
         });
       });
     });
@@ -144,13 +145,8 @@ describe('append', function () {
         it(test.type, function () {
           expect(function () {
             test.method('abc');
-          }).to.throw('Data must be a string or a buffer. Received undefined');
-          expect(function () {
-            test.method('abc', null);
-          }).to.throw('Data must be a string or a buffer. Received null');
-          expect(function () {
-            test.method('abc', []);
-          }).to.throw('Data must be a string or a buffer. Received array');
+          }).to.throw('Argument "data" passed to ' + test.methodName
+            + '(path, data, [options]) must be a string or a buffer. Received undefined');
         });
       });
     });
@@ -161,7 +157,8 @@ describe('append', function () {
           it(test.type, function () {
             expect(function () {
               test.method('abc', 'xyz', { mode: true });
-            }).to.throw('Options.mode must be a string or a number. Received boolean');
+            }).to.throw('Argument "options.mode" passed to ' + test.methodName
+              + '(path, data, [options]) must be a string or a number. Received boolean');
           });
         });
       });
