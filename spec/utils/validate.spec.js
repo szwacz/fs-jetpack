@@ -81,6 +81,17 @@ describe('util validate', function () {
       }).to.throw('Argument "thing" passed to foo(thing) must be a string'
         + ' or a number or a boolean. Received object');
     });
+
+    it('validates array internal data', function () {
+      expect(function () {
+        validate.argument('foo(thing)', 'thing', [1, 2, 3], ['array of number']);
+      }).not.to.throw();
+
+      expect(function () {
+        validate.argument('foo(thing)', 'thing', [1, 2, 'a'], ['array of number']);
+      }).to.throw('Argument "thing" passed to foo(thing) must be an array of number.'
+        + ' Received array of number, string');
+    });
   });
 
   describe('validates options object', function () {

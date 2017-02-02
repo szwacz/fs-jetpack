@@ -511,4 +511,56 @@ describe('copy', function () {
   } else {
     // TODO what with Windows?
   }
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.copy, methodName: 'copy' },
+      { type: 'async', method: jetpack.copyAsync, methodName: 'copyAsync' }
+    ];
+
+    describe('"from" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, 'xyz');
+          }).to.throw('Argument "from" passed to ' + test.methodName
+            + '(from, to, [options]) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"to" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('abc');
+          }).to.throw('Argument "to" passed to ' + test.methodName
+            + '(from, to, [options]) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"options" object', function () {
+      describe('"overwrite" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', 'xyz', { overwrite: 1 });
+            }).to.throw('Argument "options.overwrite" passed to ' + test.methodName
+              + '(from, to, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"matching" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', 'xyz', { matching: 1 });
+            }).to.throw('Argument "options.matching" passed to ' + test.methodName
+              + '(from, to, [options]) must be a string or an array of string. Received number');
+          });
+        });
+      });
+    });
+  });
 });
