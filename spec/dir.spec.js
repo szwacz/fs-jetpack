@@ -315,4 +315,45 @@ describe('dir', function () {
       });
     });
   }
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.dir, methodName: 'dir' },
+      { type: 'async', method: jetpack.dirAsync, methodName: 'dirAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, [criteria]) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"criteria" object', function () {
+      describe('"empty" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { empty: 1 });
+            }).to.throw('Argument "criteria.empty" passed to ' + test.methodName
+              + '(path, [criteria]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"mode" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { mode: true });
+            }).to.throw('Argument "criteria.mode" passed to ' + test.methodName
+              + '(path, [criteria]) must be a string or a number. Received boolean');
+          });
+        });
+      });
+    });
+  });
 });
