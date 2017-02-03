@@ -128,4 +128,22 @@ describe('exists', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.exists, methodName: 'exists' },
+      { type: 'async', method: jetpack.existsAsync, methodName: 'existsAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path) must be a string. Received undefined');
+        });
+      });
+    });
+  });
 });
