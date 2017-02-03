@@ -391,4 +391,56 @@ describe('file', function () {
       });
     });
   }
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.file, methodName: 'file' },
+      { type: 'async', method: jetpack.fileAsync, methodName: 'fileAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, [criteria]) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"criteria" object', function () {
+      describe('"content" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { content: 1 });
+            }).to.throw('Argument "criteria.content" passed to ' + test.methodName
+              + '(path, [criteria]) must be a string or a buffer or an object or '
+              + 'an array. Received number');
+          });
+        });
+      });
+      describe('"jsonIndent" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { jsonIndent: true });
+            }).to.throw('Argument "criteria.jsonIndent" passed to ' + test.methodName
+              + '(path, [criteria]) must be a number. Received boolean');
+          });
+        });
+      });
+      describe('"mode" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { mode: true });
+            }).to.throw('Argument "criteria.mode" passed to ' + test.methodName
+              + '(path, [criteria]) must be a string or a number. Received boolean');
+          });
+        });
+      });
+    });
+  });
 });
