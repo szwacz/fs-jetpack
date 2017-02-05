@@ -513,4 +513,65 @@ describe('find', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.find, methodName: 'find' },
+      { type: 'async', method: jetpack.findAsync, methodName: 'findAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, {});
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '([path], options) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"options" object', function () {
+      describe('"matching" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method({ matching: 1 });
+            }).to.throw('Argument "options.matching" passed to ' + test.methodName
+              + '([path], options) must be a string or an array of string. Received number');
+          });
+        });
+      });
+      describe('"files" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { files: 1 });
+            }).to.throw('Argument "options.files" passed to ' + test.methodName
+              + '([path], options) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"directories" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { directories: 1 });
+            }).to.throw('Argument "options.directories" passed to ' + test.methodName
+              + '([path], options) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"recursive" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { recursive: 1 });
+            }).to.throw('Argument "options.recursive" passed to ' + test.methodName
+              + '([path], options) must be a boolean. Received number');
+          });
+        });
+      });
+    });
+  });
 });
