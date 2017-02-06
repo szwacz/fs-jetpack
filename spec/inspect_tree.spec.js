@@ -331,4 +331,51 @@ describe('inspectTree', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.inspectTree, methodName: 'inspectTree' },
+      { type: 'async', method: jetpack.inspectTreeAsync, methodName: 'inspectTreeAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, options) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"options" object', function () {
+      describe('"checksum" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { checksum: 1 });
+            }).to.throw('Argument "options.checksum" passed to ' + test.methodName
+              + '(path, options) must be a string. Received number');
+          });
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { checksum: 'foo' });
+            }).to.throw('Argument "options.checksum" passed to ' + test.methodName
+              + '(path, options) must have one of values: md5, sha1, sha256');
+          });
+        });
+      });
+      describe('"relativePath" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { relativePath: 1 });
+            }).to.throw('Argument "options.relativePath" passed to ' + test.methodName
+              + '(path, options) must be a boolean. Received number');
+          });
+        });
+      });
+    });
+  });
 });
