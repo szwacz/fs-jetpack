@@ -298,4 +298,81 @@ describe('inspect', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.inspect, methodName: 'inspect' },
+      { type: 'async', method: jetpack.inspectAsync, methodName: 'inspectAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, [options]) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"options" object', function () {
+      describe('"checksum" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { checksum: 1 });
+            }).to.throw('Argument "options.checksum" passed to ' + test.methodName
+              + '(path, [options]) must be a string. Received number');
+          });
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { checksum: 'foo' });
+            }).to.throw('Argument "options.checksum" passed to ' + test.methodName
+              + '(path, [options]) must have one of values: md5, sha1, sha256');
+          });
+        });
+      });
+      describe('"mode" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { mode: 1 });
+            }).to.throw('Argument "options.mode" passed to ' + test.methodName
+              + '(path, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"times" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { times: 1 });
+            }).to.throw('Argument "options.times" passed to ' + test.methodName
+              + '(path, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"absolutePath" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { absolutePath: 1 });
+            }).to.throw('Argument "options.absolutePath" passed to ' + test.methodName
+              + '(path, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"symlinks" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { symlinks: 1 });
+            }).to.throw('Argument "options.symlinks" passed to ' + test.methodName
+              + '(path, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+    });
+  });
 });
