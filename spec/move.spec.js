@@ -138,4 +138,33 @@ describe('move', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.move, methodName: 'move' },
+      { type: 'async', method: jetpack.moveAsync, methodName: 'moveAsync' }
+    ];
+
+    describe('"from" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, 'xyz');
+          }).to.throw('Argument "from" passed to ' + test.methodName
+            + '(from, to) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"to" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('abc', undefined);
+          }).to.throw('Argument "to" passed to ' + test.methodName
+            + '(from, to) must be a string. Received undefined');
+        });
+      });
+    });
+  });
 });
