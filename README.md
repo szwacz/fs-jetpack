@@ -15,27 +15,30 @@ npm install fs-jetpack
 var jetpack = require('fs-jetpack');
 ```
 
-
-# API
+# Sync & Async
 
 API has the same set of synchronous and asynchronous methods. All async methods are promise based (no callbacks).
 
 Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API. And promise-based, non-blocking code is verbose anyway, so one more word is not much of a difference.
 
 Also it's just convenient...
+
+If you don't see the word "Async" in method name it returns value immediately.
 ```js
-// If you don't see the word "Async" in method name it returns value immediately.
 var data = jetpack.read('file.txt');
 console.log(data);
+```
 
-// When you see "Async" that method returns promise which when resolved returns value.
+When you see "Async" that method returns promise which when resolved returns value.
+```js
 jetpack.readAsync('file.txt')
 .then(function (data) {
   console.log(data);
 });
 ```
 
-**Methods:**
+# API
+
 - [append](#appendpath-data-options)
 - [copy](#copyfrom-to-options)
 - [createReadStream](#createreadstreampath-options)
