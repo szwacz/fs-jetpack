@@ -400,7 +400,6 @@ Reads content of file.
 `returnAs` (optional) how the content of file should be returned. Is a string with possible values:
 * `'utf8'` (default) content will be returned as UTF-8 String.
 * `'buffer'` content will be returned as a Buffer.
-* `'buf'` **deprecated** use `'buffer'` instead.
 * `'json'` content will be returned as parsed JSON object.
 * `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into Date objects.
 

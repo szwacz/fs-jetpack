@@ -64,33 +64,6 @@ describe('read', function () {
     });
   });
 
-  describe('reads file as a Buffer (deprecated)', function () {
-    var preparations = function () {
-      fse.outputFileSync('file.txt', new Buffer([11, 22]));
-    };
-
-    var expectations = function (content) {
-      expect(Buffer.isBuffer(content)).to.equal(true);
-      expect(content.length).to.equal(2);
-      expect(content[0]).to.equal(11);
-      expect(content[1]).to.equal(22);
-    };
-
-    it('sync', function () {
-      preparations();
-      expectations(jetpack.read('file.txt', 'buf'));
-    });
-
-    it('async', function (done) {
-      preparations();
-      jetpack.readAsync('file.txt', 'buf')
-      .then(function (content) {
-        expectations(content);
-        done();
-      });
-    });
-  });
-
   describe('reads file as JSON', function () {
     var obj = {
       utf8: 'ąćłźż'
