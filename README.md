@@ -278,7 +278,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 **arguments:**  
 `path` path to inspect.  
 `options` (optional). Possible values:
-* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. If given path is directory this field is ignored.
+* `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'`, `'sha1'`, `'sha256'` or `'sha512'`. If given path is directory this field is ignored.
 * `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
 * `absolutePath` (default `false`) if set to `true` will add absolute path to this resource.
@@ -312,7 +312,7 @@ Calls [inspect](#inspect) recursively on given path so it creates tree of all di
 **arguments:**  
 `path` the starting path to inspect.  
 `options` (optional). Possible values:
-* `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'` or `'sha256'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
+* `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'`, `'sha256'` or `'sha512'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
 * `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
 
 **returns:**  

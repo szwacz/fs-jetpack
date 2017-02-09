@@ -265,6 +265,13 @@ describe('inspect', function () {
         expected: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
       },
       {
+        name: 'sha512',
+        type: 'sha512',
+        content: 'abc',
+        expected: 'ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a21'
+          + '92992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f'
+      },
+      {
         name: 'calculates correctly checksum of an empty file',
         type: 'md5',
         content: '',
@@ -293,7 +300,8 @@ describe('inspect', function () {
           .then(function (data) {
             expectations(data);
             done();
-          });
+          })
+          .catch(done);
         });
       });
     });
