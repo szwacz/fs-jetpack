@@ -63,7 +63,7 @@ jetpack.readAsync('file.txt')
 ## append(path, data, [options])
 asynchronous: **appendAsync(path, data, [options])**
 
-Appends given data to the end of file. If file (or any parent directory) doesn't exist, creates it/them.
+Appends given data to the end of file. If file or any parent directory doesn't exist it will be created.
 
 **arguments:**  
 `path` the path to file.  
@@ -166,7 +166,7 @@ console.log(sillyCwd.cwd()); // '/one/two/three/a/b/c'
 ## dir(path, [criteria])
 asynchronous: **dirAsync(path, [criteria])**  
 
-Ensures that directory on given path exists and meets given criteria. If any criterium is not met it will be after this call.
+Ensures that directory on given path exists and meets given criteria. If any criterium is not met it will be after this call. If any parent directory in `path` doesn't exist it will be created (like `mkdir -p`).
 
 **arguments:**  
 `path` path to directory to examine.  
@@ -208,7 +208,7 @@ Checks whether something exists on given `path`. This method returns values more
 ## file(path, [criteria])
 asynchronous: **fileAsync(path, [criteria])**  
 
-Ensures that file exists and meets given criteria. If any criterium is not met it will be after this call.
+Ensures that file exists and meets given criteria. If any criterium is not met it will be after this call. If any parent directory in `path` doesn't exist it will be created (like `mkdir -p`).
 
 **arguments:**  
 `path` path to file to examine.  
@@ -413,7 +413,7 @@ File content in specified format, or `undefined` if file doesn't exist.
 ## remove([path])
 asynchronous: **removeAsync([path])**  
 
-Deletes given path, no matter what it is (file or directory). If path already doesn't exist ends without throwing, so you can use it as 'ensure path doesn't exist'.
+Deletes given path, no matter what it is (file, directory or non-empty directory). If path already doesn't exist terminates gracefully without throwing, so you can use it as 'ensure path doesn't exist'.
 
 **arguments:**  
 `path` (optional) path to file or directory you want to remove. If not specified the remove action will be performed on current working directory (CWD).
@@ -470,7 +470,7 @@ Nothing.
 ## write(path, data, [options])
 asynchronous: **writeAsync(path, data, [options])**  
 
-Writes data to file.
+Writes data to file. If any parent directory in `path` doesn't exist it will be created (like `mkdir -p`).
 
 **arguments:**  
 `path` path to file.  
