@@ -229,4 +229,37 @@ describe('read', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.read, methodName: 'read' },
+      { type: 'async', method: jetpack.readAsync, methodName: 'readAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, 'xyz');
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, returnAs) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"returnAs" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('abc', true);
+          }).to.throw('Argument "returnAs" passed to ' + test.methodName
+            + '(path, returnAs) must be a string or an undefined. Received boolean');
+          expect(function () {
+            test.method('abc', 'foo');
+          }).to.throw('Argument "returnAs" passed to ' + test.methodName
+            + '(path, returnAs) must have one of values: utf8, buffer, json, jsonWithDates');
+        });
+      });
+    });
+  });
 });
