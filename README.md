@@ -20,15 +20,15 @@ var jetpack = require('fs-jetpack');
 
 API has the same set of synchronous and asynchronous methods. All async methods are promise based (no callbacks).
 
-Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API, and promise based non-blocking code is verbose anyway, so one more word is not much of a difference.
+Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API. And promise-based, non-blocking code is verbose anyway, so one more word is not much of a difference.
 
 Also it's just convenient...
 ```js
-// If you don't see the word "Async", then method returns value immediately.
+// If you don't see the word "Async" in method name it returns value immediately.
 var data = jetpack.read('file.txt');
 console.log(data);
 
-// When you see "Async", method returns promise which when resolved returns value.
+// When you see "Async" that method returns promise which when resolved returns value.
 jetpack.readAsync('file.txt')
 .then(function (data) {
   console.log(data);
@@ -495,3 +495,7 @@ API methods [copy](#copyfrom-to-options) and [find](#findpath-searchoptions) hav
 - `**` - If a "globstar" is alone in a path portion, then it matches zero or more directories and subdirectories.
 
 *(explanation borrowed from [glob](https://github.com/isaacs/node-glob) which is using [the same matching library](https://github.com/isaacs/minimatch) as this project)*
+
+# License
+
+Released under the MIT license.
