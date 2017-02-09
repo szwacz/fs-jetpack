@@ -167,4 +167,57 @@ describe('write', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.write, methodName: 'write' },
+      { type: 'async', method: jetpack.writeAsync, methodName: 'writeAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, data, [options]) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"data" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('abc', true);
+          }).to.throw('Argument "data" passed to ' + test.methodName
+            + '(path, data, [options]) must be a string or a buffer or an object or '
+            + 'an array. Received boolean');
+        });
+      });
+    });
+
+    describe('"options" object', function () {
+      describe('"atomic" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', 'xyz', { atomic: 1 });
+            }).to.throw('Argument "options.atomic" passed to ' + test.methodName
+              + '(path, data, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"jsonIndent" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', 'xyz', { jsonIndent: true });
+            }).to.throw('Argument "options.jsonIndent" passed to ' + test.methodName
+              + '(path, data, [options]) must be a number. Received boolean');
+          });
+        });
+      });
+    });
+  });
 });
