@@ -1,4 +1,5 @@
 var fse = require('fs-extra');
+var expect = require('chai').expect;
 var path = require('./assert_path');
 var helper = require('./helper');
 var jetpack = require('..');
@@ -83,6 +84,35 @@ describe('rename', function () {
       .then(function () {
         expectations();
         done();
+      });
+    });
+  });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.rename, methodName: 'rename' },
+      { type: 'async', method: jetpack.renameAsync, methodName: 'renameAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, 'xyz');
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(path, newName) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"newName" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('abc', undefined);
+          }).to.throw('Argument "newName" passed to ' + test.methodName
+            + '(path, newName) must be a string. Received undefined');
+        });
       });
     });
   });
