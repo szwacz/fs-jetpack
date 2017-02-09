@@ -157,4 +157,22 @@ describe('remove', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.remove, methodName: 'remove' },
+      { type: 'async', method: jetpack.removeAsync, methodName: 'removeAsync' }
+    ];
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(true);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '([path]) must be a string or an undefined. Received boolean');
+        });
+      });
+    });
+  });
 });
