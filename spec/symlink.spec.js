@@ -72,4 +72,33 @@ describe('symlink', function () {
       });
     });
   });
+
+  describe('input validation', function () {
+    var tests = [
+      { type: 'sync', method: jetpack.symlink, methodName: 'symlink' },
+      { type: 'async', method: jetpack.symlinkAsync, methodName: 'symlinkAsync' }
+    ];
+
+    describe('"symlinkValue" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method(undefined, 'abc');
+          }).to.throw('Argument "symlinkValue" passed to ' + test.methodName
+            + '(symlinkValue, path) must be a string. Received undefined');
+        });
+      });
+    });
+
+    describe('"path" argument', function () {
+      tests.forEach(function (test) {
+        it(test.type, function () {
+          expect(function () {
+            test.method('xyz', undefined);
+          }).to.throw('Argument "path" passed to ' + test.methodName
+            + '(symlinkValue, path) must be a string. Received undefined');
+        });
+      });
+    });
+  });
 });
