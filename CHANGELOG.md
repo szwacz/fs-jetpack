@@ -1,3 +1,7 @@
+# 0.11.0 (2017-02-09)
+- Added input validation for the whole API
+- **(breaking change)** Removed already deprecated option `buf` for `read()` method
+
 # 0.10.5 (2016-12-07)
 - Fixed `find()` bug when `directories` is set to `true` and only negation glob is used.
 
