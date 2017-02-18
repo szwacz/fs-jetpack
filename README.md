@@ -285,7 +285,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 * `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
 * `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
 * `absolutePath` (default `false`) if set to `true` will add absolute path to this resource.
-* `symlinks` (default `false`) if set to `true` will just inspect symlink itself and not follow it.
+* `symlinks` (default `'report'`) if a given path is a symlink by default `inspect` will report that symlink (not follow it). You can flip this behaviour by setting this option to `'follow'`.
 
 **returns:**
 `undefined` if given path doens't exist.  
@@ -293,7 +293,7 @@ Otherwise `Object` of structure:
 ```javascript
 {
   name: "my_dir",
-  type: "file", // possible values: "file", "dir"
+  type: "file", // possible values: "file", "dir", "symlink"
   size: 123, // size in bytes, this is returned only for files
   // if checksum option was specified:
   md5: '900150983cd24fb0d6963f7d28e17f72',
@@ -317,6 +317,7 @@ Calls [inspect](#inspect) recursively on given path so it creates tree of all di
 `options` (optional). Possible values:
 * `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'`, `'sha256'` or `'sha512'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
 * `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
+* `symlinks` (default `'report'`) if a given path is a symlink by default `inspectTree` will report that symlink (not follow it). You can flip this behaviour by setting this option to `'follow'`.
 
 **returns:**  
 `undefined` if given path doesn't exist.
