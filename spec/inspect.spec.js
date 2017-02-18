@@ -247,8 +247,6 @@ describe('inspect', function () {
         });
       });
     });
-  } else {
-    // TODO what with Windows?
   }
 
   describe('checksums', function () {

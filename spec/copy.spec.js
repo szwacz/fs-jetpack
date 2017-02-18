@@ -508,8 +508,6 @@ describe('copy', function () {
         });
       });
     });
-  } else {
-    // TODO what with Windows?
   }
 
   describe('input validation', function () {
