@@ -156,36 +156,7 @@ describe('inspect', function () {
     });
   });
 
-  describe('follows symlink by default', function () {
-    var preparations = function () {
-      fse.outputFileSync('dir/file.txt', 'abc');
-      fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
-    };
-
-    var expectations = function (data) {
-      expect(data).to.eql({
-        name: 'symlinked_file.txt',
-        type: 'file',
-        size: 3
-      });
-    };
-
-    it('sync', function () {
-      preparations();
-      expectations(jetpack.inspect('symlinked_file.txt'));
-    });
-
-    it('async', function (done) {
-      preparations();
-      jetpack.inspectAsync('symlinked_file.txt')
-      .then(function (data) {
-        expectations(data);
-        done();
-      });
-    });
-  });
-
-  describe('stats symlink if option specified', function () {
+  describe('reports symlink by default', function () {
     var preparations = function () {
       fse.outputFileSync('dir/file.txt', 'abc');
       fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
@@ -201,16 +172,52 @@ describe('inspect', function () {
 
     it('sync', function () {
       preparations();
-      expectations(jetpack.inspect('symlinked_file.txt', { symlinks: true }));
+      expectations(jetpack.inspect('symlinked_file.txt')); // implicit
+      expectations(jetpack.inspect('symlinked_file.txt', { symlinks: 'report' })); // explicit
     });
 
     it('async', function (done) {
       preparations();
-      jetpack.inspectAsync('symlinked_file.txt', { symlinks: true })
+      jetpack.inspectAsync('symlinked_file.txt') // implicit
+      .then(function (data) {
+        expectations(data);
+        return jetpack.inspectAsync('symlinked_file.txt', { symlinks: 'report' }); // explicit
+      })
       .then(function (data) {
         expectations(data);
         done();
+      })
+      .catch(done);
+    });
+  });
+
+  describe('follows symlink if option specified', function () {
+    var preparations = function () {
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.symlinkSync('dir/file.txt', 'symlinked_file.txt');
+    };
+
+    var expectations = function (data) {
+      expect(data).to.eql({
+        name: 'symlinked_file.txt',
+        type: 'file',
+        size: 3
       });
+    };
+
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspect('symlinked_file.txt', { symlinks: 'follow' }));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectAsync('symlinked_file.txt', { symlinks: 'follow' })
+      .then(function (data) {
+        expectations(data);
+        done();
+      })
+      .catch(done);
     });
   });
 
@@ -377,7 +384,13 @@ describe('inspect', function () {
             expect(function () {
               test.method('abc', { symlinks: 1 });
             }).to.throw('Argument "options.symlinks" passed to ' + test.methodName
-              + '(path, [options]) must be a boolean. Received number');
+              + '(path, [options]) must be a string. Received number');
+          });
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { symlinks: 'foo' });
+            }).to.throw('Argument "options.symlinks" passed to ' + test.methodName
+              + '(path, [options]) must have one of values: report, follow');
           });
         });
       });
