@@ -236,10 +236,10 @@ describe('inspectTree', function () {
     });
   });
 
-  describe('can inspect symlink', function () {
+  describe('reports symlinks by default', function () {
     var preparations = function () {
       fse.outputFileSync('dir/file.txt', 'abc');
-      fse.symlinkSync('dir/file.txt', 'dir/symlinked_file.txt');
+      fse.symlinkSync('file.txt', 'dir/symlinked_file.txt');
     };
 
     var expectations = function (tree) {
@@ -254,23 +254,68 @@ describe('inspectTree', function () {
         }, {
           name: 'symlinked_file.txt',
           type: 'symlink',
-          pointsAt: helper.osSep('dir/file.txt')
+          pointsAt: 'file.txt'
         }]
       });
     };
 
     it('sync', function () {
       preparations();
-      expectations(jetpack.inspectTree('dir'));
+      expectations(jetpack.inspectTree('dir')); // implicit
+      expectations(jetpack.inspectTree('dir', { symlinks: 'report' })); // explicit
     });
 
     it('async', function (done) {
       preparations();
-      jetpack.inspectTreeAsync('dir')
+      jetpack.inspectTreeAsync('dir') // implicit
+      .then(function (tree) {
+        expectations(tree);
+        return jetpack.inspectTreeAsync('dir', { symlinks: 'report' }); // explicit
+      })
       .then(function (tree) {
         expectations(tree);
         done();
+      })
+      .catch(done);
+    });
+  });
+
+  describe('follows symlinks when option specified', function () {
+    var preparations = function () {
+      fse.outputFileSync('dir/file.txt', 'abc');
+      fse.symlinkSync('file.txt', 'dir/symlinked_file.txt');
+    };
+
+    var expectations = function (tree) {
+      expect(tree).to.eql({
+        name: 'dir',
+        type: 'dir',
+        size: 6,
+        children: [{
+          name: 'file.txt',
+          type: 'file',
+          size: 3
+        }, {
+          name: 'symlinked_file.txt',
+          type: 'file',
+          size: 3
+        }]
       });
+    };
+
+    it('sync', function () {
+      preparations();
+      expectations(jetpack.inspectTree('dir', { symlinks: 'follow' }));
+    });
+
+    it('async', function (done) {
+      preparations();
+      jetpack.inspectTreeAsync('dir', { symlinks: 'follow' })
+      .then(function (tree) {
+        expectations(tree);
+        done();
+      })
+      .catch(done);
     });
   });
 
@@ -344,7 +389,7 @@ describe('inspectTree', function () {
           expect(function () {
             test.method(undefined);
           }).to.throw('Argument "path" passed to ' + test.methodName
-            + '(path, options) must be a string. Received undefined');
+            + '(path, [options]) must be a string. Received undefined');
         });
       });
     });
@@ -356,13 +401,13 @@ describe('inspectTree', function () {
             expect(function () {
               test.method('abc', { checksum: 1 });
             }).to.throw('Argument "options.checksum" passed to ' + test.methodName
-              + '(path, options) must be a string. Received number');
+              + '(path, [options]) must be a string. Received number');
           });
           it(test.type, function () {
             expect(function () {
               test.method('abc', { checksum: 'foo' });
             }).to.throw('Argument "options.checksum" passed to ' + test.methodName
-              + '(path, options) must have one of values: md5, sha1, sha256');
+              + '(path, [options]) must have one of values: md5, sha1, sha256');
           });
         });
       });
@@ -372,7 +417,23 @@ describe('inspectTree', function () {
             expect(function () {
               test.method('abc', { relativePath: 1 });
             }).to.throw('Argument "options.relativePath" passed to ' + test.methodName
-              + '(path, options) must be a boolean. Received number');
+              + '(path, [options]) must be a boolean. Received number');
+          });
+        });
+      });
+      describe('"symlinks" argument', function () {
+        tests.forEach(function (test) {
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { symlinks: 1 });
+            }).to.throw('Argument "options.symlinks" passed to ' + test.methodName
+              + '(path, [options]) must be a string. Received number');
+          });
+          it(test.type, function () {
+            expect(function () {
+              test.method('abc', { symlinks: 'foo' });
+            }).to.throw('Argument "options.symlinks" passed to ' + test.methodName
+              + '(path, [options]) must have one of values: report, follow');
           });
         });
       });
