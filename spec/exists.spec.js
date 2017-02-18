@@ -99,36 +99,6 @@ describe('exists', function () {
     });
   });
 
-  describe("(edge case) ENOTDIR error changed into 'false'", function () {
-    // We have here malformed path: /some/dir/file.txt/some_dir
-    // (so file is in the middle of path, not at the end).
-    // This leads to ENOTDIR error, but technically speaking this
-    // path doesn't exist so let's just return false.
-    // TODO Not fully sure this is sensible behaviour. It just turns one misleading
-    // state into another. The fact is this path is malformed. Can we do better?
-    var preparations = function () {
-      fse.outputFileSync('text.txt', 'abc');
-    };
-
-    var expectations = function (exists) {
-      expect(exists).to.equal(false);
-    };
-
-    it('sync', function () {
-      preparations();
-      expectations(jetpack.exists('text.txt/something'));
-    });
-
-    it('async', function (done) {
-      preparations();
-      jetpack.existsAsync('text.txt/something')
-      .then(function (exists) {
-        expectations(exists);
-        done();
-      });
-    });
-  });
-
   describe('input validation', function () {
     var tests = [
       { type: 'sync', method: jetpack.exists, methodName: 'exists' },
