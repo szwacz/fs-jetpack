@@ -1,3 +1,8 @@
+# 0.12.0 (2017-02-19)
+- **(breaking change)** Changes in `symlinks` option passed to `inspect()`.
+- Added `symlinks` option to `inspectTree()`.
+- Removed controversial edge case behaviour for `exists()`.
+
 # 0.11.0 (2017-02-09)
 - Added input validation for the whole API
 - **(breaking change)** Removed already deprecated option `buf` for `read()` method
