@@ -21,6 +21,9 @@
     "pre-commit": "^1.1.2",
     "release-assist": "^1.0.1"
   },
+  "engines": {
+    "node" : ">=4"
+  },
   "scripts": {
     "test": "mocha \"spec/**/*.spec.js\"",
     "test-with-coverage": "istanbul cover node_modules/.bin/_mocha -- 'spec/**/*.spec.js'",
