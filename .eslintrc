@@ -3,6 +3,9 @@
   "env": {
     "node": true
   },
+  "globals": {
+    "Promise": true
+  },
   "rules": {
     "no-console": 2,
     "func-names": 0,
