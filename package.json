@@ -6,7 +6,6 @@
   "dependencies": {
     "minimatch": "^3.0.2",
     "mkdirp": "^0.5.1",
-    "q": "^1.0.1",
     "rimraf": "^2.2.8"
   },
   "devDependencies": {
