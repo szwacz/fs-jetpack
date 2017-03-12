@@ -4,12 +4,13 @@
 
 'use strict';
 
-var Q = require('q');
 var os = require('os');
 var childProcess = require('child_process');
-var promisedExec = Q.denodeify(childProcess.exec);
+var promisify = require('../lib/utils/promisify');
 var benchUtils = require('./utils');
 var jetpack = require('..');
+
+var promisedExec = promisify(childProcess.exec);
 
 var testDir = jetpack.dir(os.tmpdir() + '/jetpack-benchmark', { empty: true });
 var toCopyDir = testDir.dir('to-copy');
@@ -18,7 +19,7 @@ var jetpackTime;
 var nativeTime;
 
 var prepareFiles = function (testConfig) {
-  return new Q.Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var count = 0;
     var content = new Buffer(testConfig.size);
 
@@ -41,7 +42,7 @@ var prepareFiles = function (testConfig) {
 };
 
 var waitAWhile = function () {
-  return new Q.Promise(function (resolve) {
+  return new Promise(function (resolve) {
     console.log('Waiting 10s to allow hardware buffers be emptied...');
     setTimeout(resolve, 10000);
   });

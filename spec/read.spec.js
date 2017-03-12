@@ -1,4 +1,3 @@
-var Q = require('q');
 var fse = require('fs-extra');
 var expect = require('chai').expect;
 var helper = require('./helper');
@@ -162,14 +161,17 @@ describe('read', function () {
     });
 
     it('async', function (done) {
-      Q.spread([
-        jetpack.readAsync('nonexistent.txt'),
-        jetpack.readAsync('nonexistent.txt', 'json'),
-        jetpack.readAsync('nonexistent.txt', 'buffer')
-      ], function (content1, content2, content3) {
-        expectations(content1);
-        expectations(content2);
-        expectations(content3);
+      jetpack.readAsync('nonexistent.txt')
+      .then(function (content) {
+        expectations(content);
+        return jetpack.readAsync('nonexistent.txt', 'json');
+      })
+      .then(function (content) {
+        expectations(content);
+        return jetpack.readAsync('nonexistent.txt', 'buffer');
+      })
+      .then(function (content) {
+        expectations(content);
         done();
       });
     });

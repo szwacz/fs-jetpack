@@ -1,4 +1,3 @@
-var Q = require('q');
 var fse = require('fs-extra');
 var expect = require('chai').expect;
 var path = require('./assert_path');
@@ -92,7 +91,7 @@ describe('write', function () {
     });
 
     it('async', function (done) {
-      Q.all([
+      Promise.all([
         jetpack.writeAsync('a.json', obj, { jsonIndent: 0 }),
         jetpack.writeAsync('b.json', obj), // Default indent = 2
         jetpack.writeAsync('c.json', obj, { jsonIndent: 4 })
