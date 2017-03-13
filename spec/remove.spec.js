@@ -101,7 +101,7 @@ describe('remove', function () {
     });
   });
 
-  describe('can be called witn no parameters, what will remove CWD directory', function () {
+  describe('can be called with no parameters, what will remove CWD directory', function () {
     var preparations = function () {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };

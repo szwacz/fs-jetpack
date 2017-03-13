@@ -5,8 +5,7 @@
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
     "minimatch": "^3.0.2",
-    "mkdirp": "^0.5.1",
-    "rimraf": "^2.2.8"
+    "mkdirp": "^0.5.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
