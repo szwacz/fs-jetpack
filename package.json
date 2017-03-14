@@ -4,8 +4,7 @@
   "version": "0.12.0",
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
-    "minimatch": "^3.0.2",
-    "mkdirp": "^0.5.1"
+    "minimatch": "^3.0.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -20,7 +19,7 @@
     "release-assist": "^1.0.1"
   },
   "engines": {
-    "node" : ">=4"
+    "node": ">=4"
   },
   "scripts": {
     "test": "mocha \"spec/**/*.spec.js\"",
