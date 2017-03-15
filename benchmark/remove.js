@@ -5,27 +5,32 @@
 var utils = require('./utils');
 
 var testDir = utils.prepareJetpackTestDir();
-var toCopyDir = testDir.dir('to-copy');
 var timer;
 var jetpackTime;
 var nativeTime;
 
 var test = function (testConfig) {
+  var dirJet = testDir.dir('to-be-removed-by-jetpack');
+  var dirNative = testDir.dir('to-be-removed-by-native');
+
   console.log('');
 
-  return utils.prepareFiles(toCopyDir, testConfig)
+  return utils.prepareFiles(dirJet, testConfig)
+  .then(function () {
+    return utils.prepareFiles(dirNative, testConfig);
+  })
   .then(utils.waitAWhile)
   .then(function () {
-    timer = utils.startTimer('jetpack.copyAsync()');
-    return toCopyDir.copyAsync('.', testDir.path('copied-jetpack'));
+    timer = utils.startTimer('jetpack.removeAsync()');
+    return dirJet.removeAsync();
   })
   .then(function () {
     jetpackTime = timer();
     return utils.waitAWhile();
   })
   .then(function () {
-    timer = utils.startTimer('Native cp -R');
-    return utils.exec('cp -R ' + toCopyDir.path() + ' ' + testDir.path('copied-native'));
+    timer = utils.startTimer('Native rm -rf');
+    return utils.exec('rm -rf ' + dirNative.path());
   })
   .then(function () {
     nativeTime = timer();
@@ -41,10 +46,6 @@ var testConfigs = [
   {
     files: 10000,
     size: 1000
-  },
-  {
-    files: 50,
-    size: 1000 * 1000 * 10
   }
 ];
 
