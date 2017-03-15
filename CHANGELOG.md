@@ -1,3 +1,8 @@
+# 0.13.0 (2017-03-15)
+- **(breaking change)** Dropped support for node.js 0.10 and 0.12
+- **(possibly breaking change)** fs-jetpack no longer uses libraries `mkdirp` and `rimraf`, those have been replaced with in-house implementations doing the same task. The new implementations are simpler than original libraries, so some edge cases might emerge after upgrading (please file an issue if you stumbled upon such case).
+- Started using native promises instead of `Q` library
+
 # 0.12.0 (2017-02-19)
 - **(breaking change)** Changes in `symlinks` option passed to `inspect()`.
 - Added `symlinks` option to `inspectTree()`.
