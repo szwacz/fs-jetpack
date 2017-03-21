@@ -1,3 +1,6 @@
+# 0.13.2 (2017-03-21)
+- Nested directory creation handles well race condition
+
 # 0.13.1 (2017-03-16)
 - Added lacking promise rejection handler for `copyAsync()`.
 
