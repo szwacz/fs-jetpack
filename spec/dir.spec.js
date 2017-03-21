@@ -72,6 +72,25 @@ describe('dir', function () {
     });
   });
 
+  describe('handles well two calls racing to create the same directory', function () {
+    var expectations = function () {
+      path('a/b/c').shouldBeDirectory();
+    };
+
+    it('async', function (done) {
+      var doneCount = 0;
+      var check = function () {
+        doneCount += 1;
+        if (doneCount === 2) {
+          expectations();
+          done();
+        }
+      };
+      jetpack.dirAsync('a/b/c').then(check);
+      jetpack.dirAsync('a/b/c').then(check);
+    });
+  });
+
   describe("doesn't touch directory content by default", function () {
     var preparations = function () {
       fse.mkdirsSync('a/b');
