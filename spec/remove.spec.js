@@ -73,6 +73,40 @@ describe('remove', function () {
     });
   });
 
+  describe.only('will retry attempt if file is locked', function () {
+    var preparations = function () {
+      fse.mkdirsSync('a/b/c');
+      fse.outputFileSync('a/f.txt', 'abc');
+      fse.outputFileSync('a/b/f.txt', '123');
+    };
+
+    var expectations = function () {
+      path('a').shouldNotExist();
+    };
+
+    it('async', function (done) {
+      preparations();
+
+      fse.open('a/f.txt', 'w', function (err, fd) {
+        if (err) {
+          done(err);
+        } else {
+          // Unlock the file after some time.
+          setTimeout(function () {
+            fse.close(fd);
+          }, 150);
+
+          jetpack.removeAsync('a')
+          .then(function () {
+            expectations();
+            done();
+          })
+          .catch(done);
+        }
+      });
+    });
+  });
+
   describe('respects internal CWD of jetpack instance', function () {
     var preparations = function () {
       fse.outputFileSync('a/b/c.txt', '123');
