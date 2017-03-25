@@ -1,3 +1,6 @@
+# 0.13.3 (2017-03-25)
+- `removeAsync()` retries deletion attempts for errors like `EBUSY`.
+
 # 0.13.2 (2017-03-21)
 - Nested directory creation handles well race condition
 
