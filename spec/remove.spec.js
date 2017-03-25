@@ -73,7 +73,7 @@ describe('remove', function () {
     });
   });
 
-  describe.only('will retry attempt if file is locked', function () {
+  describe('will retry attempt if file is locked', function () {
     var preparations = function () {
       fse.mkdirsSync('a/b/c');
       fse.outputFileSync('a/f.txt', 'abc');
