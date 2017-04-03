@@ -2,53 +2,53 @@
 
 'use strict';
 
-var utils = require('./utils');
+const utils = require('./utils');
 
-var testDir = utils.prepareJetpackTestDir();
-var toCopyDir = testDir.dir('to-copy');
-var timer;
-var jetpackTime;
-var nativeTime;
+const testDir = utils.prepareJetpackTestDir();
+const toCopyDir = testDir.dir('to-copy');
+let timer;
+let jetpackTime;
+let nativeTime;
 
-var test = function (testConfig) {
+const test = function (testConfig) {
   console.log('');
 
   return utils.prepareFiles(toCopyDir, testConfig)
   .then(utils.waitAWhile)
-  .then(function () {
+  .then(() => {
     timer = utils.startTimer('jetpack.copyAsync()');
     return toCopyDir.copyAsync('.', testDir.path('copied-jetpack'));
   })
-  .then(function () {
+  .then(() => {
     jetpackTime = timer();
     return utils.waitAWhile();
   })
-  .then(function () {
+  .then(() => {
     timer = utils.startTimer('Native cp -R');
-    return utils.exec('cp -R ' + toCopyDir.path() + ' ' + testDir.path('copied-native'));
+    return utils.exec(`cp -R ${toCopyDir.path()} ${testDir.path('copied-native')}`);
   })
-  .then(function () {
+  .then(() => {
     nativeTime = timer();
     utils.showDifferenceInfo(jetpackTime, nativeTime);
     return utils.cleanAfterTest();
   })
-  .catch(function (err) {
+  .catch((err) => {
     console.log(err);
   });
 };
 
-var testConfigs = [
+const testConfigs = [
   {
     files: 10000,
-    size: 1000
+    size: 1000,
   },
   {
     files: 50,
-    size: 1000 * 1000 * 10
-  }
+    size: 1000 * 1000 * 10,
+  },
 ];
 
-var runNext = function () {
+const runNext = () => {
   if (testConfigs.length > 0) {
     test(testConfigs.pop()).then(runNext);
   }

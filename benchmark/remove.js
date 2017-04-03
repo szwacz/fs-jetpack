@@ -2,54 +2,54 @@
 
 'use strict';
 
-var utils = require('./utils');
+const utils = require('./utils');
 
-var testDir = utils.prepareJetpackTestDir();
-var timer;
-var jetpackTime;
-var nativeTime;
+const testDir = utils.prepareJetpackTestDir();
+let timer;
+let jetpackTime;
+let nativeTime;
 
-var test = function (testConfig) {
-  var dirJet = testDir.dir('to-be-removed-by-jetpack');
-  var dirNative = testDir.dir('to-be-removed-by-native');
+const test = function (testConfig) {
+  const dirJet = testDir.dir('to-be-removed-by-jetpack');
+  const dirNative = testDir.dir('to-be-removed-by-native');
 
   console.log('');
 
   return utils.prepareFiles(dirJet, testConfig)
-  .then(function () {
+  .then(() => {
     return utils.prepareFiles(dirNative, testConfig);
   })
   .then(utils.waitAWhile)
-  .then(function () {
+  .then(() => {
     timer = utils.startTimer('jetpack.removeAsync()');
     return dirJet.removeAsync();
   })
-  .then(function () {
+  .then(() => {
     jetpackTime = timer();
     return utils.waitAWhile();
   })
-  .then(function () {
+  .then(() => {
     timer = utils.startTimer('Native rm -rf');
-    return utils.exec('rm -rf ' + dirNative.path());
+    return utils.exec(`rm -rf ${dirNative.path()}`);
   })
-  .then(function () {
+  .then(() => {
     nativeTime = timer();
     utils.showDifferenceInfo(jetpackTime, nativeTime);
     return utils.cleanAfterTest();
   })
-  .catch(function (err) {
+  .catch((err) => {
     console.log(err);
   });
 };
 
-var testConfigs = [
+const testConfigs = [
   {
     files: 10000,
-    size: 1000
-  }
+    size: 1000,
+  },
 ];
 
-var runNext = function () {
+const runNext = () => {
   if (testConfigs.length > 0) {
     test(testConfigs.pop()).then(runNext);
   }
