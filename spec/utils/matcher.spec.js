@@ -1,3 +1,5 @@
+'use strict';
+
 const expect = require('chai').expect;
 const matcher = require('../../lib/utils/matcher');
 

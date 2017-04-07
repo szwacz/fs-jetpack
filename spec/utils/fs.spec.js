@@ -1,3 +1,5 @@
+'use strict';
+
 const fsNode = require('fs');
 const expect = require('chai').expect;
 const fs = require('../../lib/utils/fs');

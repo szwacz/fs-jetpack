@@ -1,4 +1,4 @@
-/* eslint no-console:0 */
+'use strict';
 
 const fse = require('fs-extra');
 const pathUtil = require('path');
@@ -89,7 +89,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();
@@ -180,7 +180,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();
@@ -247,7 +247,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();
@@ -293,7 +293,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();
@@ -340,7 +340,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();
@@ -377,7 +377,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();
@@ -438,7 +438,7 @@ describe('tree walker', () => {
           data.push(a);
         }
       })
-      .on('error', console.error)
+      .on('error', done)
       .on('end', () => {
         expectations(data);
         done();

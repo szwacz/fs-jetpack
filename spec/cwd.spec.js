@@ -1,3 +1,5 @@
+'use strict';
+
 const pathUtil = require('path');
 const expect = require('chai').expect;
 const jetpack = require('..');

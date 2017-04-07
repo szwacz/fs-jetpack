@@ -1,3 +1,5 @@
+'use strict';
+
 const fse = require('fs-extra');
 const expect = require('chai').expect;
 const path = require('./assert_path');

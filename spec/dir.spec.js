@@ -1,3 +1,5 @@
+'use strict';
+
 const fse = require('fs-extra');
 const pathUtil = require('path');
 const expect = require('chai').expect;
