@@ -1,117 +1,116 @@
-var fse = require('fs-extra');
-var expect = require('chai').expect;
-var helper = require('./helper');
-var jetpack = require('..');
+const fse = require('fs-extra');
+const expect = require('chai').expect;
+const helper = require('./helper');
+const jetpack = require('..');
 
-describe('exists', function () {
+describe('exists', () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  describe("returns false if file doesn't exist", function () {
-    var expectations = function (exists) {
+  describe("returns false if file doesn't exist", () => {
+    const expectations = (exists) => {
       expect(exists).to.equal(false);
     };
 
-    it('sync', function () {
+    it('sync', () => {
       expectations(jetpack.exists('file.txt'));
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       jetpack.existsAsync('file.txt')
-      .then(function (exists) {
+      .then((exists) => {
         expectations(exists);
         done();
       });
     });
   });
 
-  describe("returns 'dir' if directory exists on given path", function () {
-    var preparations = function () {
+  describe("returns 'dir' if directory exists on given path", () => {
+    const preparations = () => {
       fse.mkdirsSync('a');
     };
 
-    var expectations = function (exists) {
+    const expectations = (exists) => {
       expect(exists).to.equal('dir');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       expectations(jetpack.exists('a'));
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.existsAsync('a')
-      .then(function (exists) {
+      .then((exists) => {
         expectations(exists);
         done();
       });
     });
   });
 
-  describe("returns 'file' if file exists on given path", function () {
-    var preparations = function () {
+  describe("returns 'file' if file exists on given path", () => {
+    const preparations = () => {
       fse.outputFileSync('text.txt', 'abc');
     };
 
-    var expectations = function (exists) {
+    const expectations = (exists) => {
       expect(exists).to.equal('file');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       expectations(jetpack.exists('text.txt'));
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.existsAsync('text.txt')
-      .then(function (exists) {
+      .then((exists) => {
         expectations(exists);
         done();
       });
     });
   });
 
-  describe('respects internal CWD of jetpack instance', function () {
-    var preparations = function () {
+  describe('respects internal CWD of jetpack instance', () => {
+    const preparations = () => {
       fse.outputFileSync('a/text.txt', 'abc');
     };
 
-    var expectations = function (exists) {
+    const expectations = (exists) => {
       expect(exists).to.equal('file');
     };
 
-    it('sync', function () {
-      var jetContext = jetpack.cwd('a');
+    it('sync', () => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       expectations(jetContext.exists('text.txt'));
     });
 
-    it('async', function (done) {
-      var jetContext = jetpack.cwd('a');
+    it('async', (done) => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       jetContext.existsAsync('text.txt')
-      .then(function (exists) {
+      .then((exists) => {
         expectations(exists);
         done();
       });
     });
   });
 
-  describe('input validation', function () {
-    var tests = [
+  describe('input validation', () => {
+    const tests = [
       { type: 'sync', method: jetpack.exists, methodName: 'exists' },
-      { type: 'async', method: jetpack.existsAsync, methodName: 'existsAsync' }
+      { type: 'async', method: jetpack.existsAsync, methodName: 'existsAsync' },
     ];
 
-    describe('"path" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"path" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method(undefined);
-          }).to.throw('Argument "path" passed to ' + test.methodName
-            + '(path) must be a string. Received undefined');
+          }).to.throw(`Argument "path" passed to ${test.methodName}(path) must be a string. Received undefined`);
         });
       });
     });

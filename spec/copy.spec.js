@@ -1,126 +1,126 @@
-var fse = require('fs-extra');
-var expect = require('chai').expect;
-var path = require('./assert_path');
-var helper = require('./helper');
-var jetpack = require('..');
+const fse = require('fs-extra');
+const expect = require('chai').expect;
+const path = require('./assert_path');
+const helper = require('./helper');
+const jetpack = require('..');
 
-describe('copy', function () {
+describe('copy', () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  describe('copies a file', function () {
-    var preparations = function () {
+  describe('copies a file', () => {
+    const preparations = () => {
       fse.outputFileSync('file.txt', 'abc');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('file.txt').shouldBeFileWithContent('abc');
       path('file_copied.txt').shouldBeFileWithContent('abc');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.copy('file.txt', 'file_copied.txt');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.copyAsync('file.txt', 'file_copied.txt')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('can copy file to nonexistent directory (will create directory)', function () {
-    var preparations = function () {
+  describe('can copy file to nonexistent directory (will create directory)', () => {
+    const preparations = () => {
       fse.outputFileSync('file.txt', 'abc');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('file.txt').shouldBeFileWithContent('abc');
       path('dir/dir/file.txt').shouldBeFileWithContent('abc');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.copy('file.txt', 'dir/dir/file.txt');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.copyAsync('file.txt', 'dir/dir/file.txt')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('copies empty directory', function () {
-    var preparations = function () {
+  describe('copies empty directory', () => {
+    const preparations = () => {
       fse.mkdirsSync('dir');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('copied/dir').shouldBeDirectory();
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.copy('dir', 'copied/dir');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.copyAsync('dir', 'copied/dir')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('copies a tree of files', function () {
-    var preparations = function () {
+  describe('copies a tree of files', () => {
+    const preparations = () => {
       fse.outputFileSync('a/f1.txt', 'abc');
       fse.outputFileSync('a/b/f2.txt', '123');
       fse.mkdirsSync('a/b/c');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('copied/a/f1.txt').shouldBeFileWithContent('abc');
       path('copied/a/b/c').shouldBeDirectory();
       path('copied/a/b/f2.txt').shouldBeFileWithContent('123');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.copy('a', 'copied/a');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.copyAsync('a', 'copied/a')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe("generates nice error if source path doesn't exist", function () {
-    var expectations = function (err) {
+  describe("generates nice error if source path doesn't exist", () => {
+    const expectations = (err) => {
       expect(err.code).to.equal('ENOENT');
       expect(err.message).to.have.string("Path to copy doesn't exist");
     };
 
-    it('sync', function () {
+    it('sync', () => {
       try {
         jetpack.copy('a', 'b');
         throw new Error('Expected error to be thrown');
@@ -129,56 +129,56 @@ describe('copy', function () {
       }
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       jetpack.copyAsync('a', 'b')
-      .catch(function (err) {
+      .catch((err) => {
         expectations(err);
         done();
       });
     });
   });
 
-  describe('respects internal CWD of jetpack instance', function () {
-    var preparations = function () {
+  describe('respects internal CWD of jetpack instance', () => {
+    const preparations = () => {
       fse.outputFileSync('a/b.txt', 'abc');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('a/b.txt').shouldBeFileWithContent('abc');
       path('a/x.txt').shouldBeFileWithContent('abc');
     };
 
-    it('sync', function () {
-      var jetContext = jetpack.cwd('a');
+    it('sync', () => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       jetContext.copy('b.txt', 'x.txt');
       expectations();
     });
 
-    it('async', function (done) {
-      var jetContext = jetpack.cwd('a');
+    it('async', (done) => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       jetContext.copyAsync('b.txt', 'x.txt')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('overwriting behaviour', function () {
-    describe('does not overwrite by default', function () {
-      var preparations = function () {
+  describe('overwriting behaviour', () => {
+    describe('does not overwrite by default', () => {
+      const preparations = () => {
         fse.outputFileSync('a/file.txt', 'abc');
         fse.mkdirsSync('b');
       };
 
-      var expectations = function (err) {
+      const expectations = (err) => {
         expect(err.code).to.equal('EEXIST');
         expect(err.message).to.have.string('Destination path already exists');
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         try {
           jetpack.copy('a', 'b');
@@ -188,37 +188,37 @@ describe('copy', function () {
         }
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('a', 'b')
-        .catch(function (err) {
+        .catch((err) => {
           expectations(err);
           done();
         });
       });
     });
 
-    describe('overwrites if it was specified', function () {
-      var preparations = function () {
+    describe('overwrites if it was specified', () => {
+      const preparations = () => {
         fse.outputFileSync('a/file.txt', 'abc');
         fse.outputFileSync('b/file.txt', 'xyz');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('a/file.txt').shouldBeFileWithContent('abc');
         path('b/file.txt').shouldBeFileWithContent('abc');
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('a', 'b', { overwrite: true });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('a', 'b', { overwrite: true })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
@@ -226,141 +226,141 @@ describe('copy', function () {
     });
   });
 
-  describe('filter what to copy', function () {
-    describe('by simple pattern', function () {
-      var preparations = function () {
+  describe('filter what to copy', () => {
+    describe('by simple pattern', () => {
+      const preparations = () => {
         fse.outputFileSync('dir/file.txt', '1');
         fse.outputFileSync('dir/file.md', 'm1');
         fse.outputFileSync('dir/a/file.txt', '2');
         fse.outputFileSync('dir/a/file.md', 'm2');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('copy/file.txt').shouldBeFileWithContent('1');
         path('copy/file.md').shouldNotExist();
         path('copy/a/file.txt').shouldBeFileWithContent('2');
         path('copy/a/file.md').shouldNotExist();
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('dir', 'copy', { matching: '*.txt' });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('dir', 'copy', { matching: '*.txt' })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
       });
     });
 
-    describe('by pattern anchored to copied directory', function () {
-      var preparations = function () {
+    describe('by pattern anchored to copied directory', () => {
+      const preparations = () => {
         fse.outputFileSync('x/y/dir/file.txt', '1');
         fse.outputFileSync('x/y/dir/a/file.txt', '2');
         fse.outputFileSync('x/y/dir/a/b/file.txt', '3');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('copy/file.txt').shouldNotExist();
         path('copy/a/file.txt').shouldBeFileWithContent('2');
         path('copy/a/b/file.txt').shouldNotExist();
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('x/y/dir', 'copy', { matching: 'a/*.txt' });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('x/y/dir', 'copy', { matching: 'a/*.txt' })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
       });
     });
 
-    describe('can use ./ as indication of anchor directory', function () {
-      var preparations = function () {
+    describe('can use ./ as indication of anchor directory', () => {
+      const preparations = () => {
         fse.outputFileSync('x/y/a.txt', '123');
         fse.outputFileSync('x/y/b/a.txt', '456');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('copy/a.txt').shouldBeFileWithContent('123');
         path('copy/b/a.txt').shouldNotExist();
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('x/y', 'copy', { matching: './a.txt' });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('x/y', 'copy', { matching: './a.txt' })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
       });
     });
 
-    describe('matching works also if copying single file', function () {
-      var preparations = function () {
+    describe('matching works also if copying single file', () => {
+      const preparations = () => {
         fse.outputFileSync('a', '123');
         fse.outputFileSync('x', '456');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('a-copy').shouldNotExist();
         path('x-copy').shouldBeFileWithContent('456');
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('a', 'a-copy', { matching: 'x' });
         jetpack.copy('x', 'x-copy', { matching: 'x' });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('a', 'a-copy', { matching: 'x' })
-        .then(function () {
+        .then(() => {
           return jetpack.copyAsync('x', 'x-copy', { matching: 'x' });
         })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
       });
     });
 
-    describe('can use negation in patterns', function () {
-      var preparations = function () {
+    describe('can use negation in patterns', () => {
+      const preparations = () => {
         fse.mkdirsSync('x/y/dir/a/b');
         fse.mkdirsSync('x/y/dir/a/x');
         fse.mkdirsSync('x/y/dir/a/y');
         fse.mkdirsSync('x/y/dir/a/z');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('copy/dir/a/b').shouldBeDirectory();
         path('copy/dir/a/x').shouldNotExist();
         path('copy/dir/a/y').shouldNotExist();
         path('copy/dir/a/z').shouldNotExist();
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('x/y', 'copy', {
           matching: [
@@ -368,13 +368,13 @@ describe('copy', function () {
             // Three different pattern types to test:
             '!x',
             '!dir/a/y',
-            '!./dir/a/z'
-          ]
+            '!./dir/a/z',
+          ],
         });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('x/y', 'copy', {
           matching: [
@@ -382,18 +382,18 @@ describe('copy', function () {
             // Three different pattern types to test:
             '!x',
             '!dir/a/y',
-            '!./dir/a/z'
-          ]
+            '!./dir/a/z',
+          ],
         })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
       });
     });
 
-    describe('wildcard copies everything', function () {
-      var preparations = function () {
+    describe('wildcard copies everything', () => {
+      const preparations = () => {
         // Just a file
         fse.outputFileSync('x/file.txt', '123');
         // Dot file
@@ -402,22 +402,22 @@ describe('copy', function () {
         fse.mkdirsSync('x/y/z');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('copy/file.txt').shouldBeFileWithContent('123');
         path('copy/y/.dot').shouldBeFileWithContent('dot');
         path('copy/y/z').shouldBeDirectory();
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('x', 'copy', { matching: '**' });
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('x', 'copy', { matching: '**' })
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
@@ -425,55 +425,55 @@ describe('copy', function () {
     });
   });
 
-  describe('can copy symlink', function () {
-    var preparations = function () {
+  describe('can copy symlink', () => {
+    const preparations = () => {
       fse.mkdirsSync('to_copy');
       fse.symlinkSync('some/file', 'to_copy/symlink');
     };
-    var expectations = function () {
+    const expectations = () => {
       expect(fse.lstatSync('copied/symlink').isSymbolicLink()).to.equal(true);
       expect(fse.readlinkSync('copied/symlink')).to.equal(helper.osSep('some/file'));
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.copy('to_copy', 'copied');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.copyAsync('to_copy', 'copied')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('can overwrite symlink', function () {
-    var preparations = function () {
+  describe('can overwrite symlink', () => {
+    const preparations = () => {
       fse.mkdirsSync('to_copy');
       fse.symlinkSync('some/file', 'to_copy/symlink');
       fse.mkdirsSync('copied');
       fse.symlinkSync('some/other_file', 'copied/symlink');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       expect(fse.lstatSync('copied/symlink').isSymbolicLink()).to.equal(true);
       expect(fse.readlinkSync('copied/symlink')).to.equal(helper.osSep('some/file'));
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.copy('to_copy', 'copied', { overwrite: true });
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.copyAsync('to_copy', 'copied', { overwrite: true })
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
@@ -481,28 +481,28 @@ describe('copy', function () {
   });
 
   if (process.platform !== 'win32') {
-    describe('copies also file permissions (unix only)', function () {
-      var preparations = function () {
+    describe('copies also file permissions (unix only)', () => {
+      const preparations = () => {
         fse.outputFileSync('a/b/c.txt', 'abc');
         fse.chmodSync('a/b', '700');
         fse.chmodSync('a/b/c.txt', '711');
       };
 
-      var expectations = function () {
+      const expectations = () => {
         path('x/b').shouldHaveMode('700');
         path('x/b/c.txt').shouldHaveMode('711');
       };
 
-      it('sync', function () {
+      it('sync', () => {
         preparations();
         jetpack.copy('a', 'x');
         expectations();
       });
 
-      it('async', function (done) {
+      it('async', (done) => {
         preparations();
         jetpack.copyAsync('a', 'x')
-        .then(function () {
+        .then(() => {
           expectations();
           done();
         });
@@ -510,52 +510,48 @@ describe('copy', function () {
     });
   }
 
-  describe('input validation', function () {
-    var tests = [
+  describe('input validation', () => {
+    const tests = [
       { type: 'sync', method: jetpack.copy, methodName: 'copy' },
-      { type: 'async', method: jetpack.copyAsync, methodName: 'copyAsync' }
+      { type: 'async', method: jetpack.copyAsync, methodName: 'copyAsync' },
     ];
 
-    describe('"from" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"from" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method(undefined, 'xyz');
-          }).to.throw('Argument "from" passed to ' + test.methodName
-            + '(from, to, [options]) must be a string. Received undefined');
+          }).to.throw(`Argument "from" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`);
         });
       });
     });
 
-    describe('"to" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"to" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method('abc');
-          }).to.throw('Argument "to" passed to ' + test.methodName
-            + '(from, to, [options]) must be a string. Received undefined');
+          }).to.throw(`Argument "to" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`);
         });
       });
     });
 
-    describe('"options" object', function () {
-      describe('"overwrite" argument', function () {
-        tests.forEach(function (test) {
-          it(test.type, function () {
-            expect(function () {
+    describe('"options" object', () => {
+      describe('"overwrite" argument', () => {
+        tests.forEach((test) => {
+          it(test.type, () => {
+            expect(() => {
               test.method('abc', 'xyz', { overwrite: 1 });
-            }).to.throw('Argument "options.overwrite" passed to ' + test.methodName
-              + '(from, to, [options]) must be a boolean. Received number');
+            }).to.throw(`Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean. Received number`);
           });
         });
       });
-      describe('"matching" argument', function () {
-        tests.forEach(function (test) {
-          it(test.type, function () {
-            expect(function () {
+      describe('"matching" argument', () => {
+        tests.forEach((test) => {
+          it(test.type, () => {
+            expect(() => {
               test.method('abc', 'xyz', { matching: 1 });
-            }).to.throw('Argument "options.matching" passed to ' + test.methodName
-              + '(from, to, [options]) must be a string or an array of string. Received number');
+            }).to.throw(`Argument "options.matching" passed to ${test.methodName}(from, to, [options]) must be a string or an array of string. Received number`);
           });
         });
       });

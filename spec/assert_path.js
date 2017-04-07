@@ -1,12 +1,11 @@
-var fs = require('fs');
+const fs = require('fs');
 
-var areBuffersEqual = function (bufA, bufB) {
-  var i;
-  var len = bufA.length;
+const areBuffersEqual = (bufA, bufB) => {
+  const len = bufA.length;
   if (len !== bufB.length) {
     return false;
   }
-  for (i = 0; i < len; i++) {
+  for (let i = 0; i < len; i += 1) {
     if (bufA.readUInt8(i) !== bufB.readUInt8(i)) {
       return false;
     }
@@ -14,13 +13,13 @@ var areBuffersEqual = function (bufA, bufB) {
   return true;
 };
 
-module.exports = function (path) {
+module.exports = (path) => {
   return {
-    shouldNotExist: function () {
-      var message;
+    shouldNotExist: () => {
+      let message;
       try {
         fs.statSync(path);
-        message = 'Path ' + path + ' should NOT exist';
+        message = `Path ${path} should NOT exist`;
       } catch (err) {
         if (err.code !== 'ENOENT') {
           throw err;
@@ -31,17 +30,17 @@ module.exports = function (path) {
       }
     },
 
-    shouldBeDirectory: function () {
-      var message;
-      var stat;
+    shouldBeDirectory: () => {
+      let message;
+      let stat;
       try {
         stat = fs.statSync(path);
         if (!stat.isDirectory()) {
-          message = 'Path ' + path + ' should be a directory';
+          message = `Path ${path} should be a directory`;
         }
       } catch (err) {
         if (err.code === 'ENOENT') {
-          message = 'Path ' + path + ' should exist';
+          message = `Path ${path} should exist`;
         } else {
           throw err;
         }
@@ -51,13 +50,12 @@ module.exports = function (path) {
       }
     },
 
-    shouldBeFileWithContent: function (expectedContent) {
-      var message;
-      var content;
+    shouldBeFileWithContent: (expectedContent) => {
+      let message;
+      let content;
 
-      var generateMessage = function (expected, found) {
-        message = 'File ' + path + ' should have content "'
-          + expected + '" but have instead "' + found + '"';
+      const generateMessage = (expected, found) => {
+        message = `File ${path} should have content "${expected}" but found "${found}"`;
       };
 
       try {
@@ -74,7 +72,7 @@ module.exports = function (path) {
         }
       } catch (err) {
         if (err.code === 'ENOENT') {
-          message = 'File ' + path + ' should exist';
+          message = `File ${path} should exist`;
         } else {
           throw err;
         }
@@ -84,19 +82,19 @@ module.exports = function (path) {
       }
     },
 
-    shouldHaveMode: function (expectedMode) {
-      var mode;
-      var message;
+    shouldHaveMode: (expectedMode) => {
+      let mode;
+      let message;
+
       try {
         mode = fs.statSync(path).mode.toString(8);
         mode = mode.substring(mode.length - 3);
         if (mode !== expectedMode) {
-          message = 'Path ' + path + ' should have mode "'
-            + expectedMode + '" but have instead "' + mode + '"';
+          message = `Path ${path} should have mode "${expectedMode}" but have instead "${mode}"`;
         }
       } catch (err) {
         if (err.code === 'ENOENT') {
-          message = 'Path ' + path + ' should exist';
+          message = `Path ${path} should exist`;
         } else {
           throw err;
         }
@@ -104,6 +102,6 @@ module.exports = function (path) {
       if (message) {
         throw new Error(message);
       }
-    }
+    },
   };
 };
