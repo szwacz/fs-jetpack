@@ -236,7 +236,7 @@ describe('file', () => {
   });
 
   describe('returns currently used jetpack instance', () => {
-    const expectations = function (jetpackContext) {
+    const expectations = (jetpackContext) => {
       expect(jetpackContext).to.equal(jetpack);
     };
 

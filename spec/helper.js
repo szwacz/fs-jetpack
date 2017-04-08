@@ -29,7 +29,7 @@ exports.switchBackToCorrectCwd = () => {
   fse.removeSync(path);
 };
 
-exports.parseMode = function (modeAsNumber) {
+exports.parseMode = (modeAsNumber) => {
   const mode = modeAsNumber.toString(8);
   return mode.substring(mode.length - 3);
 };

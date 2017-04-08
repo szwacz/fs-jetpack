@@ -197,7 +197,7 @@ describe('dir', () => {
   });
 
   describe('returns jetack instance pointing on this directory', () => {
-    const expectations = function (jetpackContext) {
+    const expectations = (jetpackContext) => {
       expect(jetpackContext.cwd()).to.equal(pathUtil.resolve('a'));
     };
 

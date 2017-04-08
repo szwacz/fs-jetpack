@@ -86,7 +86,7 @@ describe('list', () => {
       fse.outputFileSync('file.txt', 'abc');
     };
 
-    const expectations = function (err) {
+    const expectations = (err) => {
       expect(err.code).to.equal('ENOTDIR');
     };
 

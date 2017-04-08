@@ -9,7 +9,7 @@ let timer;
 let jetpackTime;
 let nativeTime;
 
-const test = function (testConfig) {
+const test = (testConfig) => {
   const dirJet = testDir.dir('to-be-removed-by-jetpack');
   const dirNative = testDir.dir('to-be-removed-by-native');
 

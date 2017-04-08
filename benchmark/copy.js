@@ -10,7 +10,7 @@ let timer;
 let jetpackTime;
 let nativeTime;
 
-const test = function (testConfig) {
+const test = (testConfig) => {
   console.log('');
 
   return utils.prepareFiles(toCopyDir, testConfig)
