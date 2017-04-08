@@ -12,7 +12,7 @@ npm install fs-jetpack
 
 ## Usage
 ```javascript
-var jetpack = require('fs-jetpack');
+const jetpack = require('fs-jetpack');
 ```
 
 # Sync & Async
@@ -25,14 +25,14 @@ Also it's just convenient...
 
 If you don't see the word "Async" in method name it returns value immediately.
 ```js
-var data = jetpack.read('file.txt');
+const data = jetpack.read('file.txt');
 console.log(data);
 ```
 
 When you see "Async" that method returns promise which when resolved returns value.
 ```js
 jetpack.readAsync('file.txt')
-.then(function (data) {
+.then((data) => {
   console.log(data);
 });
 ```
@@ -69,7 +69,7 @@ Appends given data to the end of file. If file or any parent directory doesn't e
 `path` the path to file.  
 `data` data to append (can be `String` or `Buffer`).  
 `options` (optional) `Object` with possible fields:
-* `mode` if the file doesn't exist yet, will be created with given mode. Value could be number (eg. `0700`) or string (eg. `'700'`).
+* `mode` if the file doesn't exist yet, will be created with given mode. Value could be number (eg. `0o700`) or string (eg. `'700'`).
 
 **returns:**  
 Nothing.
@@ -148,17 +148,17 @@ console.log(process.cwd()); // '/one/two/three'
 console.log(jetpack.cwd()); // '/one/two/three'
 
 // Now let's create new CWD context...
-var jetParent = jetpack.cwd('..');
+const jetParent = jetpack.cwd('..');
 console.log(jetParent.cwd()); // '/one/two'
 // ...and use this new context.
 jetParent.dir('four'); // we just created directory '/one/two/four'
 
 // One CWD context can be used to create next CWD context.
-var jetParentParent = jetParent.cwd('..');
+const jetParentParent = jetParent.cwd('..');
 console.log(jetParentParent.cwd()); // '/one'
 
 // When many parameters specified they are treated as parts of path to resolve
-var sillyCwd = jetpack.cwd('a', 'b', 'c');
+const sillyCwd = jetpack.cwd('a', 'b', 'c');
 console.log(sillyCwd.cwd()); // '/one/two/three/a/b/c'
 ```
 
@@ -172,7 +172,7 @@ Ensures that directory on given path exists and meets given criteria. If any cri
 `path` path to directory to examine.  
 `criteria` (optional) criteria to be met by the directory. Is an `Object` with possible fields:
 * `empty` (default: `false`) whether directory should be empty (no other files or directories inside). If set to `true` and directory contains any files or subdirectories all of them will be deleted.
-* `mode` ensures directory has specified mode. If not set and directory already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
+* `mode` ensures directory has specified mode. If not set and directory already exists, current mode will be preserved. Value could be number (eg. `0o700`) or string (eg. `'700'`).
 
 **returns:**  
 New CWD context with directory specified in `path` as CWD (see docs of `cwd()` method for explanation).  
@@ -215,7 +215,7 @@ Ensures that file exists and meets given criteria. If any criterium is not met i
 `criteria` (optional) criteria to be met by the file. Is an `Object` with possible fields:
 * `content` sets file content. Can be `String`, `Buffer`, `Object` or `Array`. If `Object` or `Array` given to this parameter data will be written as JSON.
 * `jsonIndent` (defaults to 2) if writing JSON data this tells how many spaces should one indentation have.
-* `mode` ensures file has specified mode. If not set and file already exists, current mode will be preserved. Value could be number (eg. `0700`) or string (eg. `'700'`).
+* `mode` ensures file has specified mode. If not set and file already exists, current mode will be preserved. Value could be number (eg. `0o700`) or string (eg. `'700'`).
 
 **returns:**  
 Jetpack object you called this method on (self).
@@ -269,7 +269,7 @@ jetpack.find('foo', { matching: './*.txt' });
 jetpack.find('foo', { matching: '*.txt', recursive: false });
 
 // Path parameter might be omitted and CWD is used as path in that case.
-var myStuffDir = jetpack.cwd('my-stuff');
+const myStuffDir = jetpack.cwd('my-stuff');
 myStuffDir.find({ matching: ['*.md'] });
 ```
 
@@ -432,7 +432,7 @@ jetpack.remove('my_work/important_stuff');
 
 // Remove can be called with no parameters and will default to CWD then.
 // In this example folder 'my_work' will cease to exist.
-var myStuffDir = jetpack.cwd('my_stuff');
+const myStuffDir = jetpack.cwd('my_stuff');
 myStuffDir.remove();
 ```
 

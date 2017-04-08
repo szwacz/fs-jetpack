@@ -4,20 +4,20 @@
 ## Every jetpack instance has its internal CWD
 You can create many jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
 ```js
-var src = jetpack.cwd('path/to/source');
-var dest = jetpack.cwd('path/to/destination');
+const src = jetpack.cwd('path/to/source');
+const dest = jetpack.cwd('path/to/destination');
 src.copy('foo.txt', dest.path('bar.txt'));
 ```
 
 ## JSON is a first class citizen
 You can write JavaScript object directly to disk and it will be transformed to JSON automatically.
 ```js
-var obj = { greet: "Hello World!" };
+const obj = { greet: "Hello World!" };
 jetpack.write('file.json', obj);
 ```
 Then you can get your object back just by telling read method that it's a JSON.
 ```js
-var obj = jetpack.read('file.json', 'json');
+const obj = jetpack.read('file.json', 'json');
 ```
 
 ## Jetpack throws errors at you as the last resort
@@ -27,14 +27,14 @@ Everyone who did something with files for sure seen (and probably hates) *"ENOEN
 
 ## Jetpack is great for build scripts
 ```js
-var src = jetpack.cwd('path/to/source');
-var dest = jetpack.dir('path/to/destination', { empty: true });
+const src = jetpack.cwd('path/to/source');
+const dest = jetpack.dir('path/to/destination', { empty: true });
 
 src.copy('.', dest.path(), {
     matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
 });
 
-var config = src.read('config.json', 'json');
+const config = src.read('config.json', 'json');
 config.env = 'production';
 dest.write('config.json', config);
 ```
@@ -70,9 +70,9 @@ jetpack.find('my-dir', {
 
 ## Check if two files have the same content
 ```js
-var file1 = jetpack.inspect('file1', { checksum: 'md5' });
-var file2 = jetpack.inspect('file2', { checksum: 'md5' });
-var areTheSame = (file1.md5 === file2.md5);
+const file1 = jetpack.inspect('file1', { checksum: 'md5' });
+const file2 = jetpack.inspect('file2', { checksum: 'md5' });
+const areTheSame = (file1.md5 === file2.md5);
 ```
 
 ## More secure writes to disk
