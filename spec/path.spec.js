@@ -1,29 +1,31 @@
-var pathUtil = require('path');
-var expect = require('chai').expect;
-var jetpack = require('..');
+'use strict';
 
-describe('path', function () {
-  it('if no parameters passed returns same path as cwd()', function () {
+const pathUtil = require('path');
+const expect = require('chai').expect;
+const jetpack = require('..');
+
+describe('path', () => {
+  it('if no parameters passed returns same path as cwd()', () => {
     expect(jetpack.path()).to.equal(jetpack.cwd());
     expect(jetpack.path('')).to.equal(jetpack.cwd());
     expect(jetpack.path('.')).to.equal(jetpack.cwd());
   });
 
-  it('is absolute if prepending slash present', function () {
+  it('is absolute if prepending slash present', () => {
     expect(jetpack.path('/blah')).to.equal(pathUtil.resolve('/blah'));
   });
 
-  it('resolves to CWD path of this jetpack instance', function () {
-    var a = pathUtil.join(jetpack.cwd(), 'a');
+  it('resolves to CWD path of this jetpack instance', () => {
+    const a = pathUtil.join(jetpack.cwd(), 'a');
     // Create jetpack instance with other CWD
-    var jetpackSubdir = jetpack.cwd('subdir');
-    var b = pathUtil.join(jetpack.cwd(), 'subdir', 'b');
+    const jetpackSubdir = jetpack.cwd('subdir');
+    const b = pathUtil.join(jetpack.cwd(), 'subdir', 'b');
     expect(jetpack.path('a')).to.equal(a);
     expect(jetpackSubdir.path('b')).to.equal(b);
   });
 
-  it('can take unlimited number of arguments as path parts', function () {
-    var abc = pathUtil.join(jetpack.cwd(), 'a', 'b', 'c');
+  it('can take unlimited number of arguments as path parts', () => {
+    const abc = pathUtil.join(jetpack.cwd(), 'a', 'b', 'c');
     expect(jetpack.path('a', 'b', 'c')).to.equal(abc);
   });
 });

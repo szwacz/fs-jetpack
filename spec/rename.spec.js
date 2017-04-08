@@ -1,117 +1,117 @@
-var fse = require('fs-extra');
-var expect = require('chai').expect;
-var path = require('./assert_path');
-var helper = require('./helper');
-var jetpack = require('..');
+'use strict';
 
-describe('rename', function () {
+const fse = require('fs-extra');
+const expect = require('chai').expect;
+const path = require('./assert_path');
+const helper = require('./helper');
+const jetpack = require('..');
+
+describe('rename', () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  describe('renames file', function () {
-    var preparations = function () {
+  describe('renames file', () => {
+    const preparations = () => {
       fse.outputFileSync('a/b.txt', 'abc');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('a/b.txt').shouldNotExist();
       path('a/x.txt').shouldBeFileWithContent('abc');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.rename('a/b.txt', 'x.txt');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.renameAsync('a/b.txt', 'x.txt')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('renames directory', function () {
-    var preparations = function () {
+  describe('renames directory', () => {
+    const preparations = () => {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('a/b').shouldNotExist();
       path('a/x').shouldBeDirectory();
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.rename('a/b', 'x');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.renameAsync('a/b', 'x')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('respects internal CWD of jetpack instance', function () {
-    var preparations = function () {
+  describe('respects internal CWD of jetpack instance', () => {
+    const preparations = () => {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path('a/b').shouldNotExist();
       path('a/x').shouldBeDirectory();
     };
 
-    it('sync', function () {
-      var jetContext = jetpack.cwd('a');
+    it('sync', () => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       jetContext.rename('b', 'x');
       expectations();
     });
 
-    it('async', function (done) {
-      var jetContext = jetpack.cwd('a');
+    it('async', (done) => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       jetContext.renameAsync('b', 'x')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('input validation', function () {
-    var tests = [
+  describe('input validation', () => {
+    const tests = [
       { type: 'sync', method: jetpack.rename, methodName: 'rename' },
-      { type: 'async', method: jetpack.renameAsync, methodName: 'renameAsync' }
+      { type: 'async', method: jetpack.renameAsync, methodName: 'renameAsync' },
     ];
 
-    describe('"path" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"path" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method(undefined, 'xyz');
-          }).to.throw('Argument "path" passed to ' + test.methodName
-            + '(path, newName) must be a string. Received undefined');
+          }).to.throw(`Argument "path" passed to ${test.methodName}(path, newName) must be a string. Received undefined`);
         });
       });
     });
 
-    describe('"newName" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"newName" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method('abc', undefined);
-          }).to.throw('Argument "newName" passed to ' + test.methodName
-            + '(path, newName) must be a string. Received undefined');
+          }).to.throw(`Argument "newName" passed to ${test.methodName}(path, newName) must be a string. Received undefined`);
         });
       });
     });

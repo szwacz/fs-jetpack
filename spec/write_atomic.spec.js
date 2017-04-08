@@ -1,83 +1,85 @@
-var fse = require('fs-extra');
-var path = require('./assert_path');
-var helper = require('./helper');
-var jetpack = require('..');
+'use strict';
 
-describe('atomic write', function () {
-  var filePath = 'file.txt';
-  var tempPath = filePath + '.__new__';
+const fse = require('fs-extra');
+const path = require('./assert_path');
+const helper = require('./helper');
+const jetpack = require('..');
+
+describe('atomic write', () => {
+  const filePath = 'file.txt';
+  const tempPath = `${filePath}.__new__`;
 
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  describe("fresh write (file doesn't exist yet)", function () {
-    var expectations = function () {
+  describe("fresh write (file doesn't exist yet)", () => {
+    const expectations = () => {
       path(filePath).shouldBeFileWithContent('abc');
       path(tempPath).shouldNotExist();
     };
 
-    it('sync', function () {
+    it('sync', () => {
       jetpack.write(filePath, 'abc', { atomic: true });
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       jetpack.writeAsync(filePath, 'abc', { atomic: true })
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('overwrite existing file', function () {
-    var preparations = function () {
+  describe('overwrite existing file', () => {
+    const preparations = () => {
       fse.outputFileSync(filePath, 'xyz');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path(filePath).shouldBeFileWithContent('abc');
       path(tempPath).shouldNotExist();
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.write(filePath, 'abc', { atomic: true });
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.writeAsync(filePath, 'abc', { atomic: true })
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('if previous operation failed', function () {
-    var preparations = function () {
+  describe('if previous operation failed', () => {
+    const preparations = () => {
       fse.outputFileSync(filePath, 'xyz');
       // Simulating remained file from interrupted previous write attempt.
       fse.outputFileSync(tempPath, '123');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       path(filePath).shouldBeFileWithContent('abc');
       path(tempPath).shouldNotExist();
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       jetpack.write(filePath, 'abc', { atomic: true });
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.writeAsync(filePath, 'abc', { atomic: true })
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });

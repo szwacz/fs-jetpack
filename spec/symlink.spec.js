@@ -1,102 +1,102 @@
-var fse = require('fs-extra');
-var expect = require('chai').expect;
-var helper = require('./helper');
-var jetpack = require('..');
+'use strict';
 
-describe('symlink', function () {
+const fse = require('fs-extra');
+const expect = require('chai').expect;
+const helper = require('./helper');
+const jetpack = require('..');
+
+describe('symlink', () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  describe('can create a symlink', function () {
-    var expectations = function () {
+  describe('can create a symlink', () => {
+    const expectations = () => {
       expect(fse.lstatSync('symlink').isSymbolicLink()).to.equal(true);
       expect(fse.readlinkSync('symlink')).to.equal('some_path');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       jetpack.symlink('some_path', 'symlink');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       jetpack.symlinkAsync('some_path', 'symlink')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('can create nonexistent parent directories', function () {
-    var expectations = function () {
+  describe('can create nonexistent parent directories', () => {
+    const expectations = () => {
       expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).to.equal(true);
     };
 
-    it('sync', function () {
+    it('sync', () => {
       jetpack.symlink('whatever', 'a/b/symlink');
       expectations();
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       jetpack.symlinkAsync('whatever', 'a/b/symlink')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('respects internal CWD of jetpack instance', function () {
-    var preparations = function () {
+  describe('respects internal CWD of jetpack instance', () => {
+    const preparations = () => {
       fse.mkdirsSync('a/b');
     };
 
-    var expectations = function () {
+    const expectations = () => {
       expect(fse.lstatSync('a/b/symlink').isSymbolicLink()).to.equal(true);
     };
 
-    it('sync', function () {
-      var jetContext = jetpack.cwd('a/b');
+    it('sync', () => {
+      const jetContext = jetpack.cwd('a/b');
       preparations();
       jetContext.symlink('whatever', 'symlink');
       expectations();
     });
 
-    it('async', function (done) {
-      var jetContext = jetpack.cwd('a/b');
+    it('async', (done) => {
+      const jetContext = jetpack.cwd('a/b');
       preparations();
       jetContext.symlinkAsync('whatever', 'symlink')
-      .then(function () {
+      .then(() => {
         expectations();
         done();
       });
     });
   });
 
-  describe('input validation', function () {
-    var tests = [
+  describe('input validation', () => {
+    const tests = [
       { type: 'sync', method: jetpack.symlink, methodName: 'symlink' },
-      { type: 'async', method: jetpack.symlinkAsync, methodName: 'symlinkAsync' }
+      { type: 'async', method: jetpack.symlinkAsync, methodName: 'symlinkAsync' },
     ];
 
-    describe('"symlinkValue" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"symlinkValue" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method(undefined, 'abc');
-          }).to.throw('Argument "symlinkValue" passed to ' + test.methodName
-            + '(symlinkValue, path) must be a string. Received undefined');
+          }).to.throw(`Argument "symlinkValue" passed to ${test.methodName}(symlinkValue, path) must be a string. Received undefined`);
         });
       });
     });
 
-    describe('"path" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"path" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method('xyz', undefined);
-          }).to.throw('Argument "path" passed to ' + test.methodName
-            + '(symlinkValue, path) must be a string. Received undefined');
+          }).to.throw(`Argument "path" passed to ${test.methodName}(symlinkValue, path) must be a string. Received undefined`);
         });
       });
     });

@@ -1,41 +1,41 @@
-/* eslint no-console:0 */
+'use strict';
 
-var os = require('os');
-var crypto = require('crypto');
-var fse = require('fs-extra');
+const os = require('os');
+const crypto = require('crypto');
+const fse = require('fs-extra');
 
-var originalCwd = process.cwd();
-var createdDirectories = [];
+const originalCwd = process.cwd();
+const createdDirectories = [];
 
-process.on('exit', function () {
+process.on('exit', () => {
   // In case something went wrong and some temp
   // directories are still on the disk.
-  createdDirectories.forEach(function (path) {
+  createdDirectories.forEach((path) => {
     fse.removeSync(path);
   });
 });
 
-exports.setCleanTestCwd = function () {
-  var random = crypto.randomBytes(16).toString('hex');
-  var path = os.tmpdir() + '/fs-jetpack-test-' + random;
+exports.setCleanTestCwd = () => {
+  const random = crypto.randomBytes(16).toString('hex');
+  const path = `${os.tmpdir()}/fs-jetpack-test-${random}`;
   fse.mkdirSync(path);
   createdDirectories.push(path);
   process.chdir(path);
 };
 
-exports.switchBackToCorrectCwd = function () {
-  var path = createdDirectories.pop();
+exports.switchBackToCorrectCwd = () => {
+  const path = createdDirectories.pop();
   process.chdir(originalCwd);
   fse.removeSync(path);
 };
 
 exports.parseMode = function (modeAsNumber) {
-  var mode = modeAsNumber.toString(8);
+  const mode = modeAsNumber.toString(8);
   return mode.substring(mode.length - 3);
 };
 
 // Converts paths to windows or unix formats depending on platform running.
-exports.osSep = function (path) {
+exports.osSep = (path) => {
   if (Array.isArray(path)) {
     return path.map(exports.osSep);
   }

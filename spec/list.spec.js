@@ -1,94 +1,96 @@
-var fse = require('fs-extra');
-var expect = require('chai').expect;
-var helper = require('./helper');
-var jetpack = require('..');
+'use strict';
 
-describe('list', function () {
+const fse = require('fs-extra');
+const expect = require('chai').expect;
+const helper = require('./helper');
+const jetpack = require('..');
+
+describe('list', () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  describe('lists file names in given path', function () {
-    var preparations = function () {
+  describe('lists file names in given path', () => {
+    const preparations = () => {
       fse.mkdirsSync('dir/empty');
       fse.outputFileSync('dir/empty.txt', '');
       fse.outputFileSync('dir/file.txt', 'abc');
       fse.outputFileSync('dir/subdir/file.txt', 'defg');
     };
 
-    var expectations = function (data) {
+    const expectations = (data) => {
       expect(data).to.eql(['empty', 'empty.txt', 'file.txt', 'subdir']);
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       expectations(jetpack.list('dir'));
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.listAsync('dir')
-      .then(function (listAsync) {
+      .then((listAsync) => {
         expectations(listAsync);
         done();
       });
     });
   });
 
-  describe('lists CWD if no path parameter passed', function () {
-    var preparations = function () {
+  describe('lists CWD if no path parameter passed', () => {
+    const preparations = () => {
       fse.mkdirsSync('dir/a');
       fse.outputFileSync('dir/b');
     };
 
-    var expectations = function (data) {
+    const expectations = (data) => {
       expect(data).to.eql(['a', 'b']);
     };
 
-    it('sync', function () {
-      var jetContext = jetpack.cwd('dir');
+    it('sync', () => {
+      const jetContext = jetpack.cwd('dir');
       preparations();
       expectations(jetContext.list());
     });
 
-    it('async', function (done) {
-      var jetContext = jetpack.cwd('dir');
+    it('async', (done) => {
+      const jetContext = jetpack.cwd('dir');
       preparations();
       jetContext.listAsync()
-      .then(function (list) {
+      .then((list) => {
         expectations(list);
         done();
       });
     });
   });
 
-  describe("returns undefined if path doesn't exist", function () {
-    var expectations = function (data) {
+  describe("returns undefined if path doesn't exist", () => {
+    const expectations = (data) => {
       expect(data).to.equal(undefined);
     };
 
-    it('sync', function () {
+    it('sync', () => {
       expectations(jetpack.list('nonexistent'));
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       jetpack.listAsync('nonexistent')
-      .then(function (data) {
+      .then((data) => {
         expectations(data);
         done();
       });
     });
   });
 
-  describe('throws if given path is not a directory', function () {
-    var preparations = function () {
+  describe('throws if given path is not a directory', () => {
+    const preparations = () => {
       fse.outputFileSync('file.txt', 'abc');
     };
 
-    var expectations = function (err) {
+    const expectations = function (err) {
       expect(err.code).to.equal('ENOTDIR');
     };
 
-    it('sync', function () {
+    it('sync', () => {
       preparations();
       try {
         jetpack.list('file.txt');
@@ -98,55 +100,54 @@ describe('list', function () {
       }
     });
 
-    it('async', function (done) {
+    it('async', (done) => {
       preparations();
       jetpack.listAsync('file.txt')
-      .catch(function (err) {
+      .catch((err) => {
         expectations(err);
         done();
       });
     });
   });
 
-  describe('respects internal CWD of jetpack instance', function () {
-    var preparations = function () {
+  describe('respects internal CWD of jetpack instance', () => {
+    const preparations = () => {
       fse.outputFileSync('a/b/c.txt', 'abc');
     };
 
-    var expectations = function (data) {
+    const expectations = (data) => {
       expect(data).to.eql(['c.txt']);
     };
 
-    it('sync', function () {
-      var jetContext = jetpack.cwd('a');
+    it('sync', () => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       expectations(jetContext.list('b'));
     });
 
-    it('async', function (done) {
-      var jetContext = jetpack.cwd('a');
+    it('async', (done) => {
+      const jetContext = jetpack.cwd('a');
       preparations();
       jetContext.listAsync('b')
-      .then(function (data) {
+      .then((data) => {
         expectations(data);
         done();
       });
     });
   });
 
-  describe('input validation', function () {
-    var tests = [
+  describe('input validation', () => {
+    const tests = [
       { type: 'sync', method: jetpack.list, methodName: 'list' },
-      { type: 'async', method: jetpack.listAsync, methodName: 'listAsync' }
+      { type: 'async', method: jetpack.listAsync, methodName: 'listAsync' },
     ];
 
-    describe('"path" argument', function () {
-      tests.forEach(function (test) {
-        it(test.type, function () {
-          expect(function () {
+    describe('"path" argument', () => {
+      tests.forEach((test) => {
+        it(test.type, () => {
+          expect(() => {
             test.method(true);
-          }).to.throw('Argument "path" passed to ' + test.methodName
-            + '(path) must be a string or an undefined. Received boolean');
+          }).to.throw(`Argument "path" passed to ${test.methodName}(path) must be a string or an undefined. Received boolean`);
         });
       });
     });
