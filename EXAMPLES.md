@@ -1,8 +1,8 @@
 # Cool things about fs-jetpack in examples
 **Note:** All examples here are synchronous for simplicity. You can easily make them asynchronous just by adding 'Async' to method names and expecting promise to be returned instead of ready value.
 
-## Every jetpack instance has its internal CWD
-You can create many jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
+## Every fs-jetpack instance has its internal CWD
+You can create many fs-jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
 ```js
 const src = jetpack.cwd('path/to/source');
 const dest = jetpack.cwd('path/to/destination');
@@ -20,27 +20,15 @@ Then you can get your object back just by telling read method that it's a JSON.
 const obj = jetpack.read('file.json', 'json');
 ```
 
-## Jetpack throws errors at you as the last resort
-Everyone who did something with files for sure seen (and probably hates) *"ENOENT, no such file or directory"* error. Jetpack tries to recover from that error if possible.  
-1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create lacking directories.  
-2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
-
-## Jetpack is great for build scripts
+## Safer writes to disk
+For essential data you might consider "atomic write" feature. To read more about "why" and "how" please see: [Transactionally writing files in Node.js](http://stackoverflow.com/questions/17047994/transactionally-writing-files-in-node-js) Jetpack implements this simple trick and makes it available as an option.
 ```js
-const src = jetpack.cwd('path/to/source');
-const dest = jetpack.dir('path/to/destination', { empty: true });
-
-src.copy('.', dest.path(), {
-    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
-});
-
-const config = src.read('config.json', 'json');
-config.env = 'production';
-dest.write('config.json', config);
+jetpack.write('important_config.json', { atomic: true });
 ```
 
-## All methods play nicely with each other
-Let's say you want to create folder structure:
+## It's just more convenient API
+
+### 1. Let's say you want to create folder structure:
 ```
 .
 |- greets
@@ -60,23 +48,29 @@ jetpack
     .file('polish.txt', { content: 'Witaj świecie!' });
 ```
 
-## Find and delete all `.tmp` files inside `my-dir`
+### 2. Find and delete all `.tmp` files inside `foo` directory
 ```js
-jetpack.find('my-dir', {
+jetpack.find('foo', {
     matching: '*.tmp'
 })
 .forEach(jetpack.remove);
 ```
 
-## Check if two files have the same content
+### 3. You can easier get the job done in your build scripts
 ```js
-const file1 = jetpack.inspect('file1', { checksum: 'md5' });
-const file2 = jetpack.inspect('file2', { checksum: 'md5' });
-const areTheSame = (file1.md5 === file2.md5);
+const src = jetpack.cwd('path/to/source');
+const dest = jetpack.dir('path/to/destination', { empty: true });
+
+src.copy('.', dest.path(), {
+    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
+});
+
+const config = src.read('config.json', 'json');
+config.env = 'production';
+dest.write('config.json', config);
 ```
 
-## More secure writes to disk
-For essential data you might consider "atomic write" feature. To read more about "why" and "how" please see: [Transactionally writing files in Node.js](http://stackoverflow.com/questions/17047994/transactionally-writing-files-in-node-js) Jetpack implements this simple trick and makes it available as an option.
-```js
-jetpack.write('important_config.json', { atomic: true });
-```
+### 4. Errors are thrown at you as the last resort
+Everyone who did something with files for sure seen *"ENOENT, no such file or directory"* error. Fs-jetpack tries to recover from it if possible.  
+1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
+2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
