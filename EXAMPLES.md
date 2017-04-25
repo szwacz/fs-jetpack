@@ -1,4 +1,4 @@
-# Cool things about fs-jetpack in examples
+# Cool things about fs-jetpack
 **Note:** All examples here are synchronous for simplicity. You can easily make them asynchronous just by adding 'Async' to method names and expecting promise to be returned instead of ready value.
 
 ## Every fs-jetpack instance has its internal CWD
@@ -26,7 +26,13 @@ For essential data you might consider "atomic write" feature. To read more about
 jetpack.write('important_config.json', { atomic: true });
 ```
 
-## It's just more convenient API
+## Errors are thrown at you as the last resort
+Everyone who did something with files for sure seen *"ENOENT, no such file or directory"* error. Fs-jetpack tries to recover from it if possible.  
+1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
+2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
+
+
+## It's just more convenient API (in examples)
 
 ### 1. Let's say you want to create folder structure:
 ```
@@ -69,8 +75,3 @@ const config = src.read('config.json', 'json');
 config.env = 'production';
 dest.write('config.json', config);
 ```
-
-### 4. Errors are thrown at you as the last resort
-Everyone who did something with files for sure seen *"ENOENT, no such file or directory"* error. Fs-jetpack tries to recover from it if possible.  
-1. For write/creation operations, if any of parent directories doesn't exist jetpack will just create them as well.  
-2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
