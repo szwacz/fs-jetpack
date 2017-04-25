@@ -62,7 +62,7 @@ jetpack.find('foo', {
 .forEach(jetpack.remove);
 ```
 
-## 3. You can easier get the job done in your build scripts
+## 3. Get the job done faster in your build scripts
 ```js
 const src = jetpack.cwd('path/to/source');
 const dest = jetpack.dir('path/to/destination', { empty: true });
