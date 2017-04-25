@@ -32,9 +32,9 @@ Everyone who did something with files for sure seen *"ENOENT, no such file or di
 2. For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
 
 
-## It's just more convenient API (in examples)
+# It's just more convenient API (in examples)
 
-### 1. Let's say you want to create folder structure:
+## 1. Let's say you want to create folder structure:
 ```
 .
 |- greets
@@ -54,7 +54,7 @@ jetpack
     .file('polish.txt', { content: 'Witaj świecie!' });
 ```
 
-### 2. Find and delete all `.tmp` files inside `foo` directory
+## 2. Find and delete all `.tmp` files inside `foo` directory
 ```js
 jetpack.find('foo', {
     matching: '*.tmp'
@@ -62,7 +62,7 @@ jetpack.find('foo', {
 .forEach(jetpack.remove);
 ```
 
-### 3. You can easier get the job done in your build scripts
+## 3. You can easier get the job done in your build scripts
 ```js
 const src = jetpack.cwd('path/to/source');
 const dest = jetpack.dir('path/to/destination', { empty: true });
