@@ -84,7 +84,7 @@ Copies given file or directory (with everything inside).
 `from` path to location you want to copy.  
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
-* `overwrite` (default: `false`) Whether to overwrite destination path if arready exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
+* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
 * `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else ([all possible globs are described further in this readme](#matching-patterns)).
 
 **returns:**  
