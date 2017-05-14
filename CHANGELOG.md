@@ -1,3 +1,7 @@
+# 1.0.0 (2017-05-14)
+- API declared stable. From now on braking changes will be minimized and whenever possible preceded by deprecation periods.
+- Codebase updated to ES6
+
 # 0.13.3 (2017-03-25)
 - `removeAsync()` retries deletion attempts for errors like `EBUSY`.
 
