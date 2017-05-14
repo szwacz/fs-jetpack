@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "codecov": "^1.0.1",
+    "codecov": "^2.2.0",
     "eslint": "^3.19.0",
     "eslint-config-decent-code": "szwacz/eslint-config-decent-code",
     "fs-extra": "^0.16.3",
