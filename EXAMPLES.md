@@ -68,7 +68,8 @@ const src = jetpack.cwd('path/to/source');
 const dest = jetpack.dir('path/to/destination', { empty: true });
 
 src.copy('.', dest.path(), {
-    matching: ['./vendor/**', '*.html', '*.png', '*.jpg']
+    matching: ['./vendor/**', '*.html', '*.png', '*.jpg'],
+    overwrite: true
 });
 
 const config = src.read('config.json', 'json');
