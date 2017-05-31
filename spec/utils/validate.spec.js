@@ -68,6 +68,13 @@ describe('util validate', () => {
         wrongValue: 123,
         wrongValueType: 'number',
       },
+      {
+        type: 'function',
+        article: 'a',
+        goodValue: function () {},
+        wrongValue: 123,
+        wrongValueType: 'number',
+      },
     ]
     .forEach((test) => {
       it(`validates that given thing is a(n) ${test.type}`, () => {
@@ -90,6 +97,7 @@ describe('util validate', () => {
       { type: 'buffer', value: new Buffer(1), expect: 'number' },
       { type: 'null', value: null, expect: 'number' },
       { type: 'undefined', value: undefined, expect: 'number' },
+      { type: 'function', value: function () {}, expect: 'number' },
     ]
     .forEach((test) => {
       it(`can detect wrong type: ${test.type}`, () => {
