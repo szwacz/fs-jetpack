@@ -226,6 +226,54 @@ describe('copy', () => {
         });
       });
     });
+
+    describe('overwrites with a function', () => {
+      const preparations = () => {
+        fse.outputFileSync('from-here/canada.txt', 'abc');
+        fse.outputFileSync('to-here/canada.txt', 'xyz');
+        fse.outputFileSync('from-here/eh.txt', 'abc');
+        fse.outputFileSync('to-here/eh.txt', 'xyz');
+      };
+
+      const expectations = () => {
+        // canada is copied
+        path('from-here/canada.txt').shouldBeFileWithContent('abc');
+        path('to-here/canada.txt').shouldBeFileWithContent('abc');
+
+        // eh is not copied
+        path('from-here/eh.txt').shouldBeFileWithContent('abc');
+        path('to-here/eh.txt').shouldBeFileWithContent('xyz');
+      };
+
+      it('sync', () => {
+        preparations();
+
+        // Kept for reference to full function signature
+        // eslint-disable-next-line
+        const overwrite = (fromPath, inspectData, toPath) => {
+          return fromPath.includes('canada');
+        };
+        jetpack.copy('from-here', 'to-here', { overwrite });
+
+        expectations();
+      });
+
+      it('async', (done) => {
+        preparations();
+
+        // Kept for reference to full function signature
+        // eslint-disable-next-line
+        const overwrite = (fromPath, inspectData, toPath) => {
+          return fromPath.includes('canada');
+        };
+
+        jetpack.copyAsync('from-here', 'to-here', { overwrite })
+        .then(() => {
+          expectations();
+          done();
+        });
+      });
+    });
   });
 
   describe('filter what to copy', () => {
@@ -544,7 +592,7 @@ describe('copy', () => {
           it(test.type, () => {
             expect(() => {
               test.method('abc', 'xyz', { overwrite: 1 });
-            }).to.throw(`Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean. Received number`);
+            }).to.throw(`Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean or a function. Received number`);
           });
         });
       });
