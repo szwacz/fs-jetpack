@@ -1,3 +1,6 @@
+# 1.1.0 (2017-06-18)
+- Parameter `overwrite` of `copy()` method now supports functions, to allow you individually decide if each file overwrite should happen.
+
 # 1.0.0 (2017-05-14)
 - API declared stable. From now on braking changes will be minimized and whenever possible preceded by deprecation periods.
 - Codebase updated to ES6
