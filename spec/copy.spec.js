@@ -227,46 +227,52 @@ describe('copy', () => {
       });
     });
 
-    describe('overwrites with a function', () => {
+    describe('overwrites according to what function returns', () => {
       const preparations = () => {
-        fse.outputFileSync('from-here/canada.txt', 'abc');
-        fse.outputFileSync('to-here/canada.txt', 'xyz');
-        fse.outputFileSync('from-here/eh.txt', 'abc');
-        fse.outputFileSync('to-here/eh.txt', 'xyz');
+        fse.outputFileSync('from-here/foo/canada.txt', 'abc');
+        fse.outputFileSync('to-here/foo/canada.txt', 'xyz');
+        fse.outputFileSync('from-here/foo/eh.txt', 'abc');
+        fse.outputFileSync('to-here/foo/eh.txt', 'xyz');
       };
 
       const expectations = () => {
         // canada is copied
-        path('from-here/canada.txt').shouldBeFileWithContent('abc');
-        path('to-here/canada.txt').shouldBeFileWithContent('abc');
+        path('from-here/foo/canada.txt').shouldBeFileWithContent('abc');
+        path('to-here/foo/canada.txt').shouldBeFileWithContent('abc');
 
         // eh is not copied
-        path('from-here/eh.txt').shouldBeFileWithContent('abc');
-        path('to-here/eh.txt').shouldBeFileWithContent('xyz');
+        path('from-here/foo/eh.txt').shouldBeFileWithContent('abc');
+        path('to-here/foo/eh.txt').shouldBeFileWithContent('xyz');
+      };
+
+      const overwrite = (srcInspectData, destInspectData) => {
+        expect(srcInspectData).to.have.property('name');
+        expect(srcInspectData).to.have.property('type');
+        expect(srcInspectData).to.have.property('mode');
+        expect(srcInspectData).to.have.property('accessTime');
+        expect(srcInspectData).to.have.property('modifyTime');
+        expect(srcInspectData).to.have.property('changeTime');
+        expect(srcInspectData).to.have.property('absolutePath');
+
+        expect(destInspectData).to.have.property('name');
+        expect(destInspectData).to.have.property('type');
+        expect(destInspectData).to.have.property('mode');
+        expect(destInspectData).to.have.property('accessTime');
+        expect(destInspectData).to.have.property('modifyTime');
+        expect(destInspectData).to.have.property('changeTime');
+        expect(destInspectData).to.have.property('absolutePath');
+
+        return srcInspectData.name.includes('canada');
       };
 
       it('sync', () => {
         preparations();
-
-        // Kept for reference to full function signature
-        // eslint-disable-next-line
-        const overwrite = (fromPath, inspectData, toPath) => {
-          return fromPath.includes('canada');
-        };
         jetpack.copy('from-here', 'to-here', { overwrite });
-
         expectations();
       });
 
       it('async', (done) => {
         preparations();
-
-        // Kept for reference to full function signature
-        // eslint-disable-next-line
-        const overwrite = (fromPath, inspectData, toPath) => {
-          return fromPath.includes('canada');
-        };
-
         jetpack.copyAsync('from-here', 'to-here', { overwrite })
         .then(() => {
           expectations();
