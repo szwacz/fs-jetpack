@@ -84,7 +84,7 @@ Copies given file or directory (with everything inside).
 `from` path to location you want to copy.  
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
-* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. For directories, source directory is merged with destination directory, so files in destination which are not present in the source, will remain intact.
+* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. Can be `Boolean` or `Function`. For directories, source directory is merged with destination directory. If function was provided, every time there is a file conflict while copying the function will be invoked with [inspect](#inspectpath-options) objects of both: source and destination file and overwrites the file only if `true` has been returned from the function (see example below).
 * `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else ([all possible globs are described further in this readme](#matching-patterns)).
 
 **returns:**  
@@ -94,6 +94,14 @@ Nothing.
 ```javascript
 // Copies a file (and replaces it if one already exists in 'foo' directory)
 jetpack.copy('file.txt', 'foo/file.txt', { overwrite: true });
+
+// Copies files from folder foo_1 to foo_final, but overwrites in
+// foo_final only files which are newer in foo_1.
+jetpack.copy('foo_1', 'foo_final', {
+  overwrite: (srcInspectData, destInspectData) => {
+    return srcInspectData.modifyTime > destInspectData.modifyTime;
+  }
+});
 
 // Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'.
 jetpack.copy('foo', 'bar', { matching: '*.md' });
@@ -310,7 +318,7 @@ Otherwise `Object` of structure:
 ## inspectTree(path, [options])
 asynchronous: **inspectTreeAsync(path, [options])**  
 
-Calls [inspect](#inspect) recursively on given path so it creates tree of all directories and sub-directories inside it.
+Calls [inspect](#inspectpath-options) recursively on given path so it creates tree of all directories and sub-directories inside it.
 
 **arguments:**  
 `path` the starting path to inspect.  
