@@ -1,3 +1,6 @@
+# 1.2.0 (2017-08-10)
+- Added symlinks search option to `find()`.
+
 # 1.1.0 (2017-06-18)
 - Parameter `overwrite` of `copy()` method now supports functions, to allow you individually decide if each file overwrite should happen.
 
