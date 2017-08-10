@@ -265,6 +265,33 @@ describe('find', () => {
     });
   });
 
+  describe("doesn't look for symlinks by default", () => {
+    const preparations = () => {
+      fse.outputFileSync('file', 'abc');
+      fse.mkdirsSync('dir');
+      jetpack.symlink('file', 'symfile');
+      jetpack.symlink('dir', 'symdir');
+    };
+
+    const expectations = (found) => {
+      expect(found).to.eql(['file']);
+    };
+
+    it('sync', () => {
+      preparations();
+      expectations(jetpack.find({ matching: '*' }));
+    });
+
+    it('async', (done) => {
+      preparations();
+      jetpack.findAsync({ matching: '*' })
+      .then((found) => {
+        expectations(found);
+        done();
+      });
+    });
+  });
+
   describe('can look for files and directories', () => {
     const preparations = () => {
       fse.outputFileSync('a/b/foo1', 'abc');
@@ -392,6 +419,33 @@ describe('find', () => {
         files: false,
         directories: false,
       })
+      .then((found) => {
+        expectations(found);
+        done();
+      });
+    });
+  });
+
+  describe('can look for symlinks', () => {
+    const preparations = () => {
+      fse.outputFileSync('file', 'abc');
+      fse.mkdirsSync('dir');
+      jetpack.symlink('file', 'symfile');
+      jetpack.symlink('dir', 'symdir');
+    };
+
+    const expectations = (found) => {
+      expect(found).to.eql(['file', 'symdir', 'symfile']);
+    };
+
+    it('sync', () => {
+      preparations();
+      expectations(jetpack.find({ matching: '*', symlinks: true }));
+    });
+
+    it('async', (done) => {
+      preparations();
+      jetpack.findAsync({ matching: '*', symlinks: true })
       .then((found) => {
         expectations(found);
         done();
@@ -566,6 +620,15 @@ describe('find', () => {
             expect(() => {
               test.method('abc', { recursive: 1 });
             }).to.throw(`Argument "options.recursive" passed to ${test.methodName}([path], options) must be a boolean. Received number`);
+          });
+        });
+      });
+      describe('"symlinks" argument', () => {
+        tests.forEach((test) => {
+          it(test.type, () => {
+            expect(() => {
+              test.method('abc', { symlinks: 1 });
+            }).to.throw(`Argument "options.symlinks" passed to ${test.methodName}([path], options) must be a boolean. Received number`);
           });
         });
       });
