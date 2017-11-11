@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
+const fs = require("fs");
 
 const areBuffersEqual = (bufA, bufB) => {
   const len = bufA.length;
@@ -15,7 +15,7 @@ const areBuffersEqual = (bufA, bufB) => {
   return true;
 };
 
-module.exports = (path) => {
+module.exports = path => {
   return {
     shouldNotExist: () => {
       let message;
@@ -23,7 +23,7 @@ module.exports = (path) => {
         fs.statSync(path);
         message = `Path ${path} should NOT exist`;
       } catch (err) {
-        if (err.code !== 'ENOENT') {
+        if (err.code !== "ENOENT") {
           throw err;
         }
       }
@@ -41,7 +41,7 @@ module.exports = (path) => {
           message = `Path ${path} should be a directory`;
         }
       } catch (err) {
-        if (err.code === 'ENOENT') {
+        if (err.code === "ENOENT") {
           message = `Path ${path} should exist`;
         } else {
           throw err;
@@ -52,28 +52,33 @@ module.exports = (path) => {
       }
     },
 
-    shouldBeFileWithContent: (expectedContent) => {
+    shouldBeFileWithContent: expectedContent => {
       let message;
       let content;
 
       const generateMessage = (expected, found) => {
-        message = `File ${path} should have content "${expected}" but found "${found}"`;
+        message = `File ${path} should have content "${expected}" but found "${
+          found
+        }"`;
       };
 
       try {
         if (Buffer.isBuffer(expectedContent)) {
           content = fs.readFileSync(path);
           if (!areBuffersEqual(expectedContent, content)) {
-            generateMessage(expectedContent.toString('hex'), content.toString('hex'));
+            generateMessage(
+              expectedContent.toString("hex"),
+              content.toString("hex")
+            );
           }
         } else {
-          content = fs.readFileSync(path, 'utf8');
+          content = fs.readFileSync(path, "utf8");
           if (content !== expectedContent) {
             generateMessage(expectedContent, content);
           }
         }
       } catch (err) {
-        if (err.code === 'ENOENT') {
+        if (err.code === "ENOENT") {
           message = `File ${path} should exist`;
         } else {
           throw err;
@@ -84,7 +89,7 @@ module.exports = (path) => {
       }
     },
 
-    shouldHaveMode: (expectedMode) => {
+    shouldHaveMode: expectedMode => {
       let mode;
       let message;
 
@@ -92,10 +97,12 @@ module.exports = (path) => {
         mode = fs.statSync(path).mode.toString(8);
         mode = mode.substring(mode.length - 3);
         if (mode !== expectedMode) {
-          message = `Path ${path} should have mode "${expectedMode}" but have instead "${mode}"`;
+          message = `Path ${path} should have mode "${
+            expectedMode
+          }" but have instead "${mode}"`;
         }
       } catch (err) {
-        if (err.code === 'ENOENT') {
+        if (err.code === "ENOENT") {
           message = `Path ${path} should exist`;
         } else {
           throw err;
@@ -104,6 +111,6 @@ module.exports = (path) => {
       if (message) {
         throw new Error(message);
       }
-    },
+    }
   };
 };

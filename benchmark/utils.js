@@ -1,12 +1,12 @@
 /* eslint no-console:0 */
 
-'use strict';
+"use strict";
 
-const os = require('os');
-const childProcess = require('child_process');
-const prettyBytes = require('pretty-bytes');
-const promisify = require('../lib/utils/promisify');
-const jetpack = require('..');
+const os = require("os");
+const childProcess = require("child_process");
+const prettyBytes = require("pretty-bytes");
+const promisify = require("../lib/utils/promisify");
+const jetpack = require("..");
 
 const testDirPath = () => {
   return `${os.tmpdir()}/jetpack-benchmark`;
@@ -22,8 +22,7 @@ const prepareFiles = (jetpackDir, creationConfig) => {
     const content = new Buffer(creationConfig.size);
 
     const makeOneFile = () => {
-      jetpackDir.fileAsync(`${count}.txt`, { content })
-      .then(() => {
+      jetpackDir.fileAsync(`${count}.txt`, { content }).then(() => {
         count += 1;
         if (count < creationConfig.files) {
           makeOneFile();
@@ -33,12 +32,16 @@ const prepareFiles = (jetpackDir, creationConfig) => {
       }, reject);
     };
 
-    console.log(`Preparing ${creationConfig.files} test files (${prettyBytes(creationConfig.size)} each)...`);
+    console.log(
+      `Preparing ${creationConfig.files} test files (${prettyBytes(
+        creationConfig.size
+      )} each)...`
+    );
     makeOneFile();
   });
 };
 
-const startTimer = (startMessage) => {
+const startTimer = startMessage => {
   const start = Date.now();
   process.stdout.write(`${startMessage} ... `);
 
@@ -52,8 +55,8 @@ const startTimer = (startMessage) => {
 };
 
 const waitAWhile = () => {
-  return new Promise((resolve) => {
-    console.log('Waiting 5s to allow hardware buffers be emptied...');
+  return new Promise(resolve => {
+    console.log("Waiting 5s to allow hardware buffers be emptied...");
     setTimeout(resolve, 5000);
   });
 };
@@ -64,7 +67,7 @@ const showDifferenceInfo = (jetpackTime, nativeTime) => {
 };
 
 const cleanAfterTest = () => {
-  console.log('Cleaning up after test...');
+  console.log("Cleaning up after test...");
   return jetpack.removeAsync(testDirPath());
 };
 
@@ -75,5 +78,5 @@ module.exports = {
   waitAWhile,
   exec: promisify(childProcess.exec),
   showDifferenceInfo,
-  cleanAfterTest,
+  cleanAfterTest
 };
