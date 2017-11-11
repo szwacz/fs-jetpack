@@ -3,6 +3,34 @@ fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=m
 
 Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more convenient API to work with file system.
 
+# Table of Contents
+
+[Introduction](#introduction)  
+[Sync & Async](#sync--async)
+
+**API:**  
+[append](#appendpath-data-options)  
+[copy](#copyfrom-to-options)  
+[createReadStream](#createreadstreampath-options)  
+[createWriteStream](#createwritestreampath-options)  
+[cwd](#cwdpath)  
+[dir](#dirpath-criteria)  
+[exists](#existspath)  
+[file](#filepath-criteria)  
+[find](#findpath-searchoptions)  
+[inspect](#inspectpath-options)  
+[inspectTree](#inspecttreepath-options)  
+[list](#listpath)  
+[move](#movefrom-to)  
+[path](#pathparts)  
+[read](#readpath-returnas)  
+[remove](#removepath)  
+[rename](#renamepath-newname)  
+[symlink](#symlinksymlinkvalue-path)  
+[write](#writepath-data-options)
+
+# Introduction
+
 Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 
 ## Installation
@@ -38,27 +66,6 @@ jetpack.readAsync('file.txt')
 ```
 
 # API
-
-- [append](#appendpath-data-options)
-- [copy](#copyfrom-to-options)
-- [createReadStream](#createreadstreampath-options)
-- [createWriteStream](#createwritestreampath-options)
-- [cwd](#cwdpath)
-- [dir](#dirpath-criteria)
-- [exists](#existspath)
-- [file](#filepath-criteria)
-- [find](#findpath-searchoptions)
-- [inspect](#inspectpath-options)
-- [inspectTree](#inspecttreepath-options)
-- [list](#listpath)
-- [move](#movefrom-to)
-- [path](#pathparts)
-- [read](#readpath-returnas)
-- [remove](#removepath)
-- [rename](#renamepath-newname)
-- [symlink](#symlinksymlinkvalue-path)
-- [write](#writepath-data-options)
-
 
 ## append(path, data, [options])
 asynchronous: **appendAsync(path, data, [options])**
