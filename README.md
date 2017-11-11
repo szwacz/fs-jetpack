@@ -3,9 +3,11 @@ fs-jetpack [![Build Status](https://travis-ci.org/szwacz/fs-jetpack.svg?branch=m
 
 Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more convenient API to work with file system.
 
+Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
+
 # Table of Contents
 
-[Introduction](#introduction)  
+[Installation](#installation)  
 [Sync & Async](#sync--async)
 
 **API:**  
@@ -29,11 +31,7 @@ Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because
 [symlink](#symlinksymlinkvalue-path)  
 [write](#writepath-data-options)
 
-# Introduction
-
-Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
-
-## Installation
+# Installation
 ```
 npm install fs-jetpack
 ```
