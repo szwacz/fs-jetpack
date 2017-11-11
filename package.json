@@ -25,6 +25,7 @@
     "test": "mocha \"spec/**/*.spec.js\"",
     "test-with-coverage": "istanbul cover _mocha -- 'spec/**/*.spec.js'",
     "lint-staged": "lint-staged",
+    "prettier": "prettier --write \"./**/*.js\"",
     "release-start": "release-assist --start",
     "release-finish": "release-assist --finish"
   },
