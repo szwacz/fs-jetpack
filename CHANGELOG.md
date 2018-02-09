@@ -1,3 +1,6 @@
+# 1.3.0 (2018-02-09)
+- `overwrite` function passed to `copyAsync()` can return promise.
+
 # 1.2.0 (2017-08-10)
 - Added symlinks search option to `find()`.
 
