@@ -273,6 +273,47 @@ describe("copy", () => {
     });
   });
 
+  describe("async overwrite function can return promise", () => {
+    const preparations = () => {
+      fse.outputFileSync("from-here/foo/canada.txt", "abc");
+      fse.outputFileSync("to-here/foo/canada.txt", "xyz");
+      fse.outputFileSync("from-here/foo/eh.txt", "123");
+      fse.outputFileSync("to-here/foo/eh.txt", "456");
+    };
+
+    const expectations = () => {
+      // canada is copied
+      path("from-here/foo/canada.txt").shouldBeFileWithContent("abc");
+      path("to-here/foo/canada.txt").shouldBeFileWithContent("abc");
+
+      // eh is not copied
+      path("from-here/foo/eh.txt").shouldBeFileWithContent("123");
+      path("to-here/foo/eh.txt").shouldBeFileWithContent("456");
+    };
+
+    const overwrite = (srcInspectData, destInspectData) => {
+      return new Promise((resolve, reject) => {
+        jetpack
+          .readAsync(srcInspectData.absolutePath)
+          .then(data => {
+            return data === "abc";
+          })
+          .then(resolve, reject);
+      });
+    };
+
+    it("async", done => {
+      preparations();
+      jetpack
+        .copyAsync("from-here", "to-here", { overwrite })
+        .then(() => {
+          expectations();
+          done();
+        })
+        .catch(done);
+    });
+  });
+
   describe("filter what to copy", () => {
     describe("by simple pattern", () => {
       const preparations = () => {
@@ -570,9 +611,7 @@ describe("copy", () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "from" passed to ${
-              test.methodName
-            }(from, to, [options]) must be a string. Received undefined`
+            `Argument "from" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -584,9 +623,7 @@ describe("copy", () => {
           expect(() => {
             test.method("abc");
           }).to.throw(
-            `Argument "to" passed to ${
-              test.methodName
-            }(from, to, [options]) must be a string. Received undefined`
+            `Argument "to" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -599,9 +636,7 @@ describe("copy", () => {
             expect(() => {
               test.method("abc", "xyz", { overwrite: 1 });
             }).to.throw(
-              `Argument "options.overwrite" passed to ${
-                test.methodName
-              }(from, to, [options]) must be a boolean or a function. Received number`
+              `Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean or a function. Received number`
             );
           });
         });
@@ -612,9 +647,7 @@ describe("copy", () => {
             expect(() => {
               test.method("abc", "xyz", { matching: 1 });
             }).to.throw(
-              `Argument "options.matching" passed to ${
-                test.methodName
-              }(from, to, [options]) must be a string or an array of string. Received number`
+              `Argument "options.matching" passed to ${test.methodName}(from, to, [options]) must be a string or an array of string. Received number`
             );
           });
         });

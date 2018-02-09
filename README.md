@@ -89,7 +89,7 @@ Copies given file or directory (with everything inside).
 `from` path to location you want to copy.  
 `to` path to destination location, where the copy should be placed.  
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
-* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. Can be `Boolean` or `Function`. For directories, source directory is merged with destination directory. If function was provided, every time there is a file conflict while copying the function will be invoked with [inspect](#inspectpath-options) objects of both: source and destination file and overwrites the file only if `true` has been returned from the function (see example below).
+* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. Can be `Boolean` or `Function`. For directories, source directory is merged with destination directory. If function was provided, every time there is a file conflict while copying the function will be invoked with [inspect](#inspectpath-options) objects of both: source and destination file and overwrites the file only if `true` has been returned from the function (see example below). In async mode, the overwrite function can also return a promise, so you can perform multi step processes to determine if file should be overwritten or not (see example below).
 * `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else ([all possible globs are described further in this readme](#matching-patterns)).
 
 **returns:**  
@@ -105,6 +105,17 @@ jetpack.copy('file.txt', 'foo/file.txt', { overwrite: true });
 jetpack.copy('foo_1', 'foo_final', {
   overwrite: (srcInspectData, destInspectData) => {
     return srcInspectData.modifyTime > destInspectData.modifyTime;
+  }
+});
+
+// Asynchronously copies files from folder foo_1 to foo_final,
+// but overwrites only files containing "John Doe" string.
+jetpack.copyAsync('foo_1', 'foo_final', {
+  overwrite: (srcInspectData, destInspectData) => {
+      return jetpack.readAsync(srcInspectData.absolutePath,)
+      .then((data) => {
+        return data.includes('John Doe');
+      });
   }
 });
 
