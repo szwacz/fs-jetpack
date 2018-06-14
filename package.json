@@ -8,14 +8,14 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "codecov": "^2.2.0",
+    "codecov": "^3.0.2",
     "fs-extra": "^0.16.3",
     "istanbul": "^0.4.5",
-    "lint-staged": "^3.4.0",
+    "lint-staged": "^7.2.0",
     "mocha": "^5.2.0",
     "pre-commit": "^1.1.2",
     "prettier": "1.13.5",
-    "pretty-bytes": "^4.0.2",
+    "pretty-bytes": "^5.1.0",
     "release-assist": "^1.0.1"
   },
   "engines": {
