@@ -611,7 +611,9 @@ describe("copy", () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "from" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
+            `Argument "from" passed to ${
+              test.methodName
+            }(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -623,7 +625,9 @@ describe("copy", () => {
           expect(() => {
             test.method("abc");
           }).to.throw(
-            `Argument "to" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
+            `Argument "to" passed to ${
+              test.methodName
+            }(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -636,7 +640,9 @@ describe("copy", () => {
             expect(() => {
               test.method("abc", "xyz", { overwrite: 1 });
             }).to.throw(
-              `Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean or a function. Received number`
+              `Argument "options.overwrite" passed to ${
+                test.methodName
+              }(from, to, [options]) must be a boolean or a function. Received number`
             );
           });
         });
@@ -647,7 +653,9 @@ describe("copy", () => {
             expect(() => {
               test.method("abc", "xyz", { matching: 1 });
             }).to.throw(
-              `Argument "options.matching" passed to ${test.methodName}(from, to, [options]) must be a string or an array of string. Received number`
+              `Argument "options.matching" passed to ${
+                test.methodName
+              }(from, to, [options]) must be a string or an array of string. Received number`
             );
           });
         });

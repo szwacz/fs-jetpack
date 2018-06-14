@@ -57,9 +57,7 @@ module.exports = path => {
       let content;
 
       const generateMessage = (expected, found) => {
-        message = `File ${path} should have content "${expected}" but found "${
-          found
-        }"`;
+        message = `File ${path} should have content "${expected}" but found "${found}"`;
       };
 
       try {
@@ -97,9 +95,7 @@ module.exports = path => {
         mode = fs.statSync(path).mode.toString(8);
         mode = mode.substring(mode.length - 3);
         if (mode !== expectedMode) {
-          message = `Path ${path} should have mode "${
-            expectedMode
-          }" but have instead "${mode}"`;
+          message = `Path ${path} should have mode "${expectedMode}" but have instead "${mode}"`;
         }
       } catch (err) {
         if (err.code === "ENOENT") {

@@ -62,7 +62,7 @@ const waitAWhile = () => {
 };
 
 const showDifferenceInfo = (jetpackTime, nativeTime) => {
-  const perc = Math.round(jetpackTime / nativeTime * 100) - 100;
+  const perc = Math.round((jetpackTime / nativeTime) * 100) - 100;
   console.log(`Jetpack is ${perc}% slower than native`);
 };
 
