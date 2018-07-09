@@ -1,3 +1,6 @@
+# 1.3.1 (2018-07-09)
+- Fixed bug in `existsAsync()`.
+
 # 1.3.0 (2018-02-09)
 - `overwrite` function passed to `copyAsync()` can return promise.
 
