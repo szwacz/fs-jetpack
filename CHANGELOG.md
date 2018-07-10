@@ -1,3 +1,6 @@
+# 2.0.0 (2018-07-10)
+- **(breaking change)** removed `symlinks` config option of `find()` method. Now `find()` always follows symlinks.
+
 # 1.3.1 (2018-07-09)
 - Fixed bug in `existsAsync()`.
 
