@@ -262,16 +262,16 @@ describe("find", () => {
     });
   });
 
-  describe("doesn't look for symlinks by default", () => {
+  describe("treats symlinks like real files", () => {
     const preparations = () => {
-      fse.outputFileSync("file", "abc");
       fse.mkdirsSync("dir");
-      jetpack.symlink("file", "symfile");
+      fse.outputFileSync("file", "abc");
       jetpack.symlink("dir", "symdir");
+      jetpack.symlink("file", "symfile");
     };
 
     const expectations = found => {
-      expect(found).to.eql(["file"]);
+      expect(found).to.eql(["file", "symfile"]);
     };
 
     it("sync", () => {
@@ -282,6 +282,31 @@ describe("find", () => {
     it("async", done => {
       preparations();
       jetpack.findAsync({ matching: "*" }).then(found => {
+        expectations(found);
+        done();
+      });
+    });
+  });
+
+  describe("follows to symlinked directories", () => {
+    const preparations = () => {
+      fse.outputFileSync("dir1/dir2/file.txt", "abc");
+      jetpack.symlink("../dir1", "foo/symlink_to_dir1");
+      expect(jetpack.read("foo/symlink_to_dir1/dir2/file.txt")).to.eql("abc");
+    };
+
+    const expectations = found => {
+      expect(found).to.eql(["foo/symlink_to_dir1/dir2/file.txt"]);
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(jetpack.find("foo", { matching: "file*" }));
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack.findAsync("foo", { matching: "file*" }).then(found => {
         expectations(found);
         done();
       });
@@ -431,32 +456,6 @@ describe("find", () => {
           expectations(found);
           done();
         });
-    });
-  });
-
-  describe("can look for symlinks", () => {
-    const preparations = () => {
-      fse.outputFileSync("file", "abc");
-      fse.mkdirsSync("dir");
-      jetpack.symlink("file", "symfile");
-      jetpack.symlink("dir", "symdir");
-    };
-
-    const expectations = found => {
-      expect(found).to.eql(["file", "symdir", "symfile"]);
-    };
-
-    it("sync", () => {
-      preparations();
-      expectations(jetpack.find({ matching: "*", symlinks: true }));
-    });
-
-    it("async", done => {
-      preparations();
-      jetpack.findAsync({ matching: "*", symlinks: true }).then(found => {
-        expectations(found);
-        done();
-      });
     });
   });
 
@@ -645,19 +644,6 @@ describe("find", () => {
               test.method("abc", { recursive: 1 });
             }).to.throw(
               `Argument "options.recursive" passed to ${
-                test.methodName
-              }([path], options) must be a boolean. Received number`
-            );
-          });
-        });
-      });
-      describe('"symlinks" argument', () => {
-        tests.forEach(test => {
-          it(test.type, () => {
-            expect(() => {
-              test.method("abc", { symlinks: 1 });
-            }).to.throw(
-              `Argument "options.symlinks" passed to ${
                 test.methodName
               }([path], options) must be a boolean. Received number`
             );

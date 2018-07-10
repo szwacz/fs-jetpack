@@ -266,7 +266,6 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 * `files` (default `true`) whether or not should search for files.
 * `directories` (default `false`) whether or not should search for directories.
 * `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
-* `symlinks` (default `false`) whether or not should report symlinks found.
 
 **returns:**  
 `Array` of found paths.
@@ -292,9 +291,6 @@ jetpack.find('foo', { matching: './*.txt' });
 // This line does the same as the above, but has better performance
 // (skips looking in subdirectories)
 jetpack.find('foo', { matching: '*.txt', recursive: false });
-
-// finds all dirs (including symlinked dirs) beginning with `plugin-*` in `node_modules`
-jetpack.find('node_modules', { matching: 'plugin-*', recursive: false, files: false, directories: true, symlinks: true });
 
 // Path parameter might be omitted and CWD is used as path in that case.
 const myStuffDir = jetpack.cwd('my-stuff');
