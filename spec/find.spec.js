@@ -296,7 +296,10 @@ describe("find", () => {
     };
 
     const expectations = found => {
-      expect(found).to.eql(["foo/symlink_to_dir1/dir2/file.txt"]);
+      const normalizedPaths = helper.osSep([
+        "foo/symlink_to_dir1/dir2/file.txt"
+      ]);
+      expect(found).to.eql(normalizedPaths);
     };
 
     it("sync", () => {
