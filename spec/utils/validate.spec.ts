@@ -1,7 +1,5 @@
-"use strict";
-
-const expect = require("chai").expect;
-const validate = require("../../lib/utils/validate");
+import { expect } from "chai";
+import * as validate from "../../lib/utils/validate";
 
 describe("util validate", () => {
   describe("validates arguments passed to methods", () => {

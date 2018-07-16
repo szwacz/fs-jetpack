@@ -1,8 +1,6 @@
-"use strict";
-
-const fsNode = require("fs");
-const expect = require("chai").expect;
-const fs = require("../../lib/utils/fs");
+import * as fsNode from "fs";
+import { expect } from "chai";
+import * as fs from "../../lib/utils/fs";
 
 describe("promised fs", () => {
   it("contains all the same keys as the node fs module", () => {

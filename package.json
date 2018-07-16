@@ -27,9 +27,8 @@
     "node": ">=4"
   },
   "scripts": {
-    "test": "mocha \"spec/**/*.spec.js\"",
-    "test-with-coverage": "istanbul cover _mocha -- 'spec/**/*.spec.js'",
-    "dupa": "mocha -r ts-node/register spec/**/*.spec.ts",
+    "test": "mocha -r ts-node/register \"spec/**/*.spec.ts\"",
+    "test-with-coverage": "istanbul cover _mocha -- 'spec/**/*.spec.ts'",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write \"./**/*.js\"",
     "release-start": "release-assist --start",

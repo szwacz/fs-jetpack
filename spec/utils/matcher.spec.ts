@@ -1,7 +1,5 @@
-"use strict";
-
-const expect = require("chai").expect;
-const matcher = require("../../lib/utils/matcher");
+import { expect } from "chai";
+import * as matcher from "../../lib/utils/matcher";
 
 describe("matcher", () => {
   it("can test against one pattern passed as a string", () => {

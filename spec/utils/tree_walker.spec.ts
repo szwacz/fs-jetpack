@@ -1,10 +1,9 @@
-"use strict";
-
-const fse = require("fs-extra");
-const pathUtil = require("path");
-const expect = require("chai").expect;
-const helper = require("../helper");
-const walker = require("../../lib/utils/tree_walker");
+import * as fse from "fs-extra";
+import * as pathUtil from "path";
+import { expect } from "chai";
+import path from "../assert_path";
+import helper from "../helper";
+import * as walker from "../../lib/utils/tree_walker";
 
 describe("tree walker", () => {
   beforeEach(helper.setCleanTestCwd);
