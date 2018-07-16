@@ -1,8 +1,6 @@
-"use strict";
-
-const pathUtil = require("path");
-const expect = require("chai").expect;
-const jetpack = require("..");
+import * as pathUtil from "path";
+import { expect } from "chai";
+import * as jetpack from "..";
 
 describe("cwd", () => {
   it("returns the same path as process.cwd for main instance of jetpack", () => {

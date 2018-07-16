@@ -7,6 +7,9 @@
     "minimatch": "^3.0.2"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
+    "@types/node": "^10.5.2",
     "chai": "^4.1.2",
     "codecov": "^3.0.2",
     "fs-extra": "^5.0.0",
@@ -16,7 +19,9 @@
     "pre-commit": "^1.1.2",
     "prettier": "1.13.5",
     "pretty-bytes": "^5.1.0",
-    "release-assist": "^1.0.1"
+    "release-assist": "^1.0.1",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
   },
   "engines": {
     "node": ">=4"
@@ -24,12 +29,14 @@
   "scripts": {
     "test": "mocha \"spec/**/*.spec.js\"",
     "test-with-coverage": "istanbul cover _mocha -- 'spec/**/*.spec.js'",
+    "dupa": "mocha -r ts-node/register spec/**/*.spec.ts",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write \"./**/*.js\"",
     "release-start": "release-assist --start",
     "release-finish": "release-assist --finish"
   },
   "main": "main.js",
+  "types": "./typings.d.ts",
   "homepage": "https://github.com/szwacz/fs-jetpack",
   "repository": {
     "type": "git",
