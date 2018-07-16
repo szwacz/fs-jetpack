@@ -1,4 +1,28 @@
-type OverwriteFunction = (srcInspectData: any, destInspectData: any) => boolean | Promise<boolean>; // TODO not any!
+type AppendData = string | Buffer;
+
+type AppendOptions = {
+  mode?: string | number;
+};
+
+type OverwriteFunction = (srcInspectData: InspectResult, destInspectData: InspectResult) => boolean | Promise<boolean>;
+
+type CopyOptions = {
+  overwrite?: boolean | OverwriteFunction;
+  matching?: string | string[]
+};
+
+type DirCriteria = {
+  empty?: boolean,
+  mode?: string | number
+};
+
+type ExistsResult = false | "dir" | "file" | "other";
+
+type FileOptions = {
+  content?: WritableData;
+  jsonIndent?: number;
+  mode?: string | number;
+};
 
 type FindOptions = {
   matching?: string | string[];
@@ -57,75 +81,23 @@ interface FSJetpack {
 
   path(...pathParts: string[]): string;
 
-  append(
-    path: string,
-    data: string | Buffer,
-    options?: {
-      mode?: string | number;
-    }
-  ): void;
-  appendAsync(
-    path: string,
-    data: string | Buffer,
-    options?: {
-      mode?: string | number;
-    }
-  ): Promise<void>;
+  append(path: string, data: AppendData, options?: AppendOptions): void;
+  appendAsync(path: string, data: AppendData, options?: AppendOptions): Promise<void>;
 
-  copy(
-    from: string,
-    to: string,
-    options?: {
-      overwrite?: boolean | OverwriteFunction;
-      matching?: string | string[]
-    }
-  ): void;
-  copyAsync(
-    from: string,
-    to: string,
-    options?: {
-      overwrite?: boolean | OverwriteFunction;
-      matching?: string | string[];
-    }
-  ): Promise<void>;
+  copy(from: string, to: string, options?: CopyOptions): void;
+  copyAsync(from: string, to: string, options?: CopyOptions): Promise<void>;
 
   createWriteStream(path: any, options?: any): any; // TODO
   createReadStream(path: any, options?: any): any; // TODO
 
-  dir(
-    path: string,
-    criteria?: {
-      empty?: boolean,
-      mode?: string | number
-    }
-  ): FSJetpack;
-  dirAsync(
-    path: string,
-    criteria?: {
-      empty?: boolean,
-      mode?: string | number
-    }
-  ): Promise<FSJetpack>;
+  dir(path: string, criteria?: DirCriteria): FSJetpack;
+  dirAsync(path: string, criteria?: DirCriteria): Promise<FSJetpack>;
 
-  exists(path: string): false | "dir" | "file" | "other";
-  existsAsync(path: string): Promise<false | "dir" | "file" | "other">;
+  exists(path: string): ExistsResult;
+  existsAsync(path: string): Promise<ExistsResult>;
 
-  file(
-    path: string,
-    criteria?: {
-      content?: WritableData;
-      jsonIndent?: number;
-      mode?: string | number;
-    }
-  ): FSJetpack;
-  fileAsync(
-    path: string,
-    criteria?: {
-      content?: WritableData;
-      jsonIndent?: number;
-      mode?: string | number;
-    }
-  ): Promise<FSJetpack>;
+  file(path: string, criteria?: FileOptions): FSJetpack;
+  fileAsync(path: string, criteria?: FileOptions): Promise<FSJetpack>;
 
   find(options?: FindOptions): string[];
   find(startPath: string, options?: FindOptions): string[];
@@ -144,8 +116,14 @@ interface FSJetpack {
   move(from: string, to: string): void;
   moveAsync(from: string, to: string): Promise<void>;
 
-  read(path: string, returnAs?: string): any; // TODO returnAs i any!!!!
-  readAsync(path: string, returnAs?: string): any; // TODO
+  read(path: string): string;
+  read(path: string, returnAs: "utf8"): string;
+  read(path: string, returnAs: "buffer"): Buffer;
+  read(path: string, returnAs: "json" | "jsonWithDates"): any;
+  readAsync(path: string): Promise<string>;
+  readAsync(path: string, returnAs: "utf8"): Promise<string>;
+  readAsync(path: string, returnAs: "buffer"): Promise<Buffer>;
+  readAsync(path: string, returnAs: "json" | "jsonWithDates"): Promise<any>;
 
   remove(path?: string): void;
   removeAsync(path?: string): Promise<void>;
@@ -153,8 +131,8 @@ interface FSJetpack {
   rename(path:string, newName: string): void;
   renameAsync(path:string, newName: string): Promise<void>;
 
-  symlink(symlinkValue, path): any; // TODO
-  symlinkAsync(symlinkValue, path): any; // TODO
+  symlink(symlinkValue: string, path: string): void;
+  symlinkAsync(symlinkValue: string, path: string): Promise<void>;
 
   write(path: string, data: WritableData, options?: WriteOptions): void;
   writeAsync(path: string, data: WritableData, options?: WriteOptions): Promise<void>;
