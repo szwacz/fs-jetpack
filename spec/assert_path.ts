@@ -1,6 +1,4 @@
-"use strict";
-
-const fs = require("fs");
+import * as fs from "fs";
 
 const areBuffersEqual = (bufA, bufB) => {
   const len = bufA.length;
@@ -15,7 +13,7 @@ const areBuffersEqual = (bufA, bufB) => {
   return true;
 };
 
-module.exports = path => {
+export default (path) => {
   return {
     shouldNotExist: () => {
       let message;

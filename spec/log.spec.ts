@@ -1,8 +1,6 @@
-"use strict";
-
-const util = require("util");
-const expect = require("chai").expect;
-const jetpack = require("..");
+import * as util from "util";
+import { expect } from "chai";
+import * as jetpack from "..";
 
 if (util.inspect.custom !== undefined) {
   // Test for https://github.com/szwacz/fs-jetpack/issues/29

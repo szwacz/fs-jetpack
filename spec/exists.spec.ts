@@ -1,9 +1,7 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import helper from "./helper";
+import * as jetpack from "..";
 
 describe("exists", () => {
   beforeEach(helper.setCleanTestCwd);

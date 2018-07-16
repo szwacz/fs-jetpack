@@ -1,9 +1,8 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import path from "./assert_path";
+import helper from "./helper";
+import * as jetpack from "..";
 
 describe("inspectTree", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -383,10 +382,10 @@ describe("inspectTree", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.inspectTree, methodName: "inspectTree" },
+      { type: "sync", method: jetpack.inspectTree as any, methodName: "inspectTree" },
       {
         type: "async",
-        method: jetpack.inspectTreeAsync,
+        method: jetpack.inspectTreeAsync as any,
         methodName: "inspectTreeAsync"
       }
     ];

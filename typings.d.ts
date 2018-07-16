@@ -1,3 +1,54 @@
+type OverwriteFunction = (srcInspectData: any, destInspectData: any) => boolean | Promise<boolean>; // TODO not any!
+
+type FindOptions = {
+  matching?: string | string[];
+  files?: boolean;
+  directories?: boolean;
+  recursive?: boolean;
+};
+
+export type Checksum = 'md5' | 'sha1' | 'sha256' | 'sha512';
+
+type InspectOptions = {
+  checksum?: Checksum;
+  mode?: boolean;
+  times?: boolean;
+  absolutePath?: boolean;
+  symlinks?: "report" | "follow";
+};
+
+interface InspectResult {
+  name: string;
+  type: "file" | "dir" | "symlink";
+  size: number;
+  md5?: string;
+  sha1?: string;
+  sha256?: string;
+  sha512?: string;
+  mode?: number;
+  accessTime?: Date;
+  modifyTime?: Date;
+  changeTime?: Date;
+}
+
+type InspectTreeOptions = {
+  checksum?: Checksum;
+  relativePath?: boolean;
+  symlinks?: "report" | "follow";
+};
+
+interface InspectTreeResult extends InspectResult {
+  relativePath: string;
+  children: InspectTreeResult[];
+}
+
+type WritableData = string | object | Array<any> | Buffer;
+
+type WriteOptions = {
+  atomic?: boolean;
+  jsonIndent?: number;
+};
+
 interface FSJetpack {
   cwd: {
     (): string;
@@ -6,180 +57,108 @@ interface FSJetpack {
 
   path(...pathParts: string[]): string;
 
-  // append: (
-  //   path: string,
-  //   data: string | Buffer,
-  //   options: {
-  //     mode: string | number;
-  //   }
-  // ): void;
-  // appendAsync: (
-  //   path: string,
-  //   data: string | Buffer,
-  //   options: {
-  //     mode: string | number;
-  //   }
-  // ): Promise<void>;
-};
+  append(
+    path: string,
+    data: string | Buffer,
+    options?: {
+      mode?: string | number;
+    }
+  ): void;
+  appendAsync(
+    path: string,
+    data: string | Buffer,
+    options?: {
+      mode?: string | number;
+    }
+  ): Promise<void>;
 
-// copy: (from, to, options) => {
-//   copy.validateInput("copy", from, to, options);
-//   copy.sync(resolvePath(from), resolvePath(to), options);
-// },
-// copyAsync: (from, to, options) => {
-//   copy.validateInput("copyAsync", from, to, options);
-//   return copy.async(resolvePath(from), resolvePath(to), options);
-// },
-//
-// createWriteStream: (path, options) => {
-//   return streams.createWriteStream(resolvePath(path), options);
-// },
-// createReadStream: (path, options) => {
-//   return streams.createReadStream(resolvePath(path), options);
-// },
-//
-// dir: (path, criteria) => {
-//   dir.validateInput("dir", path, criteria);
-//   const normalizedPath = resolvePath(path);
-//   dir.sync(normalizedPath, criteria);
-//   return cwd(normalizedPath);
-// },
-// dirAsync: (path, criteria) => {
-//   dir.validateInput("dirAsync", path, criteria);
-//   return new Promise((resolve, reject) => {
-//     const normalizedPath = resolvePath(path);
-//     dir.async(normalizedPath, criteria).then(() => {
-//       resolve(cwd(normalizedPath));
-//     }, reject);
-//   });
-// },
-//
-// exists: path => {
-//   exists.validateInput("exists", path);
-//   return exists.sync(resolvePath(path));
-// },
-// existsAsync: path => {
-//   exists.validateInput("existsAsync", path);
-//   return exists.async(resolvePath(path));
-// },
-//
-// file: (path, criteria) => {
-//   file.validateInput("file", path, criteria);
-//   file.sync(resolvePath(path), criteria);
-//   return api;
-// },
-// fileAsync: (path, criteria) => {
-//   file.validateInput("fileAsync", path, criteria);
-//   return new Promise((resolve, reject) => {
-//     file.async(resolvePath(path), criteria).then(() => {
-//       resolve(api);
-//     }, reject);
-//   });
-// },
-//
-// find: (startPath, options) => {
-//   // startPath is optional parameter, if not specified move rest of params
-//   // to proper places and default startPath to CWD.
-//   if (typeof options === "undefined" && typeof startPath === "object") {
-//     options = startPath;
-//     startPath = ".";
-//   }
-//   find.validateInput("find", startPath, options);
-//   return find.sync(resolvePath(startPath), normalizeOptions(options));
-// },
-// findAsync: (startPath, options) => {
-//   // startPath is optional parameter, if not specified move rest of params
-//   // to proper places and default startPath to CWD.
-//   if (typeof options === "undefined" && typeof startPath === "object") {
-//     options = startPath;
-//     startPath = ".";
-//   }
-//   find.validateInput("findAsync", startPath, options);
-//   return find.async(resolvePath(startPath), normalizeOptions(options));
-// },
-//
-// inspect: (path, fieldsToInclude) => {
-//   inspect.validateInput("inspect", path, fieldsToInclude);
-//   return inspect.sync(resolvePath(path), fieldsToInclude);
-// },
-// inspectAsync: (path, fieldsToInclude) => {
-//   inspect.validateInput("inspectAsync", path, fieldsToInclude);
-//   return inspect.async(resolvePath(path), fieldsToInclude);
-// },
-//
-// inspectTree: (path, options) => {
-//   inspectTree.validateInput("inspectTree", path, options);
-//   return inspectTree.sync(resolvePath(path), options);
-// },
-// inspectTreeAsync: (path, options) => {
-//   inspectTree.validateInput("inspectTreeAsync", path, options);
-//   return inspectTree.async(resolvePath(path), options);
-// },
-//
-// list: path => {
-//   list.validateInput("list", path);
-//   return list.sync(resolvePath(path || "."));
-// },
-// listAsync: path => {
-//   list.validateInput("listAsync", path);
-//   return list.async(resolvePath(path || "."));
-// },
-//
-// move: (from, to) => {
-//   move.validateInput("move", from, to);
-//   move.sync(resolvePath(from), resolvePath(to));
-// },
-// moveAsync: (from, to) => {
-//   move.validateInput("moveAsync", from, to);
-//   return move.async(resolvePath(from), resolvePath(to));
-// },
-//
-// read: (path, returnAs) => {
-//   read.validateInput("read", path, returnAs);
-//   return read.sync(resolvePath(path), returnAs);
-// },
-// readAsync: (path, returnAs) => {
-//   read.validateInput("readAsync", path, returnAs);
-//   return read.async(resolvePath(path), returnAs);
-// },
-//
-// remove: path => {
-//   remove.validateInput("remove", path);
-//   // If path not specified defaults to CWD
-//   remove.sync(resolvePath(path || "."));
-// },
-// removeAsync: path => {
-//   remove.validateInput("removeAsync", path);
-//   // If path not specified defaults to CWD
-//   return remove.async(resolvePath(path || "."));
-// },
-//
-// rename: (path, newName) => {
-//   rename.validateInput("rename", path, newName);
-//   rename.sync(resolvePath(path), newName);
-// },
-// renameAsync: (path, newName) => {
-//   rename.validateInput("renameAsync", path, newName);
-//   return rename.async(resolvePath(path), newName);
-// },
-//
-// symlink: (symlinkValue, path) => {
-//   symlink.validateInput("symlink", symlinkValue, path);
-//   symlink.sync(symlinkValue, resolvePath(path));
-// },
-// symlinkAsync: (symlinkValue, path) => {
-//   symlink.validateInput("symlinkAsync", symlinkValue, path);
-//   return symlink.async(symlinkValue, resolvePath(path));
-// },
-//
-// write: (path, data, options) => {
-//   write.validateInput("write", path, data, options);
-//   write.sync(resolvePath(path), data, options);
-// },
-// writeAsync: (path, data, options) => {
-//   write.validateInput("writeAsync", path, data, options);
-//   return write.async(resolvePath(path), data, options);
-// }
+  copy(
+    from: string,
+    to: string,
+    options?: {
+      overwrite?: boolean | OverwriteFunction;
+      matching?: string | string[]
+    }
+  ): void;
+  copyAsync(
+    from: string,
+    to: string,
+    options?: {
+      overwrite?: boolean | OverwriteFunction;
+      matching?: string | string[];
+    }
+  ): Promise<void>;
+
+  createWriteStream(path: any, options?: any): any; // TODO
+  createReadStream(path: any, options?: any): any; // TODO
+
+  dir(
+    path: string,
+    criteria?: {
+      empty?: boolean,
+      mode?: string | number
+    }
+  ): FSJetpack;
+  dirAsync(
+    path: string,
+    criteria?: {
+      empty?: boolean,
+      mode?: string | number
+    }
+  ): Promise<FSJetpack>;
+
+  exists(path: string): false | "dir" | "file" | "other";
+  existsAsync(path: string): Promise<false | "dir" | "file" | "other">;
+
+  file(
+    path: string,
+    criteria?: {
+      content?: WritableData;
+      jsonIndent?: number;
+      mode?: string | number;
+    }
+  ): FSJetpack;
+  fileAsync(
+    path: string,
+    criteria?: {
+      content?: WritableData;
+      jsonIndent?: number;
+      mode?: string | number;
+    }
+  ): Promise<FSJetpack>;
+
+  find(options?: FindOptions): string[];
+  find(startPath: string, options?: FindOptions): string[];
+  findAsync(options?: FindOptions): Promise<string[]>;
+  findAsync(startPath: string, options?: FindOptions): Promise<string[]>;
+
+  inspect(path: string, options?: InspectOptions): InspectResult;
+  inspectAsync(path: string, options?: InspectOptions): Promise<InspectResult>;
+
+  inspectTree(path: string, options?: InspectTreeOptions): InspectTreeResult,
+  inspectTreeAsync(path: string, options?: InspectTreeOptions): Promise<InspectTreeResult>,
+
+  list(path?: string): string[];
+  listAsync(path?: string): Promise<string[]>;
+
+  move(from: string, to: string): void;
+  moveAsync(from: string, to: string): Promise<void>;
+
+  read(path: string, returnAs?: string): any; // TODO returnAs i any!!!!
+  readAsync(path: string, returnAs?: string): any; // TODO
+
+  remove(path?: string): void;
+  removeAsync(path?: string): Promise<void>;
+
+  rename(path:string, newName: string): void;
+  renameAsync(path:string, newName: string): Promise<void>;
+
+  symlink(symlinkValue, path): any; // TODO
+  symlinkAsync(symlinkValue, path): any; // TODO
+
+  write(path: string, data: WritableData, options?: WriteOptions): void;
+  writeAsync(path: string, data: WritableData, options?: WriteOptions): Promise<void>;
+}
 
 declare const jetpack: FSJetpack;
 

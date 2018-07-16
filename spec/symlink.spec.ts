@@ -1,9 +1,8 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import path from "./assert_path";
+import helper from "./helper";
+import * as jetpack from "..";
 
 describe("symlink", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -74,10 +73,10 @@ describe("symlink", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.symlink, methodName: "symlink" },
+      { type: "sync", method: jetpack.symlink as any, methodName: "symlink" },
       {
         type: "async",
-        method: jetpack.symlinkAsync,
+        method: jetpack.symlinkAsync as any,
         methodName: "symlinkAsync"
       }
     ];

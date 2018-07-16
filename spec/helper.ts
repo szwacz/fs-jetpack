@@ -1,8 +1,6 @@
-"use strict";
-
-const os = require("os");
-const crypto = require("crypto");
-const fse = require("fs-extra");
+import * as os from "os";
+import * as crypto from "crypto";
+import * as fse from "fs-extra";
 
 const originalCwd = process.cwd();
 const createdDirectories = [];
@@ -15,7 +13,7 @@ process.on("exit", () => {
   });
 });
 
-exports.setCleanTestCwd = () => {
+const setCleanTestCwd = () => {
   const random = crypto.randomBytes(16).toString("hex");
   const path = `${os.tmpdir()}/fs-jetpack-test-${random}`;
   fse.mkdirSync(path);
@@ -23,25 +21,32 @@ exports.setCleanTestCwd = () => {
   process.chdir(path);
 };
 
-exports.switchBackToCorrectCwd = () => {
+const switchBackToCorrectCwd = () => {
   const path = createdDirectories.pop();
   process.chdir(originalCwd);
   fse.removeSync(path);
 };
 
-exports.parseMode = modeAsNumber => {
+const parseMode = modeAsNumber => {
   const mode = modeAsNumber.toString(8);
   return mode.substring(mode.length - 3);
 };
 
 // Converts paths to windows or unix formats depending on platform running.
-exports.osSep = path => {
+const osSep = path => {
   if (Array.isArray(path)) {
-    return path.map(exports.osSep);
+    return path.map(osSep);
   }
 
   if (process.platform === "win32") {
     return path.replace(/\//g, "\\");
   }
   return path.replace(/\\/g, "/");
+};
+
+export default {
+  setCleanTestCwd,
+  switchBackToCorrectCwd,
+  parseMode,
+  osSep
 };

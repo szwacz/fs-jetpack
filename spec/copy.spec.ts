@@ -1,10 +1,8 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const path = require("./assert_path");
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import path from "./assert_path";
+import helper from "./helper";
+import * as jetpack from "..";
 
 describe("copy", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -291,14 +289,13 @@ describe("copy", () => {
       path("to-here/foo/eh.txt").shouldBeFileWithContent("456");
     };
 
-    const overwrite = (srcInspectData, destInspectData) => {
+    const overwrite = (srcInspectData, destInspectData): Promise<boolean> => {
       return new Promise((resolve, reject) => {
         jetpack
           .readAsync(srcInspectData.absolutePath)
           .then(data => {
-            return data === "abc";
-          })
-          .then(resolve, reject);
+            resolve(data === "abc");
+          });
       });
     };
 
@@ -601,8 +598,8 @@ describe("copy", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.copy, methodName: "copy" },
-      { type: "async", method: jetpack.copyAsync, methodName: "copyAsync" }
+      { type: "sync", method: jetpack.copy as any, methodName: "copy" },
+      { type: "async", method: jetpack.copyAsync as any, methodName: "copyAsync" }
     ];
 
     describe('"from" argument', () => {

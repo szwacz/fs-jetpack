@@ -1,9 +1,9 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import path from "./assert_path";
+import helper from "./helper";
+import * as jetpack from "..";
+import { Checksum } from "..";
 
 describe("inspect", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -302,13 +302,13 @@ describe("inspect", () => {
 
         it("sync", () => {
           preparations();
-          expectations(jetpack.inspect("file.txt", { checksum: test.type }));
+          expectations(jetpack.inspect("file.txt", { checksum: test.type as Checksum }));
         });
 
         it("async", done => {
           preparations();
           jetpack
-            .inspectAsync("file.txt", { checksum: test.type })
+            .inspectAsync("file.txt", { checksum: test.type as Checksum })
             .then(data => {
               expectations(data);
               done();
@@ -321,10 +321,10 @@ describe("inspect", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.inspect, methodName: "inspect" },
+      { type: "sync", method: jetpack.inspect as any, methodName: "inspect" },
       {
         type: "async",
-        method: jetpack.inspectAsync,
+        method: jetpack.inspectAsync as any,
         methodName: "inspectAsync"
       }
     ];

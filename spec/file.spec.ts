@@ -1,10 +1,8 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const path = require("./assert_path");
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import path from "./assert_path";
+import helper from "./helper";
+import * as jetpack from "..";
 
 describe("file", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -413,8 +411,8 @@ describe("file", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.file, methodName: "file" },
-      { type: "async", method: jetpack.fileAsync, methodName: "fileAsync" }
+      { type: "sync", method: jetpack.file as any, methodName: "file" },
+      { type: "async", method: jetpack.fileAsync as any, methodName: "fileAsync" }
     ];
 
     describe('"path" argument', () => {

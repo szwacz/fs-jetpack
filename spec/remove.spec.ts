@@ -1,10 +1,8 @@
-"use strict";
-
-const fse = require("fs-extra");
-const expect = require("chai").expect;
-const path = require("./assert_path");
-const helper = require("./helper");
-const jetpack = require("..");
+import * as fse from "fs-extra";
+import { expect } from "chai";
+import path from "./assert_path";
+import helper from "./helper";
+import * as jetpack from "..";
 
 describe("remove", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -191,8 +189,8 @@ describe("remove", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.remove, methodName: "remove" },
-      { type: "async", method: jetpack.removeAsync, methodName: "removeAsync" }
+      { type: "sync", method: jetpack.remove as any, methodName: "remove" },
+      { type: "async", method: jetpack.removeAsync as any, methodName: "removeAsync" }
     ];
 
     describe('"path" argument', () => {
