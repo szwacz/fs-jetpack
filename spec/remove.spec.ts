@@ -190,7 +190,11 @@ describe("remove", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.remove as any, methodName: "remove" },
-      { type: "async", method: jetpack.removeAsync as any, methodName: "removeAsync" }
+      {
+        type: "async",
+        method: jetpack.removeAsync as any,
+        methodName: "removeAsync"
+      }
     ];
 
     describe('"path" argument', () => {

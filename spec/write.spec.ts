@@ -163,7 +163,11 @@ describe("write", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.write as any, methodName: "write" },
-      { type: "async", method: jetpack.writeAsync as any, methodName: "writeAsync" }
+      {
+        type: "async",
+        method: jetpack.writeAsync as any,
+        methodName: "writeAsync"
+      }
     ];
 
     describe('"path" argument', () => {

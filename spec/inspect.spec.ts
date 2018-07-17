@@ -302,7 +302,9 @@ describe("inspect", () => {
 
         it("sync", () => {
           preparations();
-          expectations(jetpack.inspect("file.txt", { checksum: test.type as Checksum }));
+          expectations(
+            jetpack.inspect("file.txt", { checksum: test.type as Checksum })
+          );
         });
 
         it("async", done => {

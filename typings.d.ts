@@ -4,16 +4,19 @@ type AppendOptions = {
   mode?: string | number;
 };
 
-type OverwriteFunction = (srcInspectData: InspectResult, destInspectData: InspectResult) => boolean | Promise<boolean>;
+type OverwriteFunction = (
+  srcInspectData: InspectResult,
+  destInspectData: InspectResult
+) => boolean | Promise<boolean>;
 
 type CopyOptions = {
   overwrite?: boolean | OverwriteFunction;
-  matching?: string | string[]
+  matching?: string | string[];
 };
 
 type DirCriteria = {
-  empty?: boolean,
-  mode?: string | number
+  empty?: boolean;
+  mode?: string | number;
 };
 
 type ExistsResult = false | "dir" | "file" | "other";
@@ -31,7 +34,7 @@ type FindOptions = {
   recursive?: boolean;
 };
 
-export type Checksum = 'md5' | 'sha1' | 'sha256' | 'sha512';
+export type Checksum = "md5" | "sha1" | "sha256" | "sha512";
 
 type InspectOptions = {
   checksum?: Checksum;
@@ -76,13 +79,17 @@ type WriteOptions = {
 interface FSJetpack {
   cwd: {
     (): string;
-    (...pathParts: string[]): FSJetpack
+    (...pathParts: string[]): FSJetpack;
   };
 
   path(...pathParts: string[]): string;
 
   append(path: string, data: AppendData, options?: AppendOptions): void;
-  appendAsync(path: string, data: AppendData, options?: AppendOptions): Promise<void>;
+  appendAsync(
+    path: string,
+    data: AppendData,
+    options?: AppendOptions
+  ): Promise<void>;
 
   copy(from: string, to: string, options?: CopyOptions): void;
   copyAsync(from: string, to: string, options?: CopyOptions): Promise<void>;
@@ -107,8 +114,11 @@ interface FSJetpack {
   inspect(path: string, options?: InspectOptions): InspectResult;
   inspectAsync(path: string, options?: InspectOptions): Promise<InspectResult>;
 
-  inspectTree(path: string, options?: InspectTreeOptions): InspectTreeResult,
-  inspectTreeAsync(path: string, options?: InspectTreeOptions): Promise<InspectTreeResult>,
+  inspectTree(path: string, options?: InspectTreeOptions): InspectTreeResult;
+  inspectTreeAsync(
+    path: string,
+    options?: InspectTreeOptions
+  ): Promise<InspectTreeResult>;
 
   list(path?: string): string[];
   listAsync(path?: string): Promise<string[]>;
@@ -128,14 +138,18 @@ interface FSJetpack {
   remove(path?: string): void;
   removeAsync(path?: string): Promise<void>;
 
-  rename(path:string, newName: string): void;
-  renameAsync(path:string, newName: string): Promise<void>;
+  rename(path: string, newName: string): void;
+  renameAsync(path: string, newName: string): Promise<void>;
 
   symlink(symlinkValue: string, path: string): void;
   symlinkAsync(symlinkValue: string, path: string): Promise<void>;
 
   write(path: string, data: WritableData, options?: WriteOptions): void;
-  writeAsync(path: string, data: WritableData, options?: WriteOptions): Promise<void>;
+  writeAsync(
+    path: string,
+    data: WritableData,
+    options?: WriteOptions
+  ): Promise<void>;
 }
 
 declare const jetpack: FSJetpack;

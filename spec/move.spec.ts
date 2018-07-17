@@ -137,7 +137,11 @@ describe("move", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.move as any, methodName: "move" },
-      { type: "async", method: jetpack.moveAsync as any, methodName: "moveAsync" }
+      {
+        type: "async",
+        method: jetpack.moveAsync as any,
+        methodName: "moveAsync"
+      }
     ];
 
     describe('"from" argument', () => {

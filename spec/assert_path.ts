@@ -13,7 +13,7 @@ const areBuffersEqual = (bufA, bufB) => {
   return true;
 };
 
-export default (path) => {
+export default path => {
   return {
     shouldNotExist: () => {
       let message;

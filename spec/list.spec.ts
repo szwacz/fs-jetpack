@@ -133,7 +133,11 @@ describe("list", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.list as any, methodName: "list" },
-      { type: "async", method: jetpack.listAsync as any, methodName: "listAsync" }
+      {
+        type: "async",
+        method: jetpack.listAsync as any,
+        methodName: "listAsync"
+      }
     ];
 
     describe('"path" argument', () => {

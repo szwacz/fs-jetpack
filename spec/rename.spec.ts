@@ -88,7 +88,11 @@ describe("rename", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.rename as any, methodName: "rename" },
-      { type: "async", method: jetpack.renameAsync as any, methodName: "renameAsync" }
+      {
+        type: "async",
+        method: jetpack.renameAsync as any,
+        methodName: "renameAsync"
+      }
     ];
 
     describe('"path" argument', () => {

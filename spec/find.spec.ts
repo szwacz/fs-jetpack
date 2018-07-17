@@ -582,7 +582,11 @@ describe("find", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.find as any, methodName: "find" },
-      { type: "async", method: jetpack.findAsync as any, methodName: "findAsync" }
+      {
+        type: "async",
+        method: jetpack.findAsync as any,
+        methodName: "findAsync"
+      }
     ];
 
     describe('"path" argument', () => {

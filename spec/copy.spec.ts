@@ -291,11 +291,9 @@ describe("copy", () => {
 
     const overwrite = (srcInspectData, destInspectData): Promise<boolean> => {
       return new Promise((resolve, reject) => {
-        jetpack
-          .readAsync(srcInspectData.absolutePath)
-          .then(data => {
-            resolve(data === "abc");
-          });
+        jetpack.readAsync(srcInspectData.absolutePath).then(data => {
+          resolve(data === "abc");
+        });
       });
     };
 
@@ -599,7 +597,11 @@ describe("copy", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.copy as any, methodName: "copy" },
-      { type: "async", method: jetpack.copyAsync as any, methodName: "copyAsync" }
+      {
+        type: "async",
+        method: jetpack.copyAsync as any,
+        methodName: "copyAsync"
+      }
     ];
 
     describe('"from" argument', () => {

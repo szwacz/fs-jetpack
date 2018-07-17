@@ -232,7 +232,11 @@ describe("read", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.read as any, methodName: "read" },
-      { type: "async", method: jetpack.readAsync as any, methodName: "readAsync" }
+      {
+        type: "async",
+        method: jetpack.readAsync as any,
+        methodName: "readAsync"
+      }
     ];
 
     describe('"path" argument', () => {

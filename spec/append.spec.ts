@@ -121,7 +121,11 @@ describe("append", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.append as any, methodName: "append" },
-      { type: "async", method: jetpack.appendAsync as any, methodName: "appendAsync" }
+      {
+        type: "async",
+        method: jetpack.appendAsync as any,
+        methodName: "appendAsync"
+      }
     ];
 
     describe('"path" argument', () => {

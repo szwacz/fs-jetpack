@@ -412,7 +412,11 @@ describe("file", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.file as any, methodName: "file" },
-      { type: "async", method: jetpack.fileAsync as any, methodName: "fileAsync" }
+      {
+        type: "async",
+        method: jetpack.fileAsync as any,
+        methodName: "fileAsync"
+      }
     ];
 
     describe('"path" argument', () => {

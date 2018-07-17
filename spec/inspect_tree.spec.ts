@@ -382,7 +382,11 @@ describe("inspectTree", () => {
 
   describe("input validation", () => {
     const tests = [
-      { type: "sync", method: jetpack.inspectTree as any, methodName: "inspectTree" },
+      {
+        type: "sync",
+        method: jetpack.inspectTree as any,
+        methodName: "inspectTree"
+      },
       {
         type: "async",
         method: jetpack.inspectTreeAsync as any,
