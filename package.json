@@ -47,7 +47,7 @@
     "file system"
   ],
   "lint-staged": {
-    "*.js": [
+    "*.{js,ts}": [
       "prettier --write",
       "git add"
     ]
