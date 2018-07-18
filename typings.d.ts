@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 type AppendData = string | Buffer;
 
 type AppendOptions = {
