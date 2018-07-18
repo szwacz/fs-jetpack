@@ -1,5 +1,7 @@
 /// <reference types="node" />
 
+import fs = require("fs");
+
 type AppendData = string | Buffer;
 
 type AppendOptions = {
@@ -96,8 +98,8 @@ interface FSJetpack {
   copy(from: string, to: string, options?: CopyOptions): void;
   copyAsync(from: string, to: string, options?: CopyOptions): Promise<void>;
 
-  createWriteStream(path: any, options?: any): any; // TODO
-  createReadStream(path: any, options?: any): any; // TODO
+  createWriteStream: typeof fs.createWriteStream;
+  createReadStream: typeof fs.createReadStream;
 
   dir(path: string, criteria?: DirCriteria): FSJetpack;
   dirAsync(path: string, criteria?: DirCriteria): Promise<FSJetpack>;
