@@ -16,7 +16,7 @@ describe("list", () => {
       fse.outputFileSync("dir/subdir/file.txt", "defg");
     };
 
-    const expectations = data => {
+    const expectations = (data: string[]) => {
       expect(data).to.eql(["empty", "empty.txt", "file.txt", "subdir"]);
     };
 
@@ -37,10 +37,10 @@ describe("list", () => {
   describe("lists CWD if no path parameter passed", () => {
     const preparations = () => {
       fse.mkdirsSync("dir/a");
-      fse.outputFileSync("dir/b");
+      fse.outputFileSync("dir/b", "");
     };
 
-    const expectations = data => {
+    const expectations = (data: string[]) => {
       expect(data).to.eql(["a", "b"]);
     };
 
@@ -61,7 +61,7 @@ describe("list", () => {
   });
 
   describe("returns undefined if path doesn't exist", () => {
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.equal(undefined);
     };
 
@@ -82,7 +82,7 @@ describe("list", () => {
       fse.outputFileSync("file.txt", "abc");
     };
 
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.code).to.equal("ENOTDIR");
     };
 
@@ -110,7 +110,7 @@ describe("list", () => {
       fse.outputFileSync("a/b/c.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: string[]) => {
       expect(data).to.eql(["c.txt"]);
     };
 

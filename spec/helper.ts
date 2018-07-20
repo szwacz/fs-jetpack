@@ -3,7 +3,7 @@ import * as crypto from "crypto";
 import * as fse from "fs-extra";
 
 const originalCwd = process.cwd();
-const createdDirectories = [];
+const createdDirectories: string[] = [];
 
 process.on("exit", () => {
   // In case something went wrong and some temp
@@ -27,13 +27,15 @@ const switchBackToCorrectCwd = () => {
   fse.removeSync(path);
 };
 
-const parseMode = modeAsNumber => {
+const parseMode = (modeAsNumber: number) => {
   const mode = modeAsNumber.toString(8);
   return mode.substring(mode.length - 3);
 };
 
 // Converts paths to windows or unix formats depending on platform running.
-const osSep = path => {
+function osSep(path: string): string;
+function osSep(path: string[]): string[];
+function osSep(path: any): any {
   if (Array.isArray(path)) {
     return path.map(osSep);
   }
@@ -42,7 +44,7 @@ const osSep = path => {
     return path.replace(/\//g, "\\");
   }
   return path.replace(/\\/g, "/");
-};
+}
 
 export default {
   setCleanTestCwd,

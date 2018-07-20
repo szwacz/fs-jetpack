@@ -3,6 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
+import { InspectTreeResult } from "..";
 
 describe("inspectTree", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -14,7 +15,7 @@ describe("inspectTree", () => {
       fse.outputFileSync("dir/subdir/file.txt", "defg");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       expect(data).to.eql({
         name: "dir",
         type: "dir",
@@ -63,7 +64,7 @@ describe("inspectTree", () => {
       fse.outputFileSync("dir/subdir/file.txt", "defg");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       // dir
       expect(data.size).to.equal(7);
       // dir/empty
@@ -97,7 +98,7 @@ describe("inspectTree", () => {
       fse.outputFileSync("dir/subdir/file.txt", "defg");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       // data will look like...
       // {
       //   name: 'dir',
@@ -141,7 +142,7 @@ describe("inspectTree", () => {
       fse.outputFileSync("dir/file.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       expect(data).to.eql({
         name: "file.txt",
         type: "file",
@@ -168,7 +169,7 @@ describe("inspectTree", () => {
       fse.mkdirsSync("empty");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       expect(data).to.eql({
         name: "empty",
         type: "dir",
@@ -192,7 +193,7 @@ describe("inspectTree", () => {
   });
 
   describe("returns undefined if path doesn't exist", () => {
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       expect(data).to.equal(undefined);
     };
 
@@ -213,7 +214,7 @@ describe("inspectTree", () => {
       fse.outputFileSync("a/b.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       expect(data.name).to.equal("b.txt");
     };
 
@@ -239,8 +240,8 @@ describe("inspectTree", () => {
       fse.symlinkSync("file.txt", "dir/symlinked_file.txt");
     };
 
-    const expectations = tree => {
-      expect(tree).to.eql({
+    const expectations = (data: InspectTreeResult) => {
+      expect(data).to.eql({
         name: "dir",
         type: "dir",
         size: 3,
@@ -287,8 +288,8 @@ describe("inspectTree", () => {
       fse.symlinkSync("file.txt", "dir/symlinked_file.txt");
     };
 
-    const expectations = tree => {
-      expect(tree).to.eql({
+    const expectations = (data: InspectTreeResult) => {
+      expect(data).to.eql({
         name: "dir",
         type: "dir",
         size: 6,
@@ -330,7 +331,7 @@ describe("inspectTree", () => {
       fse.outputFileSync("dir/b.txt", "defg");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       // md5 of
       // 'a.txt' + '900150983cd24fb0d6963f7d28e17f72' +
       // 'b.txt' + '025e4da7edac35ede583f5e8d51aa7ec'
@@ -360,7 +361,7 @@ describe("inspectTree", () => {
       fse.mkdirsSync("empty_dir");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectTreeResult) => {
       // md5 of empty string
       expect(data.md5).to.equal("d41d8cd98f00b204e9800998ecf8427e");
     };

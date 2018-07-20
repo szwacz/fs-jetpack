@@ -17,7 +17,7 @@ describe("tree walker", () => {
       fse.mkdirsSync("a/b/c");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("a"),
@@ -69,9 +69,9 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("a");
-      const data = [];
+      const data: any[] = [];
       preparations();
-      walker.sync(absoluteStartingPath, {}, (path, item) => {
+      walker.sync(absoluteStartingPath, {}, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -79,7 +79,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("a");
-      const data = [];
+      const data: any[] = [];
       preparations();
       const st = walker
         .stream(absoluteStartingPath, {})
@@ -103,7 +103,7 @@ describe("tree walker", () => {
       fse.outputFileSync("a/c/y/z2.txt", "z2");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("a"),
@@ -161,9 +161,9 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("a");
-      const data = [];
+      const data: any[] = [];
       preparations();
-      walker.sync(absoluteStartingPath, {}, (path, item) => {
+      walker.sync(absoluteStartingPath, {}, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -171,7 +171,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("a");
-      const data = [];
+      const data: any[] = [];
       preparations();
       const st = walker
         .stream(absoluteStartingPath, {})
@@ -199,7 +199,7 @@ describe("tree walker", () => {
       fse.outputFileSync("a/b/z1.txt", "z1");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("a"),
@@ -228,9 +228,9 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("a");
-      const data = [];
+      const data: any[] = [];
       preparations();
-      walker.sync(absoluteStartingPath, options, (path, item) => {
+      walker.sync(absoluteStartingPath, options, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -238,7 +238,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("a");
-      const data = [];
+      const data: any[] = [];
       preparations();
       const st = walker
         .stream(absoluteStartingPath, options)
@@ -261,7 +261,7 @@ describe("tree walker", () => {
       fse.mkdirsSync("abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("abc"),
@@ -275,9 +275,9 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("abc");
-      const data = [];
+      const data: any[] = [];
       preparations();
-      walker.sync(absoluteStartingPath, {}, (path, item) => {
+      walker.sync(absoluteStartingPath, {}, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -285,7 +285,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("abc");
-      const data = [];
+      const data: any[] = [];
       preparations();
       const st = walker
         .stream(absoluteStartingPath, {})
@@ -308,7 +308,7 @@ describe("tree walker", () => {
       fse.outputFileSync("abc.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("abc.txt"),
@@ -323,9 +323,9 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
-      const data = [];
+      const data: any[] = [];
       preparations();
-      walker.sync(absoluteStartingPath, {}, (path, item) => {
+      walker.sync(absoluteStartingPath, {}, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -333,7 +333,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
-      const data = [];
+      const data: any[] = [];
       preparations();
       const st = walker
         .stream(absoluteStartingPath, {})
@@ -352,7 +352,7 @@ describe("tree walker", () => {
   });
 
   describe("will do fine with nonexistent entry point", () => {
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("abc.txt"),
@@ -363,8 +363,8 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
-      const data = [];
-      walker.sync(absoluteStartingPath, {}, (path, item) => {
+      const data: any[] = [];
+      walker.sync(absoluteStartingPath, {}, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -372,7 +372,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
-      const data = [];
+      const data: any[] = [];
       const st = walker
         .stream(absoluteStartingPath, {})
         .on("readable", () => {
@@ -400,7 +400,7 @@ describe("tree walker", () => {
       fse.outputFileSync("abc/a.txt", "a");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("abc"),
@@ -423,9 +423,9 @@ describe("tree walker", () => {
 
     it("sync", () => {
       const absoluteStartingPath = pathUtil.resolve("abc");
-      const data = [];
+      const data: any[] = [];
       preparations();
-      walker.sync(absoluteStartingPath, options, (path, item) => {
+      walker.sync(absoluteStartingPath, options, (path: string, item: any) => {
         data.push({ path, item });
       });
       expectations(data);
@@ -433,7 +433,7 @@ describe("tree walker", () => {
 
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("abc");
-      const data = [];
+      const data: any[] = [];
       preparations();
       const st = walker
         .stream(absoluteStartingPath, options)

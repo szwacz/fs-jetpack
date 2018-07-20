@@ -3,7 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
-import { Checksum } from "..";
+import { InspectResult, Checksum } from "..";
 
 describe("inspect", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -14,7 +14,7 @@ describe("inspect", () => {
       fse.outputFileSync("dir/file.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data).to.eql({
         name: "file.txt",
         type: "file",
@@ -41,7 +41,7 @@ describe("inspect", () => {
       fse.mkdirsSync("empty");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data).to.eql({
         name: "empty",
         type: "dir"
@@ -63,7 +63,7 @@ describe("inspect", () => {
   });
 
   describe("returns undefined if path doesn't exist", () => {
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data).to.equal(undefined);
     };
 
@@ -84,7 +84,7 @@ describe("inspect", () => {
       fse.outputFileSync("dir/file.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(typeof data.accessTime.getTime).to.equal("function");
       expect(typeof data.modifyTime.getTime).to.equal("function");
       expect(typeof data.changeTime.getTime).to.equal("function");
@@ -109,7 +109,7 @@ describe("inspect", () => {
       fse.outputFileSync("dir/file.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data.absolutePath).to.equal(jetpack.path("dir/file.txt"));
     };
 
@@ -134,7 +134,7 @@ describe("inspect", () => {
       fse.outputFileSync("a/b.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data.name).to.equal("b.txt");
     };
 
@@ -160,7 +160,7 @@ describe("inspect", () => {
       fse.symlinkSync("dir/file.txt", "symlinked_file.txt");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data).to.eql({
         name: "symlinked_file.txt",
         type: "symlink",
@@ -200,7 +200,7 @@ describe("inspect", () => {
       fse.symlinkSync("dir/file.txt", "symlinked_file.txt");
     };
 
-    const expectations = data => {
+    const expectations = (data: InspectResult) => {
       expect(data).to.eql({
         name: "symlinked_file.txt",
         type: "file",
@@ -231,11 +231,11 @@ describe("inspect", () => {
     describe("can output file mode (unix only)", () => {
       const preparations = () => {
         fse.outputFileSync("dir/file.txt", "abc", {
-          mode: "511"
+          mode: 0o511
         });
       };
 
-      const expectations = data => {
+      const expectations = (data: InspectResult) => {
         expect(helper.parseMode(data.mode)).to.equal("511");
       };
 
@@ -296,8 +296,8 @@ describe("inspect", () => {
           fse.outputFileSync("file.txt", test.content);
         };
 
-        const expectations = data => {
-          expect(data[test.type]).to.eql(test.expected);
+        const expectations = (data: InspectResult) => {
+          expect(data[test.type as Checksum]).to.eql(test.expected);
         };
 
         it("sync", () => {

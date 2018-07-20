@@ -85,7 +85,7 @@ describe("move", () => {
   });
 
   describe("generates nice error when source path doesn't exist", () => {
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.code).to.equal("ENOENT");
       expect(err.message).to.have.string("Path to move doesn't exist");
     };

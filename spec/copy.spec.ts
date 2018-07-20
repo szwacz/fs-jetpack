@@ -3,6 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
+import { InspectResult } from "..";
 
 describe("copy", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -111,7 +112,7 @@ describe("copy", () => {
   });
 
   describe("generates nice error if source path doesn't exist", () => {
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.code).to.equal("ENOENT");
       expect(err.message).to.have.string("Path to copy doesn't exist");
     };
@@ -167,7 +168,7 @@ describe("copy", () => {
         fse.mkdirsSync("b");
       };
 
-      const expectations = err => {
+      const expectations = (err: any) => {
         expect(err.code).to.equal("EEXIST");
         expect(err.message).to.have.string("Destination path already exists");
       };
@@ -235,7 +236,10 @@ describe("copy", () => {
         path("to-here/foo/eh.txt").shouldBeFileWithContent("xyz");
       };
 
-      const overwrite = (srcInspectData, destInspectData) => {
+      const overwrite = (
+        srcInspectData: InspectResult,
+        destInspectData: InspectResult
+      ) => {
         expect(srcInspectData).to.have.property("name");
         expect(srcInspectData).to.have.property("type");
         expect(srcInspectData).to.have.property("mode");
@@ -289,7 +293,10 @@ describe("copy", () => {
       path("to-here/foo/eh.txt").shouldBeFileWithContent("456");
     };
 
-    const overwrite = (srcInspectData, destInspectData): Promise<boolean> => {
+    const overwrite = (
+      srcInspectData: InspectResult,
+      destInspectData: InspectResult
+    ): Promise<boolean> => {
       return new Promise((resolve, reject) => {
         jetpack.readAsync(srcInspectData.absolutePath).then(data => {
           resolve(data === "abc");

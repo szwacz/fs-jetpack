@@ -2,13 +2,14 @@ import * as fse from "fs-extra";
 import { expect } from "chai";
 import helper from "./helper";
 import * as jetpack from "..";
+import { ExistsResult } from "..";
 
 describe("exists", () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
   describe("returns false if file doesn't exist", () => {
-    const expectations = exists => {
+    const expectations = (exists: ExistsResult) => {
       expect(exists).to.equal(false);
     };
 
@@ -29,7 +30,7 @@ describe("exists", () => {
       fse.mkdirsSync("a");
     };
 
-    const expectations = exists => {
+    const expectations = (exists: ExistsResult) => {
       expect(exists).to.equal("dir");
     };
 
@@ -52,7 +53,7 @@ describe("exists", () => {
       fse.outputFileSync("text.txt", "abc");
     };
 
-    const expectations = exists => {
+    const expectations = (exists: ExistsResult) => {
       expect(exists).to.equal("file");
     };
 
@@ -75,7 +76,7 @@ describe("exists", () => {
       fse.outputFileSync("a/text.txt", "abc");
     };
 
-    const expectations = exists => {
+    const expectations = (exists: ExistsResult) => {
       expect(exists).to.equal("file");
     };
 

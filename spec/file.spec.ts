@@ -3,6 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
+import { FSJetpack } from "..";
 
 describe("file", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -195,7 +196,7 @@ describe("file", () => {
       fse.mkdirsSync("a");
     };
 
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.message).to.have.string("exists but is not a file.");
     };
 
@@ -243,7 +244,7 @@ describe("file", () => {
   });
 
   describe("returns currently used jetpack instance", () => {
-    const expectations = jetpackContext => {
+    const expectations = (jetpackContext: FSJetpack) => {
       expect(jetpackContext).to.equal(jetpack);
     };
 

@@ -4,6 +4,7 @@ import * as pathUtil from "path";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
+import { FSJetpack } from "..";
 
 describe("dir", () => {
   beforeEach(helper.setCleanTestCwd);
@@ -144,7 +145,7 @@ describe("dir", () => {
       fse.outputFileSync("a", "abc");
     };
 
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.message).to.have.string("exists but is not a directory");
     };
 
@@ -188,7 +189,7 @@ describe("dir", () => {
   });
 
   describe("returns jetack instance pointing on this directory", () => {
-    const expectations = jetpackContext => {
+    const expectations = (jetpackContext: FSJetpack) => {
       expect(jetpackContext.cwd()).to.equal(pathUtil.resolve("a"));
     };
 

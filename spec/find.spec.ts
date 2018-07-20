@@ -13,7 +13,7 @@ describe("find", () => {
       fse.outputFileSync("a/b/file.txt", "abc");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["a/b/file.txt"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -39,7 +39,7 @@ describe("find", () => {
       fse.outputFileSync("x/y/b/file.txt", "456");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["x/file.txt"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -65,7 +65,7 @@ describe("find", () => {
       fse.outputFileSync("a/b/file.txt", "abc");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["a/b/file.txt"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -89,7 +89,7 @@ describe("find", () => {
       fse.outputFileSync("a/b/c.md", "abc");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       expect(found).to.eql([]);
     };
 
@@ -115,7 +115,7 @@ describe("find", () => {
       fse.outputFileSync("a/x/y/z", "Zzzzz...");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep([
         "a/b/c/file.txt",
         "a/b/file.txt",
@@ -145,7 +145,7 @@ describe("find", () => {
       fse.outputFileSync("x/y/a/b/c/file.txt", "456");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["x/y/a/b/file.txt"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -170,7 +170,7 @@ describe("find", () => {
       fse.outputFileSync("x/y/b/file.txt", "456");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["x/y/file.txt"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -197,7 +197,7 @@ describe("find", () => {
       fse.outputFileSync("x/y/a/z", "zzz");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["x/y/a/b"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -242,7 +242,7 @@ describe("find", () => {
       fse.mkdirsSync("a/b/foo2");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["a/b/foo1"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -269,7 +269,7 @@ describe("find", () => {
       jetpack.symlink("file", "symfile");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       expect(found).to.eql(["file", "symfile"]);
     };
 
@@ -294,7 +294,7 @@ describe("find", () => {
       expect(jetpack.read("foo/symlink_to_dir1/dir2/file.txt")).to.eql("abc");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep([
         "foo/symlink_to_dir1/dir2/file.txt"
       ]);
@@ -321,7 +321,7 @@ describe("find", () => {
       fse.mkdirsSync("a/b/foo2");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["a/b/foo1", "a/b/foo2"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -357,7 +357,7 @@ describe("find", () => {
       fse.mkdirsSync("a/b/foo2");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["a/b/foo2"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -395,7 +395,7 @@ describe("find", () => {
       fse.outputFileSync("a/y", "789");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["a/x"]);
       expect(found).to.eql(normalizedPaths);
     };
@@ -431,7 +431,7 @@ describe("find", () => {
       fse.mkdirsSync("a/b/foo2");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       expect(found).to.eql([]);
     };
 
@@ -462,7 +462,7 @@ describe("find", () => {
   });
 
   describe("throws if path doesn't exist", () => {
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.code).to.equal("ENOENT");
       expect(err.message).to.have.string(
         "Path you want to find stuff in doesn't exist"
@@ -491,7 +491,7 @@ describe("find", () => {
       fse.outputFileSync("a/b", "abc");
     };
 
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.code).to.equal("ENOTDIR");
       expect(err.message).to.have.string(
         "Path you want to find stuff in must be a directory"
@@ -522,7 +522,7 @@ describe("find", () => {
       fse.outputFileSync("a/b/c/d.txt", "abc");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep(["b/c/d.txt"]); // NOT a/b/c/d.txt
       expect(found).to.eql(normalizedPaths);
     };
@@ -550,7 +550,7 @@ describe("find", () => {
       fse.outputFileSync(".foo/.file", "c");
     };
 
-    const expectations = found => {
+    const expectations = (found: string[]) => {
       const normalizedPaths = helper.osSep([".dir", ".dir/.file"]);
       expect(found).to.eql(normalizedPaths);
     };

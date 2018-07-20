@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-const areBuffersEqual = (bufA, bufB) => {
+const areBuffersEqual = (bufA: Buffer, bufB: Buffer) => {
   const len = bufA.length;
   if (len !== bufB.length) {
     return false;
@@ -13,7 +13,7 @@ const areBuffersEqual = (bufA, bufB) => {
   return true;
 };
 
-export default path => {
+export default (path: string) => {
   return {
     shouldNotExist: () => {
       let message;
@@ -50,11 +50,11 @@ export default path => {
       }
     },
 
-    shouldBeFileWithContent: expectedContent => {
+    shouldBeFileWithContent: (expectedContent: any) => {
       let message;
       let content;
 
-      const generateMessage = (expected, found) => {
+      const generateMessage = (expected: string, found: string) => {
         message = `File ${path} should have content "${expected}" but found "${found}"`;
       };
 
@@ -85,7 +85,7 @@ export default path => {
       }
     },
 
-    shouldHaveMode: expectedMode => {
+    shouldHaveMode: (expectedMode: any) => {
       let mode;
       let message;
 

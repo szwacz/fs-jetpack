@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
+    "@types/fs-extra": "^5.0.4",
     "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
     "chai": "^4.1.2",
@@ -35,7 +36,7 @@
     "release-finish": "release-assist --finish"
   },
   "main": "main.js",
-  "types": "./typings.d.ts",
+  "types": "typings.d.ts",
   "homepage": "https://github.com/szwacz/fs-jetpack",
   "repository": {
     "type": "git",

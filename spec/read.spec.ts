@@ -13,7 +13,7 @@ describe("read", () => {
       fse.outputFileSync("file.txt", "abc");
     };
 
-    const expectations = content => {
+    const expectations = (content: any) => {
       expect(content).to.equal("abc");
     };
 
@@ -43,7 +43,7 @@ describe("read", () => {
       fse.outputFileSync("file.txt", new Buffer([11, 22]));
     };
 
-    const expectations = content => {
+    const expectations = (content: Buffer) => {
       expect(Buffer.isBuffer(content)).to.equal(true);
       expect(content.length).to.equal(2);
       expect(content[0]).to.equal(11);
@@ -73,7 +73,7 @@ describe("read", () => {
       fse.outputFileSync("file.json", JSON.stringify(obj));
     };
 
-    const expectations = content => {
+    const expectations = (content: any) => {
       expect(content).to.eql(obj);
     };
 
@@ -96,7 +96,7 @@ describe("read", () => {
       fse.outputFileSync("file.json", '{ "abc: 123 }'); // Malformed JSON
     };
 
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.message).to.have.string("JSON parsing failed while reading");
     };
 
@@ -129,7 +129,7 @@ describe("read", () => {
       fse.outputFileSync("file.json", JSON.stringify(obj));
     };
 
-    const expectations = content => {
+    const expectations = (content: any) => {
       expect(content).to.eql(obj);
     };
 
@@ -148,7 +148,7 @@ describe("read", () => {
   });
 
   describe("returns undefined if file doesn't exist", () => {
-    const expectations = content => {
+    const expectations = (content: any) => {
       expect(content).to.equal(undefined);
     };
 
@@ -181,7 +181,7 @@ describe("read", () => {
       fse.mkdirsSync("dir");
     };
 
-    const expectations = err => {
+    const expectations = (err: any) => {
       expect(err.code).to.equal("EISDIR");
     };
 
@@ -209,7 +209,7 @@ describe("read", () => {
       fse.outputFileSync("a/file.txt", "abc");
     };
 
-    const expectations = data => {
+    const expectations = (data: any) => {
       expect(data).to.equal("abc");
     };
 

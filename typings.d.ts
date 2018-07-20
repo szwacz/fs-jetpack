@@ -23,7 +23,7 @@ type DirCriteria = {
   mode?: string | number;
 };
 
-type ExistsResult = false | "dir" | "file" | "other";
+export type ExistsResult = false | "dir" | "file" | "other";
 
 type FileOptions = {
   content?: WritableData;
@@ -48,10 +48,11 @@ type InspectOptions = {
   symlinks?: "report" | "follow";
 };
 
-interface InspectResult {
+export interface InspectResult {
   name: string;
   type: "file" | "dir" | "symlink";
   size: number;
+  absolutePath?: string;
   md5?: string;
   sha1?: string;
   sha256?: string;
@@ -68,7 +69,7 @@ type InspectTreeOptions = {
   symlinks?: "report" | "follow";
 };
 
-interface InspectTreeResult extends InspectResult {
+export interface InspectTreeResult extends InspectResult {
   relativePath: string;
   children: InspectTreeResult[];
 }
@@ -80,7 +81,7 @@ type WriteOptions = {
   jsonIndent?: number;
 };
 
-interface FSJetpack {
+export interface FSJetpack {
   cwd: {
     (): string;
     (...pathParts: string[]): FSJetpack;
@@ -115,29 +116,38 @@ interface FSJetpack {
   findAsync(options?: FindOptions): Promise<string[]>;
   findAsync(startPath: string, options?: FindOptions): Promise<string[]>;
 
-  inspect(path: string, options?: InspectOptions): InspectResult;
-  inspectAsync(path: string, options?: InspectOptions): Promise<InspectResult>;
+  inspect(path: string, options?: InspectOptions): InspectResult | undefined;
+  inspectAsync(
+    path: string,
+    options?: InspectOptions
+  ): Promise<InspectResult | undefined>;
 
-  inspectTree(path: string, options?: InspectTreeOptions): InspectTreeResult;
+  inspectTree(
+    path: string,
+    options?: InspectTreeOptions
+  ): InspectTreeResult | undefined;
   inspectTreeAsync(
     path: string,
     options?: InspectTreeOptions
-  ): Promise<InspectTreeResult>;
+  ): Promise<InspectTreeResult | undefined>;
 
-  list(path?: string): string[];
-  listAsync(path?: string): Promise<string[]>;
+  list(path?: string): string[] | undefined;
+  listAsync(path?: string): Promise<string[] | undefined>;
 
   move(from: string, to: string): void;
   moveAsync(from: string, to: string): Promise<void>;
 
-  read(path: string): string;
-  read(path: string, returnAs: "utf8"): string;
-  read(path: string, returnAs: "buffer"): Buffer;
-  read(path: string, returnAs: "json" | "jsonWithDates"): any;
-  readAsync(path: string): Promise<string>;
-  readAsync(path: string, returnAs: "utf8"): Promise<string>;
-  readAsync(path: string, returnAs: "buffer"): Promise<Buffer>;
-  readAsync(path: string, returnAs: "json" | "jsonWithDates"): Promise<any>;
+  read(path: string): string | undefined;
+  read(path: string, returnAs: "utf8"): string | undefined;
+  read(path: string, returnAs: "buffer"): Buffer | undefined;
+  read(path: string, returnAs: "json" | "jsonWithDates"): any | undefined;
+  readAsync(path: string): Promise<string | undefined>;
+  readAsync(path: string, returnAs: "utf8"): Promise<string | undefined>;
+  readAsync(path: string, returnAs: "buffer"): Promise<Buffer | undefined>;
+  readAsync(
+    path: string,
+    returnAs: "json" | "jsonWithDates"
+  ): Promise<any | undefined>;
 
   remove(path?: string): void;
   removeAsync(path?: string): Promise<void>;
