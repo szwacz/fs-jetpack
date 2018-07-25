@@ -36,7 +36,7 @@
     "release-finish": "release-assist --finish"
   },
   "main": "main.js",
-  "types": "types.d.ts",
+  "types": "index.d.ts",
   "homepage": "https://github.com/szwacz/fs-jetpack",
   "repository": {
     "type": "git",

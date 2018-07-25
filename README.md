@@ -8,7 +8,7 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 # Table of Contents
 
 [Installation](#installation)  
-[Sync & Async](#sync--async)
+[Sync & Async](#sync--async)  
 [Usage with TypeScript](#usage-with-typescript)
 
 **API:**  
