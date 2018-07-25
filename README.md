@@ -9,6 +9,7 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 
 [Installation](#installation)  
 [Sync & Async](#sync--async)
+[Usage with TypeScript](#usage-with-typescript)
 
 **API:**  
 [append](#appendpath-data-options)  
@@ -61,6 +62,17 @@ jetpack.readAsync('file.txt')
 .then((data) => {
   console.log(data);
 });
+```
+
+# Usage with TypeScript
+
+Starting from v2.1.0 fs-jetpack ships with TypeScript declarations. But for backwards compatibility purposes if you want to import one of the interfaces into your code you need to do it from `fs-jetpack/types` path.
+```typescript
+// Import fs-jetpack into TypeScript code:
+import * as jetpack from "fs-jetpack";
+// Import interface to cast it on variable declaration:
+import { InspectResult } from "fs-jetpack/types";
+let result: InspectResult = jetpack.inspect("foo");
 ```
 
 # API
