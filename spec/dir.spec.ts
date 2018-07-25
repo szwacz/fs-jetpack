@@ -4,7 +4,7 @@ import * as pathUtil from "path";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
-import { FSJetpack } from "..";
+import { FSJetpack } from "../types";
 
 describe("dir", () => {
   beforeEach(helper.setCleanTestCwd);

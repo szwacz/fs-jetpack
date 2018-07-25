@@ -3,7 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
-import { InspectResult, Checksum } from "..";
+import { InspectResult, Checksum } from "../types";
 
 describe("inspect", () => {
   beforeEach(helper.setCleanTestCwd);

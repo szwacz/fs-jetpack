@@ -2,7 +2,7 @@ import * as fse from "fs-extra";
 import { expect } from "chai";
 import helper from "./helper";
 import * as jetpack from "..";
-import { ExistsResult } from "..";
+import { ExistsResult } from "../types";
 
 describe("exists", () => {
   beforeEach(helper.setCleanTestCwd);

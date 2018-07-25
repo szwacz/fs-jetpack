@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as matcher from "../../lib/utils/matcher";
+const matcher: any = require("../../lib/utils/matcher");
 
 describe("matcher", () => {
   it("can test against one pattern passed as a string", () => {

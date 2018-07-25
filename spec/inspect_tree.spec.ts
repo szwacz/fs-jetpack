@@ -3,7 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
-import { InspectTreeResult } from "..";
+import { InspectTreeResult } from "../types";
 
 describe("inspectTree", () => {
   beforeEach(helper.setCleanTestCwd);

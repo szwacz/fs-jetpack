@@ -3,7 +3,7 @@ import * as pathUtil from "path";
 import { expect } from "chai";
 import path from "../assert_path";
 import helper from "../helper";
-import * as walker from "../../lib/utils/tree_walker";
+const walker: any = require("../../lib/utils/tree_walker");
 
 describe("tree walker", () => {
   beforeEach(helper.setCleanTestCwd);

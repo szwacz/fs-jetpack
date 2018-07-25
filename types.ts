@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import fs = require("fs");
+import * as fs from "fs";
 
 type AppendData = string | Buffer;
 
@@ -165,7 +165,3 @@ export interface FSJetpack {
     options?: WriteOptions
   ): Promise<void>;
 }
-
-declare const jetpack: FSJetpack;
-
-export = jetpack;

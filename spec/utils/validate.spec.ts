@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as validate from "../../lib/utils/validate";
+const validate: any = require("../../lib/utils/validate");
 
 describe("util validate", () => {
   describe("validates arguments passed to methods", () => {

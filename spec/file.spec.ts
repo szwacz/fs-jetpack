@@ -3,7 +3,7 @@ import { expect } from "chai";
 import path from "./assert_path";
 import helper from "./helper";
 import * as jetpack from "..";
-import { FSJetpack } from "..";
+import { FSJetpack } from "../types";
 
 describe("file", () => {
   beforeEach(helper.setCleanTestCwd);
