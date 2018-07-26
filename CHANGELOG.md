@@ -1,3 +1,6 @@
+# 2.1.0 (2018-07-26)
+- From now on the library ships with TypeScript type definitions.
+
 # 2.0.0 (2018-07-10)
 - **(breaking change)** removed `symlinks` config option of `find()` method. Now `find()` always follows symlinks.
 
