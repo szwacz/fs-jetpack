@@ -24,7 +24,14 @@ const setCleanTestCwd = () => {
 const switchBackToCorrectCwd = () => {
   const path = createdDirectories.pop();
   process.chdir(originalCwd);
-  fse.removeSync(path);
+  try {
+    fse.removeSync(path);
+  } catch (err) {
+    // On Windows platform sometimes removal of the directory leads to error:
+    // Error: ENOTEMPTY: directory not empty, rmdir
+    // Let's retry the attempt.
+    fse.removeSync(path);
+  }
 };
 
 const parseMode = (modeAsNumber: number) => {
