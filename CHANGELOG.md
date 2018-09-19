@@ -1,3 +1,6 @@
+# 2.1.1 (2018-09-19)
+- Rename file types.ts -> types.d.ts to fix https://github.com/szwacz/fs-jetpack/issues/72
+
 # 2.1.0 (2018-07-26)
 - From now on the library ships with TypeScript type definitions.
 
