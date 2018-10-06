@@ -589,7 +589,7 @@ describe("find", () => {
     const expectations = (found: string[]) => {
       let paths = ["FoO", "FoO/BaR"];
       if (process.platform !== "win32")
-        paths.push("FOO", "FOO/BAR", "foo", "foo/bar");
+        paths = ["FOO", "FOO/BAR", "FoO", "FoO/BaR", "foo", "foo/bar"];
       const normalizedPaths = helper.osSep(paths);
       expect(found).to.eql(normalizedPaths);
     };
