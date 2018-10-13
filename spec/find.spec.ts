@@ -581,15 +581,11 @@ describe("find", () => {
 
   describe("if ignoreCase=true it ignores case in patterns", () => {
     const preparations = () => {
-      fse.outputFileSync("FoO/BaR", "a");
-      fse.outputFileSync("FOO/BAR", "b");
-      fse.outputFileSync("foo/bar", "c");
+      fse.outputFileSync("FOO/BAR", "a");
     };
 
     const expectations = (found: string[]) => {
-      let paths = ["FoO", "FoO/BaR"];
-      if (process.platform !== "win32")
-        paths = ["FOO", "FOO/BAR", "FoO", "FoO/BaR", "foo", "foo/bar"];
+      const paths = ["FOO", "FOO/BAR"];
       const normalizedPaths = helper.osSep(paths);
       expect(found).to.eql(normalizedPaths);
     };
@@ -616,7 +612,8 @@ describe("find", () => {
         .then(found => {
           expectations(found);
           done();
-        });
+        })
+        .catch(done);
     });
   });
 

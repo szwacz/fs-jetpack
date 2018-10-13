@@ -572,36 +572,9 @@ describe("copy", () => {
     });
   });
 
-  if (process.platform !== "win32") {
-    describe("copies also file permissions (unix only)", () => {
-      const preparations = () => {
-        fse.outputFileSync("a/b/c.txt", "abc");
-        fse.chmodSync("a/b", "700");
-        fse.chmodSync("a/b/c.txt", "711");
-      };
-
-      const expectations = () => {
-        path("x/b").shouldHaveMode("700");
-        path("x/b/c.txt").shouldHaveMode("711");
-      };
-
-      it("sync", () => {
-        preparations();
-        jetpack.copy("a", "x");
-        expectations();
-      });
-
-      it("async", done => {
-        preparations();
-        jetpack.copyAsync("a", "x").then(() => {
-          expectations();
-          done();
-        });
-      });
-    });
-  }
-
   describe("if ignoreCase=true it ignores case in patterns", () => {
+    // This test actually tests nothing if performed on case-insensitive file system.
+
     const preparations = () => {
       fse.mkdirsSync("orig/FoO/BaR/x");
     };
@@ -632,6 +605,35 @@ describe("copy", () => {
         });
     });
   });
+
+  if (process.platform !== "win32") {
+    describe("copies also file permissions (unix only)", () => {
+      const preparations = () => {
+        fse.outputFileSync("a/b/c.txt", "abc");
+        fse.chmodSync("a/b", "700");
+        fse.chmodSync("a/b/c.txt", "711");
+      };
+
+      const expectations = () => {
+        path("x/b").shouldHaveMode("700");
+        path("x/b/c.txt").shouldHaveMode("711");
+      };
+
+      it("sync", () => {
+        preparations();
+        jetpack.copy("a", "x");
+        expectations();
+      });
+
+      it("async", done => {
+        preparations();
+        jetpack.copyAsync("a", "x").then(() => {
+          expectations();
+          done();
+        });
+      });
+    });
+  }
 
   describe("input validation", () => {
     const tests = [

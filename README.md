@@ -104,7 +104,7 @@ Copies given file or directory (with everything inside).
 `options` (optional) additional options for customization. Is an `Object` with possible fields:  
 * `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. Can be `Boolean` or `Function`. For directories, source directory is merged with destination directory. If function was provided, every time there is a file conflict while copying the function will be invoked with [inspect](#inspectpath-options) objects of both: source and destination file and overwrites the file only if `true` has been returned from the function (see example below). In async mode, the overwrite function can also return a promise, so you can perform multi step processes to determine if file should be overwritten or not (see example below).
 * `matching` if defined will actually copy **only** items matching any of specified glob patterns and omit everything else ([all possible globs are described further in this readme](#matching-patterns)).
-* `ignoreCase` (default `true` on Windows, `false` otherwise) whether or not case should be ignored when processing glob patterns passed through the `matching` option.
+* `ignoreCase` (default `false`) whether or not case should be ignored when processing glob patterns passed through the `matching` option.
 
 **returns:**  
 Nothing.
@@ -280,7 +280,7 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 * `files` (default `true`) whether or not should search for files.
 * `directories` (default `false`) whether or not should search for directories.
 * `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
-* `ignoreCase` (default `true` on Windows, `false` otherwise) whether or not case should be ignored when processing glob patterns passed through the `matching` option.
+* `ignoreCase` (`false` otherwise) whether or not case should be ignored when processing glob patterns passed through the `matching` option.
 
 **returns:**  
 `Array` of found paths.
