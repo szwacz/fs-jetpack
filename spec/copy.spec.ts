@@ -601,6 +601,38 @@ describe("copy", () => {
     });
   }
 
+  describe("if ignoreCase=true it ignores case in patterns", () => {
+    const preparations = () => {
+      fse.mkdirsSync("orig/FoO/BaR/x");
+    };
+
+    const expectations = () => {
+      path("copy/FoO/BaR/x").shouldBeDirectory();
+    };
+
+    it("sync", () => {
+      preparations();
+      jetpack.copy("orig", "copy", {
+        matching: ["foo/bar/x"],
+        ignoreCase: true
+      });
+      expectations();
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack
+        .copyAsync("orig", "copy", {
+          matching: ["foo/bar/x"],
+          ignoreCase: true
+        })
+        .then(() => {
+          expectations();
+          done();
+        });
+    });
+  });
+
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.copy as any, methodName: "copy" },
@@ -662,6 +694,19 @@ describe("copy", () => {
               `Argument "options.matching" passed to ${
                 test.methodName
               }(from, to, [options]) must be a string or an array of string. Received number`
+            );
+          });
+        });
+      });
+      describe('"ignoreCase" argument', () => {
+        tests.forEach(test => {
+          it(test.type, () => {
+            expect(() => {
+              test.method("abc", "xyz", { ignoreCase: 1 });
+            }).to.throw(
+              `Argument "options.ignoreCase" passed to ${
+                test.methodName
+              }(from, to, [options]) must be a boolean. Received number`
             );
           });
         });

@@ -16,6 +16,7 @@ type OverwriteFunction = (
 type CopyOptions = {
   overwrite?: boolean | OverwriteFunction;
   matching?: string | string[];
+  ignoreCase?: boolean;
 };
 
 type DirCriteria = {
@@ -36,6 +37,7 @@ type FindOptions = {
   files?: boolean;
   directories?: boolean;
   recursive?: boolean;
+  ignoreCase?: boolean;
 };
 
 export type Checksum = "md5" | "sha1" | "sha256" | "sha512";

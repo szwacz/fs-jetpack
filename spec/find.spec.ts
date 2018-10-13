@@ -579,6 +579,47 @@ describe("find", () => {
     });
   });
 
+  describe("if ignoreCase=true it ignores case in patterns", () => {
+    const preparations = () => {
+      fse.outputFileSync("FoO/BaR", "a");
+      fse.outputFileSync("FOO/BAR", "b");
+      fse.outputFileSync("foo/bar", "c");
+    };
+
+    const expectations = (found: string[]) => {
+      let paths = ["FoO", "FoO/BaR"];
+      if (process.platform !== "win32")
+        paths = ["FOO", "FOO/BAR", "FoO", "FoO/BaR", "foo", "foo/bar"];
+      const normalizedPaths = helper.osSep(paths);
+      expect(found).to.eql(normalizedPaths);
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(
+        jetpack.find({
+          matching: ["foo", "bar"],
+          directories: true,
+          ignoreCase: true
+        })
+      );
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack
+        .findAsync({
+          matching: ["foo", "bar"],
+          directories: true,
+          ignoreCase: true
+        })
+        .then(found => {
+          expectations(found);
+          done();
+        });
+    });
+  });
+
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.find as any, methodName: "find" },
@@ -650,6 +691,19 @@ describe("find", () => {
               test.method("abc", { recursive: 1 });
             }).to.throw(
               `Argument "options.recursive" passed to ${
+                test.methodName
+              }([path], options) must be a boolean. Received number`
+            );
+          });
+        });
+      });
+      describe('"ignoreCase" argument', () => {
+        tests.forEach(test => {
+          it(test.type, () => {
+            expect(() => {
+              test.method("abc", { ignoreCase: 1 });
+            }).to.throw(
+              `Argument "options.ignoreCase" passed to ${
                 test.methodName
               }([path], options) must be a boolean. Received number`
             );
