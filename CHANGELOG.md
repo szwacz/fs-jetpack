@@ -1,3 +1,6 @@
+# 2.2.0 (2018-10-13)
+- Added ignoreCase option to `find()` and `copy()` methods.
+
 # 2.1.1 (2018-09-19)
 - Rename file types.ts -> types.d.ts to fix https://github.com/szwacz/fs-jetpack/issues/72
 
