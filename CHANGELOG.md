@@ -1,3 +1,7 @@
+# 2.2.1 (2019-01-20)
+- `find()` no longer crashes on ENOENT (e.g. when one of the files has been deleted by other process).
+- Added check if a parameter `newName` passed to `rename()` isn't a path.
+
 # 2.2.0 (2018-10-13)
 - Added ignoreCase option to `find()` and `copy()` methods.
 
