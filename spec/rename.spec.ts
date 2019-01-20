@@ -110,15 +110,30 @@ describe("rename", () => {
     });
 
     describe('"newName" argument', () => {
-      tests.forEach(test => {
-        it(test.type, () => {
-          expect(() => {
-            test.method("abc", undefined);
-          }).to.throw(
-            `Argument "newName" passed to ${
-              test.methodName
-            }(path, newName) must be a string. Received undefined`
-          );
+      describe('type check', () => {
+        tests.forEach(test => {
+          it(test.type, () => {
+            expect(() => {
+              test.method("abc", undefined);
+            }).to.throw(
+              `Argument "newName" passed to ${
+                test.methodName
+              }(path, newName) must be a string. Received undefined`
+            );
+          });
+        });
+      });
+      describe('slashes not allowed', () => {
+        tests.forEach(test => {
+          it(test.type, () => {
+            expect(() => {
+              test.method("abc", "new-name/with-a-slash");
+            }).to.throw(
+              `Argument "newName" passed to ${
+                test.methodName
+              }(path, newName) cannot have a slash; got "new-name/with-a-slash"`
+            );
+          });
         });
       });
     });
