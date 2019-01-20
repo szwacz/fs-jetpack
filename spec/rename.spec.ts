@@ -1,3 +1,4 @@
+import * as pathUtil from "path";
 import * as fse from "fs-extra";
 import { expect } from "chai";
 import path from "./assert_path";
@@ -110,7 +111,7 @@ describe("rename", () => {
     });
 
     describe('"newName" argument', () => {
-      describe('type check', () => {
+      describe("type check", () => {
         tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
@@ -123,15 +124,17 @@ describe("rename", () => {
           });
         });
       });
-      describe('slashes not allowed', () => {
+
+      describe("shouldn't be path, just a filename", () => {
+        const pathToTest = pathUtil.join("new-name", "with-a-slash");
         tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
-              test.method("abc", "new-name/with-a-slash");
+              test.method("abc", pathToTest);
             }).to.throw(
               `Argument "newName" passed to ${
                 test.methodName
-              }(path, newName) cannot have a slash; got "new-name/with-a-slash"`
+              }(path, newName) should be a filename, not a path. Received "${pathToTest}"`
             );
           });
         });

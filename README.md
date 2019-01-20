@@ -483,7 +483,7 @@ Renames given file or directory.
 
 **arguments:**  
 `path` path to thing you want to change name of.  
-`newName` new name for this thing (not full path, just a name). Cannot contain `'/'`.
+`newName` new name for this thing (not full path, just a name).
 
 **returns:**  
 Nothing.
