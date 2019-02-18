@@ -4,7 +4,8 @@
   "version": "2.2.1",
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
-    "minimatch": "^3.0.2"
+    "minimatch": "^3.0.2",
+    "rimraf": "^2.6.3"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
