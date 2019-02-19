@@ -1,3 +1,6 @@
+# 2.2.2 (2019-02-19)
+- Use rimraf as internal implementation of `remove()` to fix https://github.com/szwacz/fs-jetpack/issues/80
+
 # 2.2.1 (2019-01-20)
 - `find()` no longer crashes on ENOENT (e.g. when one of the files has been deleted by other process).
 - Added check if a parameter `newName` passed to `rename()` isn't a path.
