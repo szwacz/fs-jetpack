@@ -1,3 +1,6 @@
+# 2.2.3 (2019-10-21)
+- Amended TypeScript definitions thanks to @orta
+
 # 2.2.2 (2019-02-19)
 - Use rimraf as internal implementation of `remove()` to fix https://github.com/szwacz/fs-jetpack/issues/80
 
