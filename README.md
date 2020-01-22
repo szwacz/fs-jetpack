@@ -206,6 +206,8 @@ asynchronous: **dirAsync(path, [criteria])**
 
 Ensures that directory on given path exists and meets given criteria. If any criterium is not met it will be after this call. If any parent directory in `path` doesn't exist it will be created (like `mkdir -p`).
 
+If the given path already exists but is not a directory, an error will be thrown.
+
 **arguments:**  
 `path` path to directory to examine.  
 `criteria` (optional) criteria to be met by the directory. Is an `Object` with possible fields:
