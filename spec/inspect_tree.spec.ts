@@ -209,6 +209,35 @@ describe("inspectTree", () => {
     });
   });
 
+  describe("can output file times (ctime, mtime, atime)", () => {
+    const preparations = () => {
+      fse.outputFileSync("dir/file.txt", "abc");
+    };
+
+    const expectations = (data: InspectTreeResult) => {
+      expect(typeof data.accessTime.getTime).to.equal("function");
+      expect(typeof data.modifyTime.getTime).to.equal("function");
+      expect(typeof data.changeTime.getTime).to.equal("function");
+
+      expect(typeof data.children[0].accessTime.getTime).to.equal("function");
+      expect(typeof data.children[0].modifyTime.getTime).to.equal("function");
+      expect(typeof data.children[0].changeTime.getTime).to.equal("function");
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(jetpack.inspectTree("dir", { times: true }));
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack.inspectTreeAsync("dir", { times: true }).then(data => {
+        expectations(data);
+        done();
+      });
+    });
+  });
+
   describe("respects internal CWD of jetpack instance", () => {
     const preparations = () => {
       fse.outputFileSync("a/b.txt", "abc");

@@ -70,6 +70,7 @@ export interface InspectResult {
 type InspectTreeOptions = {
   checksum?: Checksum;
   relativePath?: boolean;
+  times?: boolean;
   symlinks?: "report" | "follow";
 };
 

@@ -357,6 +357,7 @@ Calls [inspect](#inspectpath-options) recursively on given path so it creates tr
 `path` the starting path to inspect.  
 `options` (optional). Possible values:
 * `checksum` if specified will also calculate checksum of every item in the tree. Possible values are strings `'md5'`, `'sha1'`, `'sha256'` or `'sha512'`. Checksums for directories are calculated as checksum of all children' checksums plus their filenames (see example below).
+* `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`) to each tree node.
 * `relativePath` if set to `true` every tree node will have relative path anchored to root inspected folder.
 * `symlinks` (default `'report'`) if a given path is a symlink by default `inspectTree` will report that symlink (not follow it). You can flip this behaviour by setting this option to `'follow'`.
 
