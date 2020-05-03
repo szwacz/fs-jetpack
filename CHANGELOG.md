@@ -1,3 +1,6 @@
+# 2.3.0 (2020-05-03)
+- `inspectTree()` now supports `times` option.
+
 # 2.2.3 (2019-10-21)
 - Amended TypeScript definitions thanks to @orta
 
