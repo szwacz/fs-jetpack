@@ -122,6 +122,48 @@ describe("write", () => {
     });
   });
 
+  if (process.platform !== "win32") {
+    describe("sets mode of the file (unix only)", () => {
+      const preparations = () => {
+        fse.writeFileSync("file.txt", "abc", { mode: "700" });
+      };
+      const expectations = () => {
+        path("file.txt").shouldBeFileWithContent("xyz");
+        path("file.txt").shouldHaveMode("711");
+      };
+
+      it("sync, mode passed as string", () => {
+        jetpack.write("file.txt", "xyz", { mode: "711" });
+        expectations();
+      });
+
+      it("sync, mode passed as number", () => {
+        jetpack.write("file.txt", "xyz", { mode: 0o711 });
+        expectations();
+      });
+
+      it("async, mode passed as string", done => {
+        jetpack
+          .writeAsync("file.txt", "xyz", { mode: "711" })
+          .then(() => {
+            expectations();
+            done();
+          })
+          .catch(done);
+      });
+
+      it("async, mode passed as number", done => {
+        jetpack
+          .writeAsync("file.txt", "xyz", { mode: 0o711 })
+          .then(() => {
+            expectations();
+            done();
+          })
+          .catch(done);
+      });
+    });
+  }
+
   describe("can create nonexistent parent directories", () => {
     const expectations = () => {
       path("a/b/c.txt").shouldBeFileWithContent("abc");

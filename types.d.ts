@@ -82,6 +82,7 @@ export interface InspectTreeResult extends InspectResult {
 type WritableData = string | object | Array<any> | Buffer;
 
 type WriteOptions = {
+  mode?: string | number;
   atomic?: boolean;
   jsonIndent?: number;
 };
