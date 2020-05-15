@@ -1,3 +1,6 @@
+# 2.4.0 (2020-05-15)
+- `write()` can accept `mode` as a parameter
+
 # 2.3.0 (2020-05-03)
 - `inspectTree()` now supports `times` option.
 
