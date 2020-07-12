@@ -408,7 +408,10 @@ Array of file names inside given path, or `undefined` if given path doesn't exis
 ## move(from, to)
 asynchronous: **moveAsync(from, to)**  
 
-Moves given path to new location.
+Moves given path to new location. If destination already exists:
+
+* If destination is a file, it will be overwritten (even if the source is a directory)
+* If destination is a directory, `EPERM` will be thrown (even if the source is a file)
 
 **arguments:**  
 `from` path to directory or file you want to move.  
@@ -482,7 +485,10 @@ myStuffDir.remove();
 ## rename(path, newName)
 asynchronous: **renameAsync(path, newName)**  
 
-Renames given file or directory.
+Renames given file or directory. If destination already exists:
+
+* If destination is a file, it will be overwritten (even if the source is a directory)
+* If destination is a directory, `EPERM` will be thrown (even if the source is a file)
 
 **arguments:**  
 `path` path to thing you want to change name of.  
