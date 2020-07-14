@@ -166,6 +166,32 @@ describe("move", () => {
           });
       });
     });
+
+    describe("can overwrite a directory", () => {
+      const preparations = () => {
+        fse.outputFileSync("file1.txt", "abc");
+        fse.mkdirsSync("dir");
+      };
+
+      const expectations = () => {
+        path("file1.txt").shouldNotExist();
+        path("dir").shouldBeFileWithContent("abc");
+      };
+
+      it("sync", () => {
+        preparations();
+        jetpack.move("file1.txt", "dir", { overwrite: true });
+        expectations();
+      });
+
+      it("async", done => {
+        preparations();
+        jetpack.moveAsync("file1.txt", "dir", { overwrite: true }).then(() => {
+          expectations();
+          done();
+        });
+      });
+    });
   });
 
   describe("respects internal CWD of jetpack instance", () => {
