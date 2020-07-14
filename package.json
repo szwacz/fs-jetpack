@@ -25,9 +25,6 @@
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
   },
-  "engines": {
-    "node": ">=4"
-  },
   "scripts": {
     "test": "mocha -r ts-node/register \"spec/**/*.spec.ts\"",
     "test-with-coverage": "istanbul cover _mocha -- -r ts-node/register 'spec/**/*.spec.ts'",
