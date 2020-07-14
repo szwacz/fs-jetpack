@@ -50,7 +50,7 @@ Commonly used naming convention in Node world is reversed in this library (no 'm
 
 Also it's just convenient...
 
-If you don't see the word "Async" in method name it returns value immediately.
+If you don't see the word "Async" in method name it always, across the whole API returns value immediately.
 ```js
 const data = jetpack.read('file.txt');
 console.log(data);
