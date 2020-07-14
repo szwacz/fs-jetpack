@@ -107,6 +107,67 @@ describe("move", () => {
     });
   });
 
+  describe("overwriting behaviour", () => {
+    describe("does not overwrite by default", () => {
+      const preparations = () => {
+        fse.outputFileSync("file1.txt", "abc");
+        fse.outputFileSync("file2.txt", "xyz");
+      };
+
+      const expectations = (err: any) => {
+        expect(err.code).to.equal("EEXIST");
+        expect(err.message).to.have.string("Destination path already exists");
+        path("file2.txt").shouldBeFileWithContent("xyz");
+      };
+
+      it("sync", () => {
+        preparations();
+        try {
+          jetpack.move("file1.txt", "file2.txt");
+          throw new Error("Expected error to be thrown");
+        } catch (err) {
+          expectations(err);
+        }
+      });
+
+      it("async", done => {
+        preparations();
+        jetpack.moveAsync("file1.txt", "file2.txt").catch(err => {
+          expectations(err);
+          done();
+        });
+      });
+    });
+
+    describe("overwrites if it was specified", () => {
+      const preparations = () => {
+        fse.outputFileSync("file1.txt", "abc");
+        fse.outputFileSync("file2.txt", "xyz");
+      };
+
+      const expectations = () => {
+        path("file1.txt").shouldNotExist();
+        path("file2.txt").shouldBeFileWithContent("abc");
+      };
+
+      it("sync", () => {
+        preparations();
+        jetpack.move("file1.txt", "file2.txt", { overwrite: true });
+        expectations();
+      });
+
+      it("async", done => {
+        preparations();
+        jetpack
+          .moveAsync("file1.txt", "file2.txt", { overwrite: true })
+          .then(() => {
+            expectations();
+            done();
+          });
+      });
+    });
+  });
+
   describe("respects internal CWD of jetpack instance", () => {
     const preparations = () => {
       fse.outputFileSync("a/b.txt", "abc");
@@ -152,7 +213,7 @@ describe("move", () => {
           }).to.throw(
             `Argument "from" passed to ${
               test.methodName
-            }(from, to) must be a string. Received undefined`
+            }(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -166,8 +227,24 @@ describe("move", () => {
           }).to.throw(
             `Argument "to" passed to ${
               test.methodName
-            }(from, to) must be a string. Received undefined`
+            }(from, to, [options]) must be a string. Received undefined`
           );
+        });
+      });
+    });
+
+    describe('"options" object', () => {
+      describe('"overwrite" argument', () => {
+        tests.forEach(test => {
+          it(test.type, () => {
+            expect(() => {
+              test.method("abc", "xyz", { overwrite: 1 });
+            }).to.throw(
+              `Argument "options.overwrite" passed to ${
+                test.methodName
+              }(from, to, [options]) must be a boolean. Received number`
+            );
+          });
         });
       });
     });

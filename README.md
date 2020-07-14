@@ -405,14 +405,16 @@ Lists the contents of directory. Equivalent of `fs.readdir`.
 Array of file names inside given path, or `undefined` if given path doesn't exist.
 
 
-## move(from, to)
-asynchronous: **moveAsync(from, to)**  
+## move(from, to, [options])
+asynchronous: **moveAsync(from, to, [options])**  
 
 Moves given path to new location.
 
 **arguments:**  
 `from` path to directory or file you want to move.  
-`to` path where the thing should be moved.
+`to` path where the thing should be moved.  
+`options` (optional) additional options for customization. Is an `Object` with possible fields:  
+* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. If `true`, the overwrite will be performed.
 
 **returns:**  
 Nothing.
@@ -479,14 +481,16 @@ myStuffDir.remove();
 ```
 
 
-## rename(path, newName)
-asynchronous: **renameAsync(path, newName)**  
+## rename(path, newName, [options])
+asynchronous: **renameAsync(path, newName, [options])**  
 
 Renames given file or directory.
 
 **arguments:**  
 `path` path to thing you want to change name of.  
-`newName` new name for this thing (not full path, just a name).
+`newName` new name for this thing (not full path, just a name).  
+`options` (optional) additional options for customization. Is an `Object` with possible fields:  
+* `overwrite` (default: `false`) Whether to overwrite destination path when it already exists. If `true`, the overwrite will be performed.
 
 **returns:**  
 Nothing.

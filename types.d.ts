@@ -87,6 +87,14 @@ type WriteOptions = {
   jsonIndent?: number;
 };
 
+type MoveOptions = {
+  overwrite?: boolean;
+};
+
+type RenameOptions = {
+  overwrite?: boolean;
+};
+
 // API has the same set of synchronous and asynchronous methods.
 // All async methods are promise based (no callbacks).
 
@@ -306,16 +314,18 @@ export interface FSJetpack {
    *
    * @param from path
    * @param to path
+   * @param options
    */
-  move(from: string, to: string): void;
+  move(from: string, to: string, options?: MoveOptions): void;
 
   /**
    * Moves given path to new location.
    *
    * @param from path
    * @param to path
+   * @param options
    */
-  moveAsync(from: string, to: string): Promise<void>;
+  moveAsync(from: string, to: string, options?: MoveOptions): Promise<void>;
 
   /**
    * Reads content of file.
@@ -361,15 +371,21 @@ export interface FSJetpack {
    *
    * @param path path to file being renamed
    * @param newName just the name of the thing being renamed
+   * @param options
    */
-  rename(path: string, newName: string): void;
+  rename(path: string, newName: string, options?: RenameOptions): void;
   /**
    * Renames given file or directory.
    *
    * @param path path to file being renamed
    * @param newName just the name of the thing being renamed
+   * @param options
    */
-  renameAsync(path: string, newName: string): Promise<void>;
+  renameAsync(
+    path: string,
+    newName: string,
+    options?: RenameOptions
+  ): Promise<void>;
 
   /**
    * Creates symbolic link.
