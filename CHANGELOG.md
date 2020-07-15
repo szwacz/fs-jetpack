@@ -1,3 +1,6 @@
+# 3.0.0 (2020-07-15)
+- **(breaking change)** `move()` and `rename()` default overwrite behaviour have changed, now by default both methods throw error if destination path already exists.
+
 # 2.4.0 (2020-05-15)
 - `write()` can accept `mode` as a parameter
 
