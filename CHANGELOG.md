@@ -1,3 +1,6 @@
+# 3.1.0 (2020-07-19)
+- `move()` cam move file or directory between devices (thanks @papb)
+
 # 3.0.0 (2020-07-15)
 - **(breaking change)** `move()` and `rename()` default overwrite behaviour have changed, now by default both methods throw error if destination path already exists.
 
