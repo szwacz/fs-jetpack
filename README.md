@@ -24,11 +24,11 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 [inspect](#inspectpath-options)  
 [inspectTree](#inspecttreepath-options)  
 [list](#listpath)  
-[move](#movefrom-to)  
+[move](#movefrom-to-options)  
 [path](#pathparts)  
 [read](#readpath-returnas)  
 [remove](#removepath)  
-[rename](#renamepath-newname)  
+[rename](#renamepath-newname-options)  
 [symlink](#symlinksymlinkvalue-path)  
 [write](#writepath-data-options)
 
