@@ -30,6 +30,7 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 [remove](#removepath)  
 [rename](#renamepath-newname-options)  
 [symlink](#symlinksymlinkvalue-path)  
+[tmpDir](#tmpdiroptions)  
 [write](#writepath-data-options)
 
 # Installation
