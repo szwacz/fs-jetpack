@@ -99,41 +99,6 @@ describe("tmpDir", () => {
     });
   });
 
-  describe("throws if given basePath is something other than directory", () => {
-    const preparations = () => {
-      fse.outputFileSync("a", "abc");
-    };
-
-    const expectations = (err: any) => {
-      expect(err.message).to.have.string(
-        'Passed option "basePath" is not a directory'
-      );
-    };
-
-    it("sync", () => {
-      preparations();
-      try {
-        jetpack.tmpDir({ basePath: "./a" });
-        throw new Error("Expected error to be thrown");
-      } catch (err) {
-        expectations(err);
-      }
-    });
-
-    it("async", done => {
-      preparations();
-      jetpack
-        .tmpDirAsync({ basePath: "./a" })
-        .then(() => {
-          throw new Error("Expected error to be thrown");
-        })
-        .catch(err => {
-          expectations(err);
-          done();
-        });
-    });
-  });
-
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.tmpDir as any, methodName: "tmpDir" },
