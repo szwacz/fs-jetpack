@@ -7,7 +7,7 @@ import helper from "./helper";
 import * as jetpack from "..";
 import { FSJetpack } from "../types";
 
-describe.only("tmpDir", () => {
+describe("tmpDir", () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
@@ -122,10 +122,15 @@ describe.only("tmpDir", () => {
 
     it("async", done => {
       preparations();
-      jetpack.tmpDirAsync({ basePath: "./a" }).catch(err => {
-        expectations(err);
-        done();
-      });
+      jetpack
+        .tmpDirAsync({ basePath: "./a" })
+        .then(() => {
+          throw new Error("Expected error to be thrown");
+        })
+        .catch(err => {
+          expectations(err);
+          done();
+        });
     });
   });
 
