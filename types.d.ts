@@ -95,6 +95,11 @@ type RenameOptions = {
   overwrite?: boolean;
 };
 
+type TmpDirOptions = {
+  prefix?: string;
+  basePath?: string;
+};
+
 // API has the same set of synchronous and asynchronous methods.
 // All async methods are promise based (no callbacks).
 
@@ -402,6 +407,20 @@ export interface FSJetpack {
    * @param path  where symbolic link should be put.
    */
   symlinkAsync(symlinkValue: string, path: string): Promise<void>;
+
+  /**
+   * Creates temporary directory.
+   *
+   * @param options
+   */
+  tmpDir(options?: TmpDirOptions): FSJetpack;
+
+  /**
+   * Creates temporary directory.
+   *
+   * @param options
+   */
+  tmpDirAsync(options?: TmpDirOptions): Promise<FSJetpack>;
 
   /**
    * Writes data to file. If any parent directory in `path` doesn't exist it will be created (like `mkdir -p`).

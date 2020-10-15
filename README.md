@@ -513,6 +513,33 @@ Creates symbolic link.
 **returns:**  
 Nothing.
 
+## tmpDir([options])
+asynchronous: **tmpDirAsync([options])**  
+
+Creates temporary directory with random, unique name.
+
+**arguments:**  
+`options` (optional) `Object` with possible fields:
+* `prefix` prefix to be added to created random directory name. Defaults to none.
+* `basePath` the path where temporary directory should be created. Defaults to [https://nodejs.org/api/os.html#os_os_tmpdir](os.tmpdir).
+
+**returns:**  
+New CWD context with temporary directory specified in `path` as CWD (see docs of `cwd()` method for explanation).  
+
+**examples:**
+```javascript
+// Creates temporary directory, e.g. /tmp/90ed0f0f4a0ba3b1433c5b51ad8fc76b
+jetpack.tempDir()
+// Creates temporary directory with a prefix, e.g. /tmp/foo_90ed0f0f4a0ba3b1433c5b51ad8fc76b
+jetpack.tempDir({ prefix: "foo_" })
+// Creates temporary directory on given path, e.g. /some/other/path/90ed0f0f4a0ba3b1433c5b51ad8fc76b
+jetpack.tempDir({ basePath: "/some/other/path" })
+// Creates temporary directory on jetpack.cwd() path
+jetpack.tempDir({ basePath: "." })
+
+// Create temporary directory and write a file to that directory
+jetpack.tempDir().write("foo.txt", "Hello world!");
+```
 
 ## write(path, data, [options])
 asynchronous: **writeAsync(path, data, [options])**  

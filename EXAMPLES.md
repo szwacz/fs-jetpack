@@ -76,3 +76,13 @@ const config = src.read('config.json', 'json');
 config.env = 'production';
 dest.write('config.json', config);
 ```
+
+## 4. Create and clean temporary files with ease
+```js
+const tmp = jetpack.tmpDir();
+tmp.append("data.txt", "First chunk of data");
+tmp.append("data.txt", "Second chunk of data");
+tmp.append("data.txt", "Third chunk of data");
+tmp.copy("data.txt", "/some/other/path/data.txt");
+tmp.remove();
+```
