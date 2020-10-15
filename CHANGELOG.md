@@ -1,3 +1,6 @@
+# 3.2.0 (2020-10-15)
+- Ability to create temporary directories with `tmpDir()` method
+
 # 3.1.0 (2020-07-19)
 - `move()` can move file or directory between devices (thanks @papb)
 
