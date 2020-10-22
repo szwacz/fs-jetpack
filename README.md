@@ -9,7 +9,8 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 
 [Installation](#installation)  
 [Sync & Async](#sync--async)  
-[Usage with TypeScript](#usage-with-typescript)
+[Usage with TypeScript](#usage-with-typescript)  
+[Upgrading to New Version](#upgrading-to-new-version)
 
 **API:**  
 [append](#appendpath-data-options)  
@@ -76,6 +77,10 @@ import * as jetpack from "fs-jetpack";
 import { InspectResult } from "fs-jetpack/types";
 let result: InspectResult = jetpack.inspect("foo");
 ```
+
+# Upgrading to New Version
+
+This API is considered stable and all breaking changes to it are done as completely last resort. It also uses "better safe than sorry" approach to bumping major version number. So in 99.9% of cases you can upgrade to latest version with no worries, because all major version bumps are due to some edge case behaviour changes.
 
 # API
 
