@@ -1,3 +1,6 @@
+# 4.0.0 (2020-10-22)
+- Package published to npm registry now contains only the essential files (e.g. no tests as shipped), to make the smallest footprint possible
+
 # 3.2.0 (2020-10-15)
 - Ability to create temporary directories with `tmpDir()` method
 
