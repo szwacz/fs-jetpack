@@ -34,17 +34,17 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 [tmpDir](#tmpdiroptions)  
 [write](#writepath-data-options)
 
-# Installation
+## Installation
 ```
 npm install fs-jetpack
 ```
 
-## Usage
+### Usage
 ```javascript
 const jetpack = require('fs-jetpack');
 ```
 
-# Sync & Async
+## Sync & Async
 
 API has the same set of synchronous and asynchronous methods. All async methods are promise based (no callbacks).
 
@@ -66,7 +66,7 @@ jetpack.readAsync('file.txt')
 });
 ```
 
-# Usage with TypeScript
+## Usage with TypeScript
 
 Starting from v2.1.0 fs-jetpack is TypeScript compatible. But for backwards compatibility purposes all types and interfaces are reachable through special path `fs-jetpack/types`.
 ```typescript
@@ -78,7 +78,7 @@ import { InspectResult } from "fs-jetpack/types";
 let result: InspectResult = jetpack.inspect("foo");
 ```
 
-# Upgrading to New Version
+## Upgrading to New Version
 
 This API is considered stable and all breaking changes to it are done as completely last resort. It also uses "better safe than sorry" approach to bumping major version number. So in 99.9% of cases you can upgrade to latest version with no worries, because all major version bumps are due to some edge case behaviour changes.
 
