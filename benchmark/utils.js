@@ -17,12 +17,21 @@ const prepareJetpackTestDir = () => {
 const prepareFiles = (jetpackDir, creationConfig) => {
   return new Promise((resolve, reject) => {
     let count = 0;
+    let countFilesInThisDir = 0;
     const content = Buffer.alloc(creationConfig.size, "x");
 
     const makeOneFile = () => {
       jetpackDir.fileAsync(`${count}.txt`, { content }).then(() => {
         count += 1;
+        countFilesInThisDir += 1;
         if (count < creationConfig.files) {
+          if (
+            creationConfig.filesPerNestedDir &&
+            countFilesInThisDir === creationConfig.filesPerNestedDir
+          ) {
+            countFilesInThisDir = 0;
+            jetpackDir = jetpackDir.cwd("subdir");
+          }
           makeOneFile();
         } else {
           resolve();

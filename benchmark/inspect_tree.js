@@ -41,10 +41,12 @@ const test = testConfig => {
 const testConfigs = [
   {
     files: 10000,
+    filesPerNestedDir: 1000,
     size: 1000
   },
   {
     files: 1000,
+    filesPerNestedDir: 50,
     size: 10000000
   }
 ];
