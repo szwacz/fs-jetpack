@@ -1,0 +1,56 @@
+"use strict";
+
+const utils = require("./utils");
+
+const testDir = utils.prepareJetpackTestDir();
+let timer;
+let jetpackTime;
+let nativeTime;
+
+const test = testConfig => {
+  const dirJet = testDir.dir("some-tree");
+
+  console.log("");
+
+  return utils
+    .prepareFiles(dirJet, testConfig)
+    .then(utils.waitAWhile)
+    .then(() => {
+      timer = utils.startTimer("jetpack.inspectTree()");
+      const tree = dirJet.inspectTree(".", { checksum: "md5" });
+      timer();
+      console.log("md5", tree.md5);
+    })
+    .then(utils.waitAWhile)
+    .then(() => {
+      timer = utils.startTimer("jetpack.inspectTreeAsync()");
+      return dirJet.inspectTreeAsync(".", { checksum: "md5" });
+    })
+    .then(tree => {
+      timer();
+      console.log("md5", tree.md5);
+      return utils.cleanAfterTest();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+const testConfigs = [
+  {
+    files: 10000,
+    size: 1000
+  },
+  {
+    files: 10000,
+    size: 100000
+  }
+];
+
+const runNext = () => {
+  if (testConfigs.length > 0) {
+    test(testConfigs.pop()).then(runNext);
+  }
+};
+
+runNext();
