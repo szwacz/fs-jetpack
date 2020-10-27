@@ -64,6 +64,15 @@ const showDifferenceInfo = (jetpackTime, nativeTime) => {
   console.log(`Jetpack is ${perc}% slower than native`);
 };
 
+const showMemoryUsage = () => {
+  const used = process.memoryUsage();
+  for (let key in used) {
+    console.log(
+      `${key} ${Math.round((used[key] / 1024 / 1024) * 100) / 100} MB`
+    );
+  }
+};
+
 const cleanAfterTest = () => {
   console.log("Cleaning up after test...");
   return jetpack.removeAsync(testDirPath());
@@ -76,5 +85,6 @@ module.exports = {
   waitAWhile,
   exec: promisify(childProcess.exec),
   showDifferenceInfo,
+  showMemoryUsage,
   cleanAfterTest
 };

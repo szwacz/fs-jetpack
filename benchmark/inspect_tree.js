@@ -20,6 +20,7 @@ const test = testConfig => {
       const tree = dirJet.inspectTree(".", { checksum: "md5" });
       timer();
       console.log("md5", tree.md5);
+      utils.showMemoryUsage();
     })
     .then(utils.waitAWhile)
     .then(() => {
@@ -29,6 +30,7 @@ const test = testConfig => {
     .then(tree => {
       timer();
       console.log("md5", tree.md5);
+      utils.showMemoryUsage();
       return utils.cleanAfterTest();
     })
     .catch(err => {
