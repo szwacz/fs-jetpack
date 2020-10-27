@@ -49,10 +49,13 @@ describe("inspectTree", () => {
 
     it("async", done => {
       preparations();
-      jetpack.inspectTreeAsync("dir").then(tree => {
-        expectations(tree);
-        done();
-      });
+      jetpack
+        .inspectTreeAsync("dir")
+        .then(tree => {
+          expectations(tree);
+          done();
+        })
+        .catch(done);
     });
   });
 
