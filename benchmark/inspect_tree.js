@@ -42,8 +42,8 @@ const testConfigs = [
     size: 1000
   },
   {
-    files: 10000,
-    size: 100000
+    files: 1000,
+    size: 10000000
   }
 ];
 
