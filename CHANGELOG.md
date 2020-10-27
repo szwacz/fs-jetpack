@@ -1,5 +1,8 @@
+# 4.0.1 (2020-10-27)
+- `inspectTree()` behaves better in concurrency terms (opens only few files at once) 
+
 # 4.0.0 (2020-10-22)
-- Package published to npm registry now contains only the essential files (e.g. no tests as shipped), to make the smallest footprint possible
+- Package published to npm registry now contains only the essential files (e.g. no tests are shipped), to make the smallest footprint possible
 
 # 3.2.0 (2020-10-15)
 - Ability to create temporary directories with `tmpDir()` method
