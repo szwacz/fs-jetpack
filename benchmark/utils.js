@@ -17,7 +17,7 @@ const prepareJetpackTestDir = () => {
 const prepareFiles = (jetpackDir, creationConfig) => {
   return new Promise((resolve, reject) => {
     let count = 0;
-    const content = new Buffer(creationConfig.size);
+    const content = Buffer.alloc(creationConfig.size, "x");
 
     const makeOneFile = () => {
       jetpackDir.fileAsync(`${count}.txt`, { content }).then(() => {
