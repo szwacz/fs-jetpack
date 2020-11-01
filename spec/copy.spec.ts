@@ -5,7 +5,7 @@ import helper from "./helper";
 import * as jetpack from "..";
 import { InspectResult } from "../types";
 
-describe("copy", () => {
+describe.only("copy", () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
