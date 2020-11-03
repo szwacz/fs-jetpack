@@ -24,7 +24,7 @@ describe("tree walker", () => {
     };
 
     const expectations = (data: any) => {
-      const result = [
+      const expectedData = [
         {
           path: pathUtil.resolve("a"),
           item: {
@@ -68,7 +68,7 @@ describe("tree walker", () => {
           }
         }
       ];
-      expect(sortByPath(data)).to.eql(sortByPath(result));
+      expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
 
     it("sync", () => {
@@ -106,7 +106,7 @@ describe("tree walker", () => {
     };
 
     const expectations = (data: any) => {
-      const result = [
+      const expectedData = [
         {
           path: pathUtil.resolve("a"),
           item: {
@@ -157,7 +157,7 @@ describe("tree walker", () => {
           }
         }
       ];
-      expect(sortByPath(data)).to.eql(sortByPath(result));
+      expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
 
     it("sync", () => {
@@ -199,7 +199,7 @@ describe("tree walker", () => {
     };
 
     const expectations = (data: any) => {
-      const result = [
+      const expectedData = [
         {
           path: pathUtil.resolve("a"),
           item: {
@@ -222,7 +222,7 @@ describe("tree walker", () => {
           }
         }
       ];
-      expect(sortByPath(data)).to.eql(sortByPath(result));
+      expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
 
     it("sync", () => {
