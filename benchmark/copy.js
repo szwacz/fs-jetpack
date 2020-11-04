@@ -5,8 +5,6 @@ const utils = require("./utils");
 const testDir = utils.prepareJetpackTestDir();
 const toCopyDir = testDir.dir("to-copy");
 let timer;
-let jetpackTime;
-let nativeTime;
 
 const test = testConfig => {
   console.log("");
@@ -15,11 +13,17 @@ const test = testConfig => {
     .prepareFiles(toCopyDir, testConfig)
     .then(utils.waitAWhile)
     .then(() => {
-      timer = utils.startTimer("jetpack.copyAsync()");
-      return toCopyDir.copyAsync(".", testDir.path("copied-jetpack"));
+      timer = utils.startTimer("jetpack.copy()");
+      toCopyDir.copy(".", testDir.path("copied-jetpack-sync"));
+      timer();
+      return utils.waitAWhile();
     })
     .then(() => {
-      jetpackTime = timer();
+      timer = utils.startTimer("jetpack.copyAsync()");
+      return toCopyDir.copyAsync(".", testDir.path("copied-jetpack-async"));
+    })
+    .then(() => {
+      timer();
       return utils.waitAWhile();
     })
     .then(() => {
@@ -29,8 +33,7 @@ const test = testConfig => {
       );
     })
     .then(() => {
-      nativeTime = timer();
-      utils.showDifferenceInfo(jetpackTime, nativeTime);
+      timer();
       return utils.cleanAfterTest();
     })
     .catch(err => {
