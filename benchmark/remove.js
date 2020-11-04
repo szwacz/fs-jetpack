@@ -4,8 +4,6 @@ const utils = require("./utils");
 
 const testDir = utils.prepareJetpackTestDir();
 let timer;
-let jetpackTime;
-let nativeTime;
 
 const test = testConfig => {
   const dirJet = testDir.dir("to-be-removed-by-jetpack");
@@ -24,7 +22,7 @@ const test = testConfig => {
       return dirJet.removeAsync();
     })
     .then(() => {
-      jetpackTime = timer();
+      timer();
       return utils.waitAWhile();
     })
     .then(() => {
@@ -32,8 +30,7 @@ const test = testConfig => {
       return utils.exec(`rm -rf ${dirNative.path()}`);
     })
     .then(() => {
-      nativeTime = timer();
-      utils.showDifferenceInfo(jetpackTime, nativeTime);
+      timer();
       return utils.cleanAfterTest();
     })
     .catch(err => {

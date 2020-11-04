@@ -68,11 +68,6 @@ const waitAWhile = () => {
   });
 };
 
-const showDifferenceInfo = (jetpackTime, nativeTime) => {
-  const perc = Math.round((jetpackTime / nativeTime) * 100) - 100;
-  console.log(`Jetpack is ${perc}% slower than native`);
-};
-
 const showMemoryUsage = () => {
   const used = process.memoryUsage();
   for (let key in used) {
@@ -93,7 +88,6 @@ module.exports = {
   startTimer,
   waitAWhile,
   exec: promisify(childProcess.exec),
-  showDifferenceInfo,
   showMemoryUsage,
   cleanAfterTest
 };
