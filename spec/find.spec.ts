@@ -270,7 +270,8 @@ describe("find", () => {
     };
 
     const expectations = (found: string[]) => {
-      expect(found).to.eql(["file", "symfile"]);
+      const expected = ["file", "symfile"];
+      expect(found.sort()).to.eql(expected.sort());
     };
 
     it("sync", () => {
