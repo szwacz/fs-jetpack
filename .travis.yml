@@ -19,4 +19,4 @@ jobs:
       after_success: ./node_modules/.bin/codecov
 
 script:
-- npm run test
+- npm test
