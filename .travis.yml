@@ -1,13 +1,24 @@
 language: node_js
 
+os:
+  - linux
+  - windows
+
 node_js:
- - "8"
- - "10"
- - "12"
- - "14"
+  - "8"
+  - "10"
+  - "12"
+  - "14"
+
+jobs:
+  include:
+    - os: linux
+      env: TEST_COMMAND=test-with-coverage
+    - os: windows
+      env: TEST_COMMAND=test
 
 script:
-- npm run test-with-coverage
+- npm run $TEST_COMMAND
 
 after_success:
 - ./node_modules/.bin/codecov
