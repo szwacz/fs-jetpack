@@ -12,13 +12,11 @@ node_js:
 
 jobs:
   include:
+    # test coverage run
     - os: linux
-      env: TEST_COMMAND=test-with-coverage
-    - os: windows
-      env: TEST_COMMAND=test
+      node_js: "14"
+      script: npm run test-with-coverage
+      after_success: ./node_modules/.bin/codecov
 
 script:
-- npm run $TEST_COMMAND
-
-after_success:
-- ./node_modules/.bin/codecov
+- npm run test
