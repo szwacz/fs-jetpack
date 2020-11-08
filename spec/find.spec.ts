@@ -1,3 +1,4 @@
+import * as pathUtil from "path";
 import * as fse from "fs-extra";
 import { expect } from "chai";
 import path from "./assert_path";
@@ -265,8 +266,8 @@ describe("find", () => {
     const preparations = () => {
       fse.mkdirsSync("dir");
       fse.outputFileSync("file", "abc");
-      jetpack.symlink("dir", "symdir");
-      jetpack.symlink("file", "symfile");
+      jetpack.symlink(pathUtil.resolve("dir"), "symdir");
+      jetpack.symlink(pathUtil.resolve("file"), "symfile");
     };
 
     const expectations = (found: string[]) => {
