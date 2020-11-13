@@ -1,5 +1,10 @@
+# 4.1.0 (2020-11-13)
+- `findAsync()` is now 5 times faster, and `find()` 2 times faster
+- `inspectTree()` now sorts results alphabetically, directories firsts, files second
+- Refactored internals of methods `find()`, `copy()` and `inspectTree()`
+
 # 4.0.1 (2020-10-27)
-- `inspectTree()` behaves better in concurrency terms (opens only few files at once) 
+- `inspectTree()` behaves better in concurrency terms (opens only few files at once)
 
 # 4.0.0 (2020-10-22)
 - Package published to npm registry now contains only the essential files (e.g. no tests are shipped), to make the smallest footprint possible
