@@ -22,11 +22,6 @@ describe("inspectTree", () => {
         size: 7,
         children: [
           {
-            name: "file.txt",
-            type: "file",
-            size: 3
-          },
-          {
             name: "subdir",
             type: "dir",
             size: 4,
@@ -37,6 +32,11 @@ describe("inspectTree", () => {
                 size: 4
               }
             ]
+          },
+          {
+            name: "file.txt",
+            type: "file",
+            size: 3
           }
         ]
       });
@@ -59,27 +59,51 @@ describe("inspectTree", () => {
     });
   });
 
-  describe("can calculate size of a whole tree", () => {
+  describe("sorts the results alphabetically, and by directories first, files second", () => {
     const preparations = () => {
-      fse.mkdirsSync("dir/empty");
-      fse.outputFileSync("dir/empty.txt", "");
-      fse.outputFileSync("dir/file.txt", "abc");
-      fse.outputFileSync("dir/subdir/file.txt", "defg");
+      fse.outputFileSync("dir/z.txt", "xyz");
+      fse.outputFileSync("dir/a.txt", "abc");
+      fse.mkdirsSync("dir/z/b");
+      fse.mkdirsSync("dir/z/a");
     };
 
     const expectations = (data: InspectTreeResult) => {
-      // dir
-      expect(data.size).to.equal(7);
-      // dir/empty
-      expect(data.children[0].size).to.equal(0);
-      // dir/empty.txt
-      expect(data.children[1].size).to.equal(0);
-      // dir/file.txt
-      expect(data.children[2].size).to.equal(3);
-      // dir/subdir
-      expect(data.children[3].size).to.equal(4);
-      // dir/subdir/file.txt
-      expect(data.children[3].children[0].size).to.equal(4);
+      expect(data).to.eql({
+        name: "dir",
+        type: "dir",
+        size: 6,
+        children: [
+          {
+            name: "z",
+            type: "dir",
+            size: 0,
+            children: [
+              {
+                name: "a",
+                type: "dir",
+                size: 0,
+                children: []
+              },
+              {
+                name: "b",
+                type: "dir",
+                size: 0,
+                children: []
+              }
+            ]
+          },
+          {
+            name: "a.txt",
+            type: "file",
+            size: 3
+          },
+          {
+            name: "z.txt",
+            type: "file",
+            size: 3
+          }
+        ]
+      });
     };
 
     it("sync", () => {
@@ -89,10 +113,13 @@ describe("inspectTree", () => {
 
     it("async", done => {
       preparations();
-      jetpack.inspectTreeAsync("dir").then(tree => {
-        expectations(tree);
-        done();
-      });
+      jetpack
+        .inspectTreeAsync("dir")
+        .then(tree => {
+          expectations(tree);
+          done();
+        })
+        .catch(done);
     });
   });
 

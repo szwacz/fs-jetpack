@@ -5,6 +5,12 @@ import path from "../assert_path";
 import helper from "../helper";
 const walker: any = require("../../lib/utils/tree_walker");
 
+const sortByPath = (arr: any[]) => {
+  arr.sort((a: any, b: any) => {
+    return a.path.localeCompare(b.path);
+  });
+};
+
 describe("tree walker", () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
@@ -18,7 +24,7 @@ describe("tree walker", () => {
     };
 
     const expectations = (data: any) => {
-      expect(data).to.eql([
+      const expectedData = [
         {
           path: pathUtil.resolve("a"),
           item: {
@@ -30,8 +36,7 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a", "a.txt"),
           item: {
             type: "file",
-            name: "a.txt",
-            size: 1
+            name: "a.txt"
           }
         },
         {
@@ -52,19 +57,18 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a", "b", "z1.txt"),
           item: {
             type: "file",
-            name: "z1.txt",
-            size: 2
+            name: "z1.txt"
           }
         },
         {
           path: pathUtil.resolve("a", "b", "z2.txt"),
           item: {
             type: "file",
-            name: "z2.txt",
-            size: 2
+            name: "z2.txt"
           }
         }
-      ]);
+      ];
+      expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
 
     it("sync", () => {
@@ -81,30 +85,28 @@ describe("tree walker", () => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
-      const st = walker
-        .stream(absoluteStartingPath, {})
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        {},
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 
-  describe("can walk through many nested directories", () => {
+  describe("can walk through branching out, nested directories", () => {
     const preparations = () => {
       fse.outputFileSync("a/b/x/z1.txt", "z1");
       fse.outputFileSync("a/c/y/z2.txt", "z2");
     };
 
     const expectations = (data: any) => {
-      expect(data).to.eql([
+      const expectedData = [
         {
           path: pathUtil.resolve("a"),
           item: {
@@ -130,8 +132,7 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a", "b", "x", "z1.txt"),
           item: {
             type: "file",
-            name: "z1.txt",
-            size: 2
+            name: "z1.txt"
           }
         },
         {
@@ -152,11 +153,11 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a", "c", "y", "z2.txt"),
           item: {
             type: "file",
-            name: "z2.txt",
-            size: 2
+            name: "z2.txt"
           }
         }
-      ]);
+      ];
+      expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
 
     it("sync", () => {
@@ -173,19 +174,17 @@ describe("tree walker", () => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
-      const st = walker
-        .stream(absoluteStartingPath, {})
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        {},
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 
@@ -200,7 +199,7 @@ describe("tree walker", () => {
     };
 
     const expectations = (data: any) => {
-      expect(data).to.eql([
+      const expectedData = [
         {
           path: pathUtil.resolve("a"),
           item: {
@@ -212,8 +211,7 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a", "a.txt"),
           item: {
             type: "file",
-            name: "a.txt",
-            size: 1
+            name: "a.txt"
           }
         },
         {
@@ -223,7 +221,8 @@ describe("tree walker", () => {
             name: "b"
           }
         }
-      ]);
+      ];
+      expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
 
     it("sync", () => {
@@ -240,19 +239,17 @@ describe("tree walker", () => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
-      const st = walker
-        .stream(absoluteStartingPath, options)
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        options,
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 
@@ -287,19 +284,17 @@ describe("tree walker", () => {
       const absoluteStartingPath = pathUtil.resolve("abc");
       const data: any[] = [];
       preparations();
-      const st = walker
-        .stream(absoluteStartingPath, {})
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        {},
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 
@@ -314,8 +309,7 @@ describe("tree walker", () => {
           path: pathUtil.resolve("abc.txt"),
           item: {
             type: "file",
-            name: "abc.txt",
-            size: 3
+            name: "abc.txt"
           }
         }
       ]);
@@ -335,19 +329,17 @@ describe("tree walker", () => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
       const data: any[] = [];
       preparations();
-      const st = walker
-        .stream(absoluteStartingPath, {})
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        {},
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 
@@ -373,56 +365,65 @@ describe("tree walker", () => {
     it("async", done => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
       const data: any[] = [];
-      const st = walker
-        .stream(absoluteStartingPath, {})
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        {},
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 
   describe("supports inspect options", () => {
     const options = {
       inspectOptions: {
-        checksum: "md5"
+        checksum: "md5",
+        absolutePath: true
       }
     };
 
     const preparations = () => {
-      fse.outputFileSync("abc/a.txt", "a");
+      fse.outputFileSync("a/b/c.txt", "abc");
     };
 
     const expectations = (data: any) => {
       expect(data).to.eql([
         {
-          path: pathUtil.resolve("abc"),
+          path: pathUtil.resolve("a"),
           item: {
             type: "dir",
-            name: "abc"
+            name: "a",
+            absolutePath: pathUtil.resolve("a")
           }
         },
         {
-          path: pathUtil.resolve("abc", "a.txt"),
+          path: pathUtil.resolve("a", "b"),
+          item: {
+            type: "dir",
+            name: "b",
+            absolutePath: pathUtil.resolve("a", "b")
+          }
+        },
+        {
+          path: pathUtil.resolve("a", "b", "c.txt"),
           item: {
             type: "file",
-            name: "a.txt",
-            size: 1,
-            md5: "0cc175b9c0f1b6a831c399e269772661"
+            name: "c.txt",
+            size: 3,
+            md5: "900150983cd24fb0d6963f7d28e17f72",
+            absolutePath: pathUtil.resolve("a", "b", "c.txt")
           }
         }
       ]);
     };
 
     it("sync", () => {
-      const absoluteStartingPath = pathUtil.resolve("abc");
+      const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
       walker.sync(absoluteStartingPath, options, (path: string, item: any) => {
@@ -432,22 +433,20 @@ describe("tree walker", () => {
     });
 
     it("async", done => {
-      const absoluteStartingPath = pathUtil.resolve("abc");
+      const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
-      const st = walker
-        .stream(absoluteStartingPath, options)
-        .on("readable", () => {
-          const a = st.read();
-          if (a) {
-            data.push(a);
-          }
-        })
-        .on("error", done)
-        .on("end", () => {
+      walker.async(
+        absoluteStartingPath,
+        options,
+        (path: string, item: any) => {
+          data.push({ path, item });
+        },
+        (err: any) => {
           expectations(data);
-          done();
-        });
+          done(err);
+        }
+      );
     });
   });
 });
