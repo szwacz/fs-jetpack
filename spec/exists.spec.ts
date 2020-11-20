@@ -71,6 +71,39 @@ describe("exists", () => {
     });
   });
 
+  describe("throws if invalid path given (file on place where directory expected)", () => {
+    const preparations = () => {
+      fse.outputFileSync("a/file", "abc");
+    };
+
+    const expectations = (err: any) => {
+      expect(err.code).to.equal("ENOTDIR");
+    };
+
+    it("sync", () => {
+      preparations();
+      try {
+        jetpack.exists("a/file/b");
+        throw "shouldn't get to this line, but throw earlier";
+      } catch (err) {
+        expectations(err);
+      }
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack
+        .existsAsync("a/file/b")
+        .then(exists => {
+          done("shouldn't visit this branch of code");
+        })
+        .catch(err => {
+          expectations(err);
+          done();
+        });
+    });
+  });
+
   describe("respects internal CWD of jetpack instance", () => {
     const preparations = () => {
       fse.outputFileSync("a/text.txt", "abc");
