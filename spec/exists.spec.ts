@@ -71,7 +71,7 @@ describe("exists", () => {
     });
   });
 
-  describe("throws if invalid path given (file on place where directory expected)", () => {
+  describe.only("throws if invalid path given (file on place where directory expected)", () => {
     const preparations = () => {
       fse.outputFileSync("a/file", "abc");
     };
