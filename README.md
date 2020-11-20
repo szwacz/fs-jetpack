@@ -535,16 +535,16 @@ New CWD context with temporary directory specified in `path` as CWD (see docs of
 **examples:**
 ```javascript
 // Creates temporary directory, e.g. /tmp/90ed0f0f4a0ba3b1433c5b51ad8fc76b
-jetpack.tempDir()
+jetpack.tmpDir()
 // Creates temporary directory with a prefix, e.g. /tmp/foo_90ed0f0f4a0ba3b1433c5b51ad8fc76b
-jetpack.tempDir({ prefix: "foo_" })
+jetpack.tmpDir({ prefix: "foo_" })
 // Creates temporary directory on given path, e.g. /some/other/path/90ed0f0f4a0ba3b1433c5b51ad8fc76b
-jetpack.tempDir({ basePath: "/some/other/path" })
+jetpack.tmpDir({ basePath: "/some/other/path" })
 // Creates temporary directory on jetpack.cwd() path
-jetpack.tempDir({ basePath: "." })
+jetpack.tmpDir({ basePath: "." })
 
 // Create temporary directory and write a file to that directory
-jetpack.tempDir().write("foo.txt", "Hello world!");
+jetpack.tmpDir().write("foo.txt", "Hello world!");
 ```
 
 ## write(path, data, [options])
