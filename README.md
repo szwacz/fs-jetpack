@@ -1,14 +1,16 @@
 fs-jetpack [![Build Status](https://travis-ci.com/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.com/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack) [![codecov](https://codecov.io/gh/szwacz/fs-jetpack/branch/master/graph/badge.svg)](https://codecov.io/gh/szwacz/fs-jetpack)
 ==========
 
-Node's [fs library](http://nodejs.org/api/fs.html) is very low level and because of that often painful to use. *fs-jetpack* wants to fix that by giving you completely rethought, much more convenient API to work with file system.
+This library makes you more productive in everyday file system interactions than [standard "fs" library](http://nodejs.org/api/fs.html).
+
+*Fs-jetpack* was brought to life out of frustration: "Why doing something more complex than just read a file has to be so panful and tedious with standard 'fs' library?". There are efforts to make mentioned API more usable ([fs-extra](https://github.com/jprichardson/node-fs-extra), [mkdirp](https://github.com/isaacs/node-mkdirp), [rimraf](https://github.com/isaacs/rimraf), etc.) but all of them just sprinkle something extra on top, not addressing the problem from the ground up. That's what *fs-jetpack* did. Just started from scratch, and now has you to offer completely redesigned, much more convenient API to work with file system.
 
 Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 
 # Table of Contents
 
+[Key Concepts](#key-concepts)  
 [Installation](#installation)  
-[Sync & Async](#sync--async)  
 [Usage with TypeScript](#usage-with-typescript)  
 [Upgrading to New Version](#upgrading-to-new-version)
 
@@ -34,36 +36,56 @@ Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
 [tmpDir](#tmpdiroptions)  
 [write](#writepath-data-options)
 
+## Key Concepts
+
+### Sync & async methods
+
+API has the same set of synchronous and asynchronous methods. All async methods are promise based (no callbacks).
+
+Commonly used naming convention in node.js world has been flipped in this API, so no `method()` (async) and `methodSync()` (sync) naming. Here the convention is `methodAsync()` (async) and `method()` (sync). I know this looks weird to you, but bear with me. Thanks to that, you always know how fs-jetpack method behaves, just by looking at the name: **If you don't see the word "Async", this method returns value immediately, if you do, promise is returned.** Standard node.js naming can't give you this clarity.
+```js
+// Synchronous call
+const data = jetpack.read('file.txt');
+console.log(data);
+
+// Asynchronous call
+const data = await jetpack.readAsync('file.txt');
+console.log(data);
+```
+
+### Why not use more than one CWD?
+You can create many fs-jetpack objects with different internal working directories (which are independent of `process.cwd()`) and work on directories in a little more object-oriented manner.
+```js
+const src = jetpack.cwd('path/to/source');
+const dest = jetpack.cwd('path/to/destination');
+src.copy('foo.txt', dest.path('bar.txt'));
+```
+
+### Try to recover from ENOENT errors
+Everyone who did something with files for sure seen message *"ENOENT, no such file or directory"* too many times. Fs-jetpack tries to recover from this error if possible.  
+* For write/creation operations, if any of parent directories doesn't exist jetpack will just create them as well (like `mkdir -p` works).
+* For read/inspect operations, if file or directory doesn't exist `undefined` is returned instead of throwing.
+
+### JSON is a first class citizen
+You can write JavaScript object directly to disk and it will be transformed into JSON automatically.
+```js
+const obj = { greet: "Hello World!" };
+jetpack.write('file.json', obj);
+```
+Then you can get your object back just by telling `read` method that it's a JSON.
+```js
+const obj = jetpack.read('file.json', 'json');
+```
+
 ## Installation
 ```
 npm install fs-jetpack
 ```
 
-### Usage
+Import to your code:
+
 ```javascript
 const jetpack = require('fs-jetpack');
-```
-
-## Sync & Async
-
-API has the same set of synchronous and asynchronous methods. All async methods are promise based (no callbacks).
-
-Commonly used naming convention in Node world is reversed in this library (no 'method' and 'methodSync' naming). Asynchronous methods are those with 'Async' suffix, all methods without 'Async' in the name are synchronous. Reason behind this is that it gives very nice look to blocking API. And promise-based, non-blocking code is verbose anyway, so one more word is not much of a difference.
-
-Also it's just convenient...
-
-If you don't see the word "Async" in method name it always, across the whole API returns value immediately.
-```js
-const data = jetpack.read('file.txt');
-console.log(data);
-```
-
-When you see "Async" that method returns promise which when resolved returns value.
-```js
-jetpack.readAsync('file.txt')
-.then((data) => {
-  console.log(data);
-});
 ```
 
 ## Usage with TypeScript
@@ -80,7 +102,7 @@ let result: InspectResult = jetpack.inspect("foo");
 
 ## Upgrading to New Version
 
-This API is considered stable and all breaking changes to it are done as completely last resort. It also uses "better safe than sorry" approach to bumping major version number. So in 99.9% of cases you can upgrade to latest version with no worries, because all major version bumps are due to some edge case behaviour changes.
+This API is considered stable and all breaking changes to it are done as completely last resort. It also uses "better safe than sorry" approach to bumping major version number. So in 99.9% of cases you can upgrade to latest version with no worries, because all major version bumps so far, were due to edge case behaviour changes.
 
 # API
 
