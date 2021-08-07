@@ -673,7 +673,3 @@ API methods [copy](#copyfrom-to-options) and [find](#findpath-searchoptions) hav
 - `**` - If a "globstar" is alone in a path portion, then it matches zero or more directories and subdirectories.
 
 _(explanation borrowed from [glob](https://github.com/isaacs/node-glob) which is using [the same matching library](https://github.com/isaacs/minimatch) as this project)_
-
-# License
-
-Released under the MIT license.
