@@ -2,8 +2,6 @@
 
 _Fs-jetpack_ was brought to life out of frustration: "Why [node.js standard 'fs' library](http://nodejs.org/api/fs.html) has to be so tedious in use?. There are efforts to make mentioned API more pleasant ([fs-extra](https://github.com/jprichardson/node-fs-extra), [mkdirp](https://github.com/isaacs/node-mkdirp), [rimraf](https://github.com/isaacs/rimraf), etc.) but all of them just sprinkle something extra on top, not addressing the problem from the ground up. That's what _fs-jetpack_ did. Just started from scratch, and now has to offer completely redesigned, much more convenient API to work with file system.
 
-Check out [EXAMPLES](EXAMPLES.md) to see few snippets what it can do.
-
 # Table of Contents
 
 [Key Concepts](#key-concepts)  
@@ -81,6 +79,31 @@ console.log(data);
 // Asynchronous call
 const data = await jetpack.readAsync('file.txt');
 console.log(data);
+```
+
+## All API methods cooperate nicely with each other
+
+Let's say you want to create folder structure...
+
+```
+.
+|- greets
+   |- greet.txt
+   |- greet.json
+|- greets-i18n
+   |- polish.txt
+```
+
+Peace of cake with jetpack!
+
+```js
+jetpack
+  .dir("greets")
+  .file("greet.txt", { content: "Hello world!" })
+  .file("greet.json", { content: { greet: "Hello world!" } })
+  .cwd("..")
+  .dir("greets-i18n")
+  .file("polish.txt", { content: "Witaj świecie!" });
 ```
 
 ## Installation
@@ -356,6 +379,14 @@ jetpack.find("foo", { matching: "*.txt", recursive: false });
 // Path parameter might be omitted and CWD is used as path in that case.
 const myStuffDir = jetpack.cwd("my-stuff");
 myStuffDir.find({ matching: ["*.md"] });
+
+// You can chain find() with different jetpack methods for more power.
+// For example lets delete all `.tmp` files inside `foo` directory
+jetpack
+  .find("foo", {
+    matching: "*.tmp"
+  })
+  .forEach(jetpack.remove);
 ```
 
 ## inspect(path, [options])
@@ -588,16 +619,24 @@ New CWD context with temporary directory specified in `path` as CWD (see docs of
 
 ```javascript
 // Creates temporary directory, e.g. /tmp/90ed0f0f4a0ba3b1433c5b51ad8fc76b
-jetpack.tempDir();
-// Creates temporary directory with a prefix, e.g. /tmp/foo_90ed0f0f4a0ba3b1433c5b51ad8fc76b
-jetpack.tempDir({ prefix: "foo_" });
-// Creates temporary directory on given path, e.g. /some/other/path/90ed0f0f4a0ba3b1433c5b51ad8fc76b
-jetpack.tempDir({ basePath: "/some/other/path" });
-// Creates temporary directory on jetpack.cwd() path
-jetpack.tempDir({ basePath: "." });
+// You can interact with this directory by returned CWD context.
+const dirContext = jetpack.tmpDir();
 
-// Create temporary directory and write a file to that directory
-jetpack.tempDir().write("foo.txt", "Hello world!");
+// Creates temporary directory with a prefix, e.g. /tmp/foo_90ed0f0f4a0ba3b1433c5b51ad8fc76b
+jetpack.tmpDir({ prefix: "foo_" });
+
+// Creates temporary directory on given path, e.g. /some/other/path/90ed0f0f4a0ba3b1433c5b51ad8fc76b
+jetpack.tmpDir({ basePath: "/some/other/path" });
+
+// Creates temporary directory on jetpack.cwd() path
+jetpack.tmpDir({ basePath: "." });
+
+// The method returns new jetpack context, so you can easily clean your
+// temp files after you're done.
+const dir = jetpack.tmpDir();
+dir.write("foo.txt", data);
+// ...and when you're done using the dir...
+dir.remove();
 ```
 
 ## write(path, data, [options])
