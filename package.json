@@ -1,7 +1,7 @@
 {
   "name": "fs-jetpack",
   "description": "Better file system API",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "author": "Jakub Szwacz <jakub@szwacz.com>",
   "dependencies": {
     "minimatch": "^3.0.2",

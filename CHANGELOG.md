@@ -1,3 +1,6 @@
+# 4.1.1 (2021-08-07)
+- Documentation improvements
+
 # 4.1.0 (2020-11-13)
 - `findAsync()` is now 5 times faster, and `find()` 2 times faster
 - `inspectTree()` now sorts results alphabetically, directories firsts, files second
