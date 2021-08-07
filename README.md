@@ -106,7 +106,7 @@ jetpack
   .file("polish.txt", { content: "Witaj świecie!" });
 ```
 
-## Installation
+# Installation
 
 ```
 npm install fs-jetpack
@@ -118,7 +118,7 @@ Import to your code:
 const jetpack = require("fs-jetpack");
 ```
 
-## Usage with TypeScript
+# Usage with TypeScript
 
 Starting from v2.1.0 fs-jetpack is TypeScript compatible. But for backwards compatibility purposes all types and interfaces are reachable through special path `fs-jetpack/types`.
 
@@ -131,7 +131,7 @@ import { InspectResult } from "fs-jetpack/types";
 let result: InspectResult = jetpack.inspect("foo");
 ```
 
-## Upgrading to New Version
+# Upgrading to New Version
 
 This API is considered stable and all breaking changes to it are done as completely last resort. It also uses "better safe than sorry" approach to bumping major version number. So in 99.9% of cases you can upgrade to latest version with no worries, because all major version bumps so far, were due to edge case behaviour changes.
 
