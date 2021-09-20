@@ -344,7 +344,7 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 `path` (optional, defaults to `'.'`) path to start search in (all subdirectories will be searched).  
 `searchOptions` is an `Object` with possible fields:
 
-- `matching` glob patterns of files you want to find ([all possible globs are described further in this readme](#matching-patterns)).
+- `matching` (default `*`) glob patterns of files you want to find ([all possible globs are described further in this readme](#matching-patterns)).
 - `files` (default `true`) whether or not should search for files.
 - `directories` (default `false`) whether or not should search for directories.
 - `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
@@ -356,6 +356,9 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 **examples:**
 
 ```javascript
+// Finds all files inside 'foo' directory and its subdirectories
+jetpack.find("foo");
+
 // Finds all files which has 2015 in the name
 jetpack.find("my-work", { matching: "*2015*" });
 
