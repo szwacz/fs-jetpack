@@ -32,6 +32,31 @@ describe("find", () => {
     });
   });
 
+  describe('defaults to "*" if no matching is provided', () => {
+    const preparations = () => {
+      fse.outputFileSync("a/b/file.txt", "abc");
+      fse.outputFileSync("a/b/file.bin", "abc");
+    };
+
+    const expectations = (found: string[]) => {
+      const normalizedPaths = helper.osSep(["a/b/file.bin", "a/b/file.txt"]);
+      expect(found).to.eql(normalizedPaths);
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(jetpack.find("a"));
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack.findAsync("a").then(found => {
+        expectations(found);
+        done();
+      });
+    });
+  });
+
   describe("if recursive=false will exclude subfolders from search", () => {
     const preparations = () => {
       fse.outputFileSync("x/file.txt", "abc");
