@@ -1,5 +1,5 @@
 # 4.2.0 (2021-09-27)
-- For `find()` method you don't need to declare `marching` property, will default to `"*"` then (thanks @gutenye)
+- For `find()` method you don't need to declare `matching` property, will default to `"*"` when not declared (thanks @gutenye)
 
 # 4.1.1 (2021-08-07)
 - Documentation improvements
