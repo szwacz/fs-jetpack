@@ -100,6 +100,19 @@ jetpack
   .file("polish.txt", { content: "Witaj świecie!" });
 ```
 
+Need to copy whole directory of files, but first perform some transformations on each file?
+
+```js
+const src = jetpack.cwd("path/to/source/folder");
+const dst = jetpack.cwd("path/to/destination");
+
+src.find({ matching: "*" }).forEach((path) => {
+  const content = src.read(path);
+  const transformedContent = transformTheFileHoweverYouWant(content);
+  dst.write(path, transformedContent);
+});
+```
+
 Need to delete all temporary and log files inside `my_folder` tree?
 
 ```js
