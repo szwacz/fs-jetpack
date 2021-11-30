@@ -1,3 +1,6 @@
+# 4.3.0 (2021-11-30)
+- `find()` accepts `filter` function that allows you to perform more refined filtering of the results
+
 # 4.2.0 (2021-09-27)
 - For `find()` method you don't need to declare `matching` property, will default to `"*"` when not declared (thanks @gutenye)
 
