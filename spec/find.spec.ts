@@ -261,6 +261,102 @@ describe("find", () => {
     });
   });
 
+  describe("can further filter matched results", () => {
+    const preparations = () => {
+      fse.outputFileSync("x/y/file.txt", "123");
+      fse.outputFileSync("x/y/other_file.txt", "1");
+      fse.outputFileSync("x/y/bigger_file.txt", "123456789");
+      fse.outputFileSync("x/y/b/file.txt", "1234");
+    };
+
+    const expectations = (found: string[]) => {
+      const normalizedPaths = helper.osSep([
+        "x/y/file.txt",
+        "x/y/other_file.txt"
+      ]);
+      expect(found).to.eql(normalizedPaths);
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(
+        jetpack.find("x/y", {
+          matching: "*.txt",
+          filter: fileInspect => {
+            return fileInspect.size <= 3;
+          }
+        })
+      );
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack
+        .findAsync("x/y", {
+          matching: "*.txt",
+          filter: fileInspect => {
+            return fileInspect.size <= 3;
+          }
+        })
+        .then(found => {
+          expectations(found);
+          done();
+        });
+    });
+
+    it("async (filter can also return promise)", done => {
+      preparations();
+      jetpack
+        .findAsync("x/y", {
+          matching: "*.txt",
+          filter: fileInspect => {
+            return Promise.resolve(fileInspect.size <= 3);
+          }
+        })
+        .then(found => {
+          expectations(found);
+          done();
+        });
+    });
+  });
+
+  describe("filter shouldn't be called for paths not fulfilling the match", () => {
+    const preparations = () => {
+      fse.outputFileSync("x/y/file.txt", "123");
+    };
+
+    const expectations = (found: string[]) => {
+      expect(found).to.eql([]);
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(
+        jetpack.find("x/y", {
+          matching: "*.md",
+          filter: fileInspect => {
+            throw "filter shouldn't be called!";
+          }
+        })
+      );
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack
+        .findAsync("x/y", {
+          matching: "*.md",
+          filter: fileInspect => {
+            throw "filter shouldn't be called!";
+          }
+        })
+        .then(found => {
+          expectations(found);
+          done();
+        });
+    });
+  });
+
   describe("doesn't look for directories by default", () => {
     const preparations = () => {
       fse.outputFileSync("a/b/foo1", "abc");

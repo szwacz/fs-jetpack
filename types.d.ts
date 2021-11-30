@@ -36,6 +36,7 @@ type FileOptions = {
 
 type FindOptions = {
   matching?: string | string[];
+  filter?: (fileInspect: InspectResult) => boolean | Promise<boolean>;
   files?: boolean;
   directories?: boolean;
   recursive?: boolean;

@@ -124,7 +124,7 @@ Need to perform temporary data transformations?
 ```js
 const dir = jetpack.tmpDir();
 dir.write("data.txt", myData);
-// Perform some operations on the data and when you're done 
+// Perform some operations on the data and when you're done
 // and don't need the folder any longer just call...
 dir.remove();
 ```
@@ -370,6 +370,7 @@ Finds in directory specified by `path` all files fulfilling `searchOptions`. Ret
 `searchOptions` is an `Object` with possible fields:
 
 - `matching` (default `"*"`) glob patterns of files you want to find ([all possible globs are described further in this readme](#matching-patterns)).
+- `filter` (default `undefined`) function that is called on each matched path with [inspect object](#inspectpath-options) of that path as an argument. Return `true` or `false` to indicate whether given path should stay on list or should be filtered out (see example below).
 - `files` (default `true`) whether or not should search for files.
 - `directories` (default `false`) whether or not should search for directories.
 - `recursive` (default `true`) whether the whole directory tree should be searched recursively, or only one-level of given directory (excluding it's subdirectories).
@@ -391,6 +392,15 @@ jetpack.find("my-work", { matching: "*2015*" });
 jetpack.find("foo", { matching: "bar/**/*.txt" });
 // Finds all '.txt' files inside 'foo/bar' directory WITHOUT subdirectories
 jetpack.find("foo", { matching: "bar/*.txt" });
+
+// Finds all '.txt' files that were modified after 2019-01-01
+const borderDate = new Date("2019-01-01")
+jetpack.find("foo", {
+  matching: "*.txt",
+  filter: (inspectObj) => {
+    return inspectObj.modifyTime > borderDate
+  }
+});
 
 // Finds all '.js' files inside 'my-project' but excluding those in 'vendor' subtree.
 jetpack.find("my-project", { matching: ["*.js", "!vendor/**/*"] });
