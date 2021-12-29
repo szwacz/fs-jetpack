@@ -1,6 +1,6 @@
 # fs-jetpack [![Build Status](https://travis-ci.com/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.com/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack) [![codecov](https://codecov.io/gh/szwacz/fs-jetpack/branch/master/graph/badge.svg)](https://codecov.io/gh/szwacz/fs-jetpack)
 
-This project was started out of frustration "Why using [standard 'fs' library](http://nodejs.org/api/fs.html) has to be so tedious?". There are efforts to make the experience more pleasant ([fs-extra](https://github.com/jprichardson/node-fs-extra), [mkdirp](https://github.com/isaacs/node-mkdirp), [rimraf](https://github.com/isaacs/rimraf), etc.) but all of them just sprinkle something extra on top, not addressing the root problem. That is where _fs-jetpack_ aims: completely rethought, much more convenient API to work with file system. You will especially appreciate it as a scripting/tooling library and for your build pipelines.
+API for your everyday file system manipulations, much more convenient than [fs](http://nodejs.org/api/fs.html) or [fs-extra](https://github.com/jprichardson/node-fs-extra). You will especially appreciate it as a scripting/tooling library and for your build pipelines.
 
 # Table of Contents
 
