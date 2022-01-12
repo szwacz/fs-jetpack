@@ -437,6 +437,31 @@ describe("find", () => {
     });
   });
 
+  describe("deals gracefully with invalid symlink", () => {
+    const preparations = () => {
+      fse.outputFileSync("dir/dir/file1.txt", "abc");
+      jetpack.symlink("invalid/symlink", "dir/invalid_file.txt");
+    };
+
+    const expectations = (found: string[]) => {
+      const normalizedPaths = helper.osSep(["dir/dir/file1.txt"]);
+      expect(found).to.eql(normalizedPaths);
+    };
+
+    it("sync", () => {
+      preparations();
+      expectations(jetpack.find("dir", { matching: "*.txt" }));
+    });
+
+    it("async", done => {
+      preparations();
+      jetpack.findAsync("dir", { matching: "*.txt" }).then(found => {
+        expectations(found);
+        done();
+      });
+    });
+  });
+
   describe("can look for files and directories", () => {
     const preparations = () => {
       fse.outputFileSync("a/b/foo1", "abc");
