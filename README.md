@@ -1,4 +1,4 @@
-# fs-jetpack [![Build Status](https://travis-ci.com/szwacz/fs-jetpack.svg?branch=master)](https://travis-ci.com/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack) [![codecov](https://codecov.io/gh/szwacz/fs-jetpack/branch/master/graph/badge.svg)](https://codecov.io/gh/szwacz/fs-jetpack)
+# fs-jetpack [![Build Status](https://app.travis-ci.com/szwacz/fs-jetpack.svg?branch=master)](https://app.travis-ci.com/szwacz/fs-jetpack) [![Build status](https://ci.appveyor.com/api/projects/status/er206e91fpuuqf58?svg=true)](https://ci.appveyor.com/project/szwacz/fs-jetpack) [![codecov](https://codecov.io/gh/szwacz/fs-jetpack/branch/master/graph/badge.svg)](https://codecov.io/gh/szwacz/fs-jetpack)
 
 API for your everyday file system manipulations, much more convenient than [fs](http://nodejs.org/api/fs.html) or [fs-extra](https://github.com/jprichardson/node-fs-extra). You will especially appreciate it as a scripting/tooling library and for your build pipelines.
 
