@@ -1,3 +1,6 @@
+# 4.3.1 (2022-01-12)
+- Fixed `find()` crash when stumbled upon invalid symlink
+
 # 4.3.0 (2021-11-30)
 - `find()` accepts `filter` function that allows you to perform more refined filtering of the results
 
