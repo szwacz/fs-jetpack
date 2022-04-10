@@ -81,7 +81,7 @@ console.log(data);
 
 ## All API methods cooperate nicely with each other
 
-Let's say you want to create folder structure as demonstrated in comment below. Peace of cake!
+Let's say you want to create folder structure as demonstrated in comment below. Piece of cake!
 
 ```js
 // .
