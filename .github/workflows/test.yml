@@ -27,7 +27,7 @@ jobs:
       - name: Run tests
         run: npm test
 
-  test_on_linux:
+  test_on_windows:
     name: Test on Windows
 
     runs-on: windows-latest
