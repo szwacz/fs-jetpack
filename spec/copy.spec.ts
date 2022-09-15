@@ -246,6 +246,7 @@ describe("copy", () => {
         expect(srcInspectData).to.have.property("accessTime");
         expect(srcInspectData).to.have.property("modifyTime");
         expect(srcInspectData).to.have.property("changeTime");
+        expect(srcInspectData).to.have.property("birthTime");
         expect(srcInspectData).to.have.property("absolutePath");
 
         expect(destInspectData).to.have.property("name");
@@ -254,6 +255,7 @@ describe("copy", () => {
         expect(destInspectData).to.have.property("accessTime");
         expect(destInspectData).to.have.property("modifyTime");
         expect(destInspectData).to.have.property("changeTime");
+        expect(destInspectData).to.have.property("birthTime");
         expect(destInspectData).to.have.property("absolutePath");
 
         return srcInspectData.name.includes("canada");

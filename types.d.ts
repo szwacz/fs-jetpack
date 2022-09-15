@@ -66,6 +66,7 @@ export interface InspectResult {
   accessTime?: Date;
   modifyTime?: Date;
   changeTime?: Date;
+  birthTime?: Date;
 }
 
 type InspectTreeOptions = {

@@ -239,7 +239,7 @@ describe("inspectTree", () => {
     });
   });
 
-  describe("can output file times (ctime, mtime, atime)", () => {
+  describe("can output file times (ctime, mtime, atime, birthtime)", () => {
     const preparations = () => {
       fse.outputFileSync("dir/file.txt", "abc");
     };
@@ -248,10 +248,12 @@ describe("inspectTree", () => {
       expect(typeof data.accessTime.getTime).to.equal("function");
       expect(typeof data.modifyTime.getTime).to.equal("function");
       expect(typeof data.changeTime.getTime).to.equal("function");
+      expect(typeof data.birthTime.getTime).to.equal("function");
 
       expect(typeof data.children[0].accessTime.getTime).to.equal("function");
       expect(typeof data.children[0].modifyTime.getTime).to.equal("function");
       expect(typeof data.children[0].changeTime.getTime).to.equal("function");
+      expect(typeof data.children[0].birthTime.getTime).to.equal("function");
     };
 
     it("sync", () => {

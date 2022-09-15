@@ -88,6 +88,7 @@ describe("inspect", () => {
       expect(typeof data.accessTime.getTime).to.equal("function");
       expect(typeof data.modifyTime.getTime).to.equal("function");
       expect(typeof data.changeTime.getTime).to.equal("function");
+      expect(typeof data.birthTime.getTime).to.equal("function");
     };
 
     it("sync", () => {
@@ -97,10 +98,15 @@ describe("inspect", () => {
 
     it("async", (done) => {
       preparations();
-      jetpack.inspectAsync("dir/file.txt", { times: true }).then((data) => {
-        expectations(data);
-        done();
-      });
+      jetpack
+        .inspectAsync("dir/file.txt", { times: true })
+        .then((data) => {
+          expectations(data);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
     });
   });
 

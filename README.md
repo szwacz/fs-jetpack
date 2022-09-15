@@ -439,7 +439,7 @@ Inspects given path (replacement for `fs.stat`). Returned object by default cont
 
 - `checksum` if specified will return checksum of inspected file. Possible values are strings `'md5'`, `'sha1'`, `'sha256'` or `'sha512'`. If given path is a directory this field is ignored.
 - `mode` (default `false`) if set to `true` will add file mode (unix file permissions) value.
-- `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime` and `changeTime`).
+- `times` (default `false`) if set to `true` will add atime, mtime and ctime fields (here called `accessTime`, `modifyTime`, `changeTime` and `birthTime`).
 - `absolutePath` (default `false`) if set to `true` will add absolute path to this resource.
 - `symlinks` (default `'report'`) if a given path is a symlink by default `inspect` will report that symlink (not follow it). You can flip this behaviour by setting this option to `'follow'`.
 
@@ -459,7 +459,8 @@ Otherwise `Object` of structure:
   // if times option was set to true:
   accessTime: [object Date],
   modifyTime: [object Date],
-  changeTime: [object Date]
+  changeTime: [object Date],
+  birthTime: [object Date]
 }
 ```
 
