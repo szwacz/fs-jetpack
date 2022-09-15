@@ -1,3 +1,8 @@
+# 5.0.0 (2022-09-15)
+- **(breaking change)** Dropped support for all node.js engines older than v14
+- **(possibly breaking change)** `inspect("some-file", { times: true })` now will return also `birthTime` of a file
+- **(possibly breaking change)** Under the hood switched from `rimraf` library to using node-native recursive files removal
+
 # 4.3.1 (2022-01-12)
 - Fixed `find()` crash when stumbled upon invalid symlink
 
