@@ -13,7 +13,7 @@ describe("remove", () => {
       jetpack.remove("dir");
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.removeAsync("dir").then(() => {
         done();
       });
@@ -35,7 +35,7 @@ describe("remove", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.removeAsync("file.txt").then(() => {
         expectations();
@@ -61,7 +61,7 @@ describe("remove", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.removeAsync("a").then(() => {
         expectations();
@@ -81,7 +81,7 @@ describe("remove", () => {
       path("a").shouldNotExist();
     };
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
 
       fse.open("a/f.txt", "w", (err, fd) => {
@@ -122,7 +122,7 @@ describe("remove", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
       jetContext.removeAsync("b").then(() => {
@@ -148,7 +148,7 @@ describe("remove", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
       jetContext.removeAsync().then(() => {
@@ -178,7 +178,7 @@ describe("remove", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.removeAsync("to_remove").then(() => {
         expectations();
@@ -193,19 +193,17 @@ describe("remove", () => {
       {
         type: "async",
         method: jetpack.removeAsync as any,
-        methodName: "removeAsync"
-      }
+        methodName: "removeAsync",
+      },
     ];
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(true);
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }([path]) must be a string or an undefined. Received boolean`
+            `Argument "path" passed to ${test.methodName}([path]) must be a string or an undefined. Received boolean`
           );
         });
       });

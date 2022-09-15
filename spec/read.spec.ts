@@ -23,15 +23,15 @@ describe("read", () => {
       expectations(jetpack.read("file.txt", "utf8")); // explicitly specified
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .readAsync("file.txt") // defaults to 'utf8'
-        .then(content => {
+        .then((content) => {
           expectations(content);
           return jetpack.readAsync("file.txt", "utf8"); // explicitly said
         })
-        .then(content => {
+        .then((content) => {
           expectations(content);
           done();
         });
@@ -55,9 +55,9 @@ describe("read", () => {
       expectations(jetpack.read("file.txt", "buffer"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.readAsync("file.txt", "buffer").then(content => {
+      jetpack.readAsync("file.txt", "buffer").then((content) => {
         expectations(content);
         done();
       });
@@ -66,7 +66,7 @@ describe("read", () => {
 
   describe("reads file as JSON", () => {
     const obj = {
-      utf8: "ąćłźż"
+      utf8: "ąćłźż",
     };
 
     const preparations = () => {
@@ -82,9 +82,9 @@ describe("read", () => {
       expectations(jetpack.read("file.json", "json"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.readAsync("file.json", "json").then(content => {
+      jetpack.readAsync("file.json", "json").then((content) => {
         expectations(content);
         done();
       });
@@ -110,9 +110,9 @@ describe("read", () => {
       }
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.readAsync("file.json", "json").catch(err => {
+      jetpack.readAsync("file.json", "json").catch((err) => {
         expectations(err);
         done();
       });
@@ -122,7 +122,7 @@ describe("read", () => {
   describe("reads file as JSON with Date parsing", () => {
     const obj = {
       utf8: "ąćłźż",
-      date: new Date()
+      date: new Date(),
     };
 
     const preparations = () => {
@@ -138,9 +138,9 @@ describe("read", () => {
       expectations(jetpack.read("file.json", "jsonWithDates"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.readAsync("file.json", "jsonWithDates").then(content => {
+      jetpack.readAsync("file.json", "jsonWithDates").then((content) => {
         expectations(content);
         done();
       });
@@ -158,18 +158,18 @@ describe("read", () => {
       expectations(jetpack.read("nonexistent.txt", "buffer"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack
         .readAsync("nonexistent.txt")
-        .then(content => {
+        .then((content) => {
           expectations(content);
           return jetpack.readAsync("nonexistent.txt", "json");
         })
-        .then(content => {
+        .then((content) => {
           expectations(content);
           return jetpack.readAsync("nonexistent.txt", "buffer");
         })
-        .then(content => {
+        .then((content) => {
           expectations(content);
           done();
         });
@@ -195,9 +195,9 @@ describe("read", () => {
       }
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.readAsync("dir").catch(err => {
+      jetpack.readAsync("dir").catch((err) => {
         expectations(err);
         done();
       });
@@ -219,10 +219,10 @@ describe("read", () => {
       expectations(jetContext.read("file.txt"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
-      jetContext.readAsync("file.txt").then(data => {
+      jetContext.readAsync("file.txt").then((data) => {
         expectations(data);
         done();
       });
@@ -235,40 +235,34 @@ describe("read", () => {
       {
         type: "async",
         method: jetpack.readAsync as any,
-        methodName: "readAsync"
-      }
+        methodName: "readAsync",
+      },
     ];
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }(path, returnAs) must be a string. Received undefined`
+            `Argument "path" passed to ${test.methodName}(path, returnAs) must be a string. Received undefined`
           );
         });
       });
     });
 
     describe('"returnAs" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method("abc", true);
           }).to.throw(
-            `Argument "returnAs" passed to ${
-              test.methodName
-            }(path, returnAs) must be a string or an undefined. Received boolean`
+            `Argument "returnAs" passed to ${test.methodName}(path, returnAs) must be a string or an undefined. Received boolean`
           );
           expect(() => {
             test.method("abc", "foo");
           }).to.throw(
-            `Argument "returnAs" passed to ${
-              test.methodName
-            }(path, returnAs) must have one of values: utf8, buffer, json, jsonWithDates`
+            `Argument "returnAs" passed to ${test.methodName}(path, returnAs) must have one of values: utf8, buffer, json, jsonWithDates`
           );
         });
       });

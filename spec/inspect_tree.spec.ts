@@ -29,16 +29,16 @@ describe("inspectTree", () => {
               {
                 name: "file.txt",
                 type: "file",
-                size: 4
-              }
-            ]
+                size: 4,
+              },
+            ],
           },
           {
             name: "file.txt",
             type: "file",
-            size: 3
-          }
-        ]
+            size: 3,
+          },
+        ],
       });
     };
 
@@ -47,11 +47,11 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectTreeAsync("dir")
-        .then(tree => {
+        .then((tree) => {
           expectations(tree);
           done();
         })
@@ -82,27 +82,27 @@ describe("inspectTree", () => {
                 name: "a",
                 type: "dir",
                 size: 0,
-                children: []
+                children: [],
               },
               {
                 name: "b",
                 type: "dir",
                 size: 0,
-                children: []
-              }
-            ]
+                children: [],
+              },
+            ],
           },
           {
             name: "a.txt",
             type: "file",
-            size: 3
+            size: 3,
           },
           {
             name: "z.txt",
             type: "file",
-            size: 3
-          }
-        ]
+            size: 3,
+          },
+        ],
       });
     };
 
@@ -111,11 +111,11 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectTreeAsync("dir")
-        .then(tree => {
+        .then((tree) => {
           expectations(tree);
           done();
         })
@@ -158,9 +158,9 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir", { relativePath: true }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectTreeAsync("dir", { relativePath: true }).then(tree => {
+      jetpack.inspectTreeAsync("dir", { relativePath: true }).then((tree) => {
         expectations(tree);
         done();
       });
@@ -176,7 +176,7 @@ describe("inspectTree", () => {
       expect(data).to.eql({
         name: "file.txt",
         type: "file",
-        size: 3
+        size: 3,
       });
     };
 
@@ -185,9 +185,9 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir/file.txt"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectTreeAsync("dir/file.txt").then(tree => {
+      jetpack.inspectTreeAsync("dir/file.txt").then((tree) => {
         expectations(tree);
         done();
       });
@@ -204,7 +204,7 @@ describe("inspectTree", () => {
         name: "empty",
         type: "dir",
         size: 0,
-        children: []
+        children: [],
       });
     };
 
@@ -213,9 +213,9 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("empty"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectTreeAsync("empty").then(tree => {
+      jetpack.inspectTreeAsync("empty").then((tree) => {
         expectations(tree);
         done();
       });
@@ -231,8 +231,8 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("nonexistent"));
     });
 
-    it("async", done => {
-      jetpack.inspectTreeAsync("nonexistent").then(dataAsync => {
+    it("async", (done) => {
+      jetpack.inspectTreeAsync("nonexistent").then((dataAsync) => {
         expectations(dataAsync);
         done();
       });
@@ -259,9 +259,9 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir", { times: true }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectTreeAsync("dir", { times: true }).then(data => {
+      jetpack.inspectTreeAsync("dir", { times: true }).then((data) => {
         expectations(data);
         done();
       });
@@ -283,10 +283,10 @@ describe("inspectTree", () => {
       expectations(jetContext.inspectTree("b.txt"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
-      jetContext.inspectTreeAsync("b.txt").then(data => {
+      jetContext.inspectTreeAsync("b.txt").then((data) => {
         expectations(data);
         done();
       });
@@ -308,14 +308,14 @@ describe("inspectTree", () => {
           {
             name: "file.txt",
             type: "file",
-            size: 3
+            size: 3,
           },
           {
             name: "symlinked_file.txt",
             type: "symlink",
-            pointsAt: "file.txt"
-          }
-        ]
+            pointsAt: "file.txt",
+          },
+        ],
       });
     };
 
@@ -325,15 +325,15 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir", { symlinks: "report" })); // explicit
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectTreeAsync("dir") // implicit
-        .then(tree => {
+        .then((tree) => {
           expectations(tree);
           return jetpack.inspectTreeAsync("dir", { symlinks: "report" }); // explicit
         })
-        .then(tree => {
+        .then((tree) => {
           expectations(tree);
           done();
         })
@@ -356,14 +356,14 @@ describe("inspectTree", () => {
           {
             name: "file.txt",
             type: "file",
-            size: 3
+            size: 3,
           },
           {
             name: "symlinked_file.txt",
             type: "file",
-            size: 3
-          }
-        ]
+            size: 3,
+          },
+        ],
       });
     };
 
@@ -372,11 +372,11 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir", { symlinks: "follow" }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectTreeAsync("dir", { symlinks: "follow" })
-        .then(tree => {
+        .then((tree) => {
           expectations(tree);
           done();
         })
@@ -406,9 +406,9 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("dir", { checksum: "md5" }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectTreeAsync("dir", { checksum: "md5" }).then(tree => {
+      jetpack.inspectTreeAsync("dir", { checksum: "md5" }).then((tree) => {
         expectations(tree);
         done();
       });
@@ -431,12 +431,14 @@ describe("inspectTree", () => {
       expectations(jetpack.inspectTree("empty_dir", { checksum: "md5" }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectTreeAsync("empty_dir", { checksum: "md5" }).then(tree => {
-        expectations(tree);
-        done();
-      });
+      jetpack
+        .inspectTreeAsync("empty_dir", { checksum: "md5" })
+        .then((tree) => {
+          expectations(tree);
+          done();
+        });
     });
   });
 
@@ -445,24 +447,22 @@ describe("inspectTree", () => {
       {
         type: "sync",
         method: jetpack.inspectTree as any,
-        methodName: "inspectTree"
+        methodName: "inspectTree",
       },
       {
         type: "async",
         method: jetpack.inspectTreeAsync as any,
-        methodName: "inspectTreeAsync"
-      }
+        methodName: "inspectTreeAsync",
+      },
     ];
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined);
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }(path, [options]) must be a string. Received undefined`
+            `Argument "path" passed to ${test.methodName}(path, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -470,58 +470,48 @@ describe("inspectTree", () => {
 
     describe('"options" object', () => {
       describe('"checksum" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { checksum: 1 });
             }).to.throw(
-              `Argument "options.checksum" passed to ${
-                test.methodName
-              }(path, [options]) must be a string. Received number`
+              `Argument "options.checksum" passed to ${test.methodName}(path, [options]) must be a string. Received number`
             );
           });
           it(test.type, () => {
             expect(() => {
               test.method("abc", { checksum: "foo" });
             }).to.throw(
-              `Argument "options.checksum" passed to ${
-                test.methodName
-              }(path, [options]) must have one of values: md5, sha1, sha256`
+              `Argument "options.checksum" passed to ${test.methodName}(path, [options]) must have one of values: md5, sha1, sha256`
             );
           });
         });
       });
       describe('"relativePath" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { relativePath: 1 });
             }).to.throw(
-              `Argument "options.relativePath" passed to ${
-                test.methodName
-              }(path, [options]) must be a boolean. Received number`
+              `Argument "options.relativePath" passed to ${test.methodName}(path, [options]) must be a boolean. Received number`
             );
           });
         });
       });
       describe('"symlinks" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { symlinks: 1 });
             }).to.throw(
-              `Argument "options.symlinks" passed to ${
-                test.methodName
-              }(path, [options]) must be a string. Received number`
+              `Argument "options.symlinks" passed to ${test.methodName}(path, [options]) must be a string. Received number`
             );
           });
           it(test.type, () => {
             expect(() => {
               test.method("abc", { symlinks: "foo" });
             }).to.throw(
-              `Argument "options.symlinks" passed to ${
-                test.methodName
-              }(path, [options]) must have one of values: report, follow`
+              `Argument "options.symlinks" passed to ${test.methodName}(path, [options]) must have one of values: report, follow`
             );
           });
         });

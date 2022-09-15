@@ -19,7 +19,7 @@ describe("symlink", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.symlinkAsync("some_path", "symlink").then(() => {
         expectations();
         done();
@@ -37,7 +37,7 @@ describe("symlink", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.symlinkAsync("whatever", "a/b/symlink").then(() => {
         expectations();
         done();
@@ -61,7 +61,7 @@ describe("symlink", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a/b");
       preparations();
       jetContext.symlinkAsync("whatever", "symlink").then(() => {
@@ -77,33 +77,29 @@ describe("symlink", () => {
       {
         type: "async",
         method: jetpack.symlinkAsync as any,
-        methodName: "symlinkAsync"
-      }
+        methodName: "symlinkAsync",
+      },
     ];
 
     describe('"symlinkValue" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined, "abc");
           }).to.throw(
-            `Argument "symlinkValue" passed to ${
-              test.methodName
-            }(symlinkValue, path) must be a string. Received undefined`
+            `Argument "symlinkValue" passed to ${test.methodName}(symlinkValue, path) must be a string. Received undefined`
           );
         });
       });
     });
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method("xyz", undefined);
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }(symlinkValue, path) must be a string. Received undefined`
+            `Argument "path" passed to ${test.methodName}(symlinkValue, path) must be a string. Received undefined`
           );
         });
       });

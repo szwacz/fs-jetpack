@@ -25,7 +25,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.copyAsync("file.txt", "file_copied.txt").then(() => {
         expectations();
@@ -50,7 +50,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.copyAsync("file.txt", "dir/dir/file.txt").then(() => {
         expectations();
@@ -74,7 +74,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.copyAsync("dir", "copied/dir").then(() => {
         expectations();
@@ -102,7 +102,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.copyAsync("a", "copied/a").then(() => {
         expectations();
@@ -126,8 +126,8 @@ describe("copy", () => {
       }
     });
 
-    it("async", done => {
-      jetpack.copyAsync("a", "b").catch(err => {
+    it("async", (done) => {
+      jetpack.copyAsync("a", "b").catch((err) => {
         expectations(err);
         done();
       });
@@ -151,7 +151,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
       jetContext.copyAsync("b.txt", "x.txt").then(() => {
@@ -183,9 +183,9 @@ describe("copy", () => {
         }
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
-        jetpack.copyAsync("a", "b").catch(err => {
+        jetpack.copyAsync("a", "b").catch((err) => {
           expectations(err);
           done();
         });
@@ -209,7 +209,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.copyAsync("a", "b", { overwrite: true }).then(() => {
           expectations();
@@ -265,7 +265,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.copyAsync("from-here", "to-here", { overwrite }).then(() => {
           expectations();
@@ -298,13 +298,13 @@ describe("copy", () => {
       destInspectData: InspectResult
     ): Promise<boolean> => {
       return new Promise((resolve, reject) => {
-        jetpack.readAsync(srcInspectData.absolutePath).then(data => {
+        jetpack.readAsync(srcInspectData.absolutePath).then((data) => {
           resolve(data === "abc");
         });
       });
     };
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .copyAsync("from-here", "to-here", { overwrite })
@@ -338,7 +338,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.copyAsync("dir", "copy", { matching: "*.txt" }).then(() => {
           expectations();
@@ -366,7 +366,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack
           .copyAsync("x/y/dir", "copy", { matching: "a/*.txt" })
@@ -394,7 +394,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.copyAsync("x/y", "copy", { matching: "./a.txt" }).then(() => {
           expectations();
@@ -421,7 +421,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack
           .copyAsync("a", "a-copy", { matching: "x" })
@@ -458,13 +458,13 @@ describe("copy", () => {
             // Three different pattern types to test:
             "!x",
             "!dir/a/y",
-            "!./dir/a/z"
-          ]
+            "!./dir/a/z",
+          ],
         });
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack
           .copyAsync("x/y", "copy", {
@@ -473,8 +473,8 @@ describe("copy", () => {
               // Three different pattern types to test:
               "!x",
               "!dir/a/y",
-              "!./dir/a/z"
-            ]
+              "!./dir/a/z",
+            ],
           })
           .then(() => {
             expectations();
@@ -505,7 +505,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.copyAsync("x", "copy", { matching: "**" }).then(() => {
           expectations();
@@ -533,7 +533,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.copyAsync("to_copy", "copied").then(() => {
         expectations();
@@ -563,7 +563,7 @@ describe("copy", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.copyAsync("to_copy", "copied", { overwrite: true }).then(() => {
         expectations();
@@ -587,17 +587,17 @@ describe("copy", () => {
       preparations();
       jetpack.copy("orig", "copy", {
         matching: ["foo/bar/x"],
-        ignoreCase: true
+        ignoreCase: true,
       });
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .copyAsync("orig", "copy", {
           matching: ["foo/bar/x"],
-          ignoreCase: true
+          ignoreCase: true,
         })
         .then(() => {
           expectations();
@@ -625,7 +625,7 @@ describe("copy", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.copyAsync("a", "x").then(() => {
           expectations();
@@ -641,33 +641,29 @@ describe("copy", () => {
       {
         type: "async",
         method: jetpack.copyAsync as any,
-        methodName: "copyAsync"
-      }
+        methodName: "copyAsync",
+      },
     ];
 
     describe('"from" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "from" passed to ${
-              test.methodName
-            }(from, to, [options]) must be a string. Received undefined`
+            `Argument "from" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
     });
 
     describe('"to" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method("abc");
           }).to.throw(
-            `Argument "to" passed to ${
-              test.methodName
-            }(from, to, [options]) must be a string. Received undefined`
+            `Argument "to" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -675,40 +671,34 @@ describe("copy", () => {
 
     describe('"options" object', () => {
       describe('"overwrite" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { overwrite: 1 });
             }).to.throw(
-              `Argument "options.overwrite" passed to ${
-                test.methodName
-              }(from, to, [options]) must be a boolean or a function. Received number`
+              `Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean or a function. Received number`
             );
           });
         });
       });
       describe('"matching" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { matching: 1 });
             }).to.throw(
-              `Argument "options.matching" passed to ${
-                test.methodName
-              }(from, to, [options]) must be a string or an array of string. Received number`
+              `Argument "options.matching" passed to ${test.methodName}(from, to, [options]) must be a string or an array of string. Received number`
             );
           });
         });
       });
       describe('"ignoreCase" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { ignoreCase: 1 });
             }).to.throw(
-              `Argument "options.ignoreCase" passed to ${
-                test.methodName
-              }(from, to, [options]) must be a boolean. Received number`
+              `Argument "options.ignoreCase" passed to ${test.methodName}(from, to, [options]) must be a boolean. Received number`
             );
           });
         });

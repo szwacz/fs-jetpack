@@ -16,7 +16,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "prettier": "1.13.5",
+    "prettier": "^2.7.1",
     "pretty-bytes": "^5.1.0",
     "release-assist": "^2.0.0",
     "ts-node": "^7.0.0",

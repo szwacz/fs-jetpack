@@ -18,7 +18,7 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.writeAsync("file.txt", "abc").then(() => {
         expectations();
         done();
@@ -36,7 +36,7 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.writeAsync("file.txt", new Buffer([11, 22])).then(() => {
         expectations();
         done();
@@ -46,7 +46,7 @@ describe("write", () => {
 
   describe("writes data as JSON", () => {
     const obj = {
-      utf8: "ąćłźż"
+      utf8: "ąćłźż",
     };
 
     const expectations = () => {
@@ -59,7 +59,7 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.writeAsync("file.json", obj).then(() => {
         expectations();
         done();
@@ -69,7 +69,7 @@ describe("write", () => {
 
   describe("written JSON data can be indented", () => {
     const obj = {
-      utf8: "ąćłźż"
+      utf8: "ąćłźż",
     };
 
     const expectations = () => {
@@ -87,11 +87,11 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       Promise.all([
         jetpack.writeAsync("a.json", obj, { jsonIndent: 0 }),
         jetpack.writeAsync("b.json", obj), // Default indent = 2
-        jetpack.writeAsync("c.json", obj, { jsonIndent: 4 })
+        jetpack.writeAsync("c.json", obj, { jsonIndent: 4 }),
       ]).then(() => {
         expectations();
         done();
@@ -101,7 +101,7 @@ describe("write", () => {
 
   describe("writes and reads file as JSON with Date parsing", () => {
     const obj = {
-      date: new Date()
+      date: new Date(),
     };
 
     const expectations = () => {
@@ -114,7 +114,7 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.writeAsync("file.json", obj).then(() => {
         expectations();
         done();
@@ -142,7 +142,7 @@ describe("write", () => {
         expectations();
       });
 
-      it("async, mode passed as string", done => {
+      it("async, mode passed as string", (done) => {
         jetpack
           .writeAsync("file.txt", "xyz", { mode: "711" })
           .then(() => {
@@ -152,7 +152,7 @@ describe("write", () => {
           .catch(done);
       });
 
-      it("async, mode passed as number", done => {
+      it("async, mode passed as number", (done) => {
         jetpack
           .writeAsync("file.txt", "xyz", { mode: 0o711 })
           .then(() => {
@@ -174,7 +174,7 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.writeAsync("a/b/c.txt", "abc").then(() => {
         expectations();
         done();
@@ -193,7 +193,7 @@ describe("write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       jetContext.writeAsync("b/c.txt", "abc").then(() => {
         expectations();
@@ -208,33 +208,29 @@ describe("write", () => {
       {
         type: "async",
         method: jetpack.writeAsync as any,
-        methodName: "writeAsync"
-      }
+        methodName: "writeAsync",
+      },
     ];
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined);
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }(path, data, [options]) must be a string. Received undefined`
+            `Argument "path" passed to ${test.methodName}(path, data, [options]) must be a string. Received undefined`
           );
         });
       });
     });
 
     describe('"data" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method("abc", true);
           }).to.throw(
-            `Argument "data" passed to ${
-              test.methodName
-            }(path, data, [options]) must be a string or a buffer or an object or an array. Received boolean`
+            `Argument "data" passed to ${test.methodName}(path, data, [options]) must be a string or a buffer or an object or an array. Received boolean`
           );
         });
       });
@@ -242,27 +238,23 @@ describe("write", () => {
 
     describe('"options" object', () => {
       describe('"atomic" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { atomic: 1 });
             }).to.throw(
-              `Argument "options.atomic" passed to ${
-                test.methodName
-              }(path, data, [options]) must be a boolean. Received number`
+              `Argument "options.atomic" passed to ${test.methodName}(path, data, [options]) must be a boolean. Received number`
             );
           });
         });
       });
       describe('"jsonIndent" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { jsonIndent: true });
             }).to.throw(
-              `Argument "options.jsonIndent" passed to ${
-                test.methodName
-              }(path, data, [options]) must be a number. Received boolean`
+              `Argument "options.jsonIndent" passed to ${test.methodName}(path, data, [options]) must be a number. Received boolean`
             );
           });
         });

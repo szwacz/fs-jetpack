@@ -22,7 +22,7 @@ describe("atomic write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.writeAsync(filePath, "abc", { atomic: true }).then(() => {
         expectations();
         done();
@@ -46,7 +46,7 @@ describe("atomic write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.writeAsync(filePath, "abc", { atomic: true }).then(() => {
         expectations();
@@ -73,7 +73,7 @@ describe("atomic write", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.writeAsync(filePath, "abc", { atomic: true }).then(() => {
         expectations();

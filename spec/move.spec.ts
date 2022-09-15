@@ -24,7 +24,7 @@ describe("move", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.moveAsync("a/b.txt", "c.txt").then(() => {
         expectations();
@@ -50,7 +50,7 @@ describe("move", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.moveAsync("a", "x/y").then(() => {
         expectations();
@@ -75,7 +75,7 @@ describe("move", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.moveAsync("a.txt", "a/b/z.txt").then(() => {
         expectations();
@@ -99,8 +99,8 @@ describe("move", () => {
       }
     });
 
-    it("async", done => {
-      jetpack.moveAsync("a", "b").catch(err => {
+    it("async", (done) => {
+      jetpack.moveAsync("a", "b").catch((err) => {
         expectations(err);
         done();
       });
@@ -130,9 +130,9 @@ describe("move", () => {
         }
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
-        jetpack.moveAsync("file1.txt", "file2.txt").catch(err => {
+        jetpack.moveAsync("file1.txt", "file2.txt").catch((err) => {
           expectations(err);
           done();
         });
@@ -156,7 +156,7 @@ describe("move", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack
           .moveAsync("file1.txt", "file2.txt", { overwrite: true })
@@ -184,7 +184,7 @@ describe("move", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.moveAsync("file1.txt", "dir", { overwrite: true }).then(() => {
           expectations();
@@ -211,7 +211,7 @@ describe("move", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
       jetContext.moveAsync("b.txt", "x.txt").then(() => {
@@ -227,33 +227,29 @@ describe("move", () => {
       {
         type: "async",
         method: jetpack.moveAsync as any,
-        methodName: "moveAsync"
-      }
+        methodName: "moveAsync",
+      },
     ];
 
     describe('"from" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "from" passed to ${
-              test.methodName
-            }(from, to, [options]) must be a string. Received undefined`
+            `Argument "from" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
     });
 
     describe('"to" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method("abc", undefined);
           }).to.throw(
-            `Argument "to" passed to ${
-              test.methodName
-            }(from, to, [options]) must be a string. Received undefined`
+            `Argument "to" passed to ${test.methodName}(from, to, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -261,14 +257,12 @@ describe("move", () => {
 
     describe('"options" object', () => {
       describe('"overwrite" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { overwrite: 1 });
             }).to.throw(
-              `Argument "options.overwrite" passed to ${
-                test.methodName
-              }(from, to, [options]) must be a boolean. Received number`
+              `Argument "options.overwrite" passed to ${test.methodName}(from, to, [options]) must be a boolean. Received number`
             );
           });
         });
