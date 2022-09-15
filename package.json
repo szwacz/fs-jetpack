@@ -12,10 +12,10 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "^18.7.18",
     "chai": "^4.3.6",
-    "codecov": "^3.0.2",
     "fs-extra": "^5.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^10.0.0",
+    "nyc": "^15.1.0",
     "prettier": "1.13.5",
     "pretty-bytes": "^5.1.0",
     "release-assist": "^2.0.0",
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register \"spec/**/*.spec.ts\"",
-    "test-with-coverage": "istanbul cover _mocha -- -r ts-node/register 'spec/**/*.spec.ts'",
+    "coverage": "nyc --reporter=lcov npm run test",
     "prettier": "prettier --write \"./**/*.{js,ts}\"",
     "release-start": "release-assist --start",
     "release-finish": "release-assist --finish"
