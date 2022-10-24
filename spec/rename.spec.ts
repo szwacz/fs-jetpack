@@ -25,7 +25,7 @@ describe("rename", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack.renameAsync("a/b.txt", "x.txt").then(() => {
         expectations();
@@ -50,7 +50,7 @@ describe("rename", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack.renameAsync("a/b", "x").then(() => {
         expectations();
@@ -82,9 +82,9 @@ describe("rename", () => {
         }
       });
 
-      it("async", (done) => {
+      it("async", done => {
         preparations();
-        jetpack.renameAsync("file1.txt", "file2.txt").catch((err) => {
+        jetpack.renameAsync("file1.txt", "file2.txt").catch(err => {
           expectations(err);
           done();
         });
@@ -108,7 +108,7 @@ describe("rename", () => {
         expectations();
       });
 
-      it("async", (done) => {
+      it("async", done => {
         preparations();
         jetpack
           .renameAsync("file1.txt", "file2.txt", { overwrite: true })
@@ -137,7 +137,7 @@ describe("rename", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack.renameAsync("file1.txt", "dir", { overwrite: true }).then(() => {
         expectations();
@@ -163,7 +163,7 @@ describe("rename", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       const jetContext = jetpack.cwd("a");
       preparations();
       jetContext.renameAsync("b", "x").then(() => {
@@ -179,17 +179,19 @@ describe("rename", () => {
       {
         type: "async",
         method: jetpack.renameAsync as any,
-        methodName: "renameAsync",
-      },
+        methodName: "renameAsync"
+      }
     ];
 
     describe('"path" argument', () => {
-      tests.forEach((test) => {
+      tests.forEach(test => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "path" passed to ${test.methodName}(path, newName, [options]) must be a string. Received undefined`
+            `Argument "path" passed to ${
+              test.methodName
+            }(path, newName, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -197,12 +199,14 @@ describe("rename", () => {
 
     describe('"newName" argument', () => {
       describe("type check", () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", undefined);
             }).to.throw(
-              `Argument "newName" passed to ${test.methodName}(path, newName, [options]) must be a string. Received undefined`
+              `Argument "newName" passed to ${
+                test.methodName
+              }(path, newName, [options]) must be a string. Received undefined`
             );
           });
         });
@@ -210,12 +214,14 @@ describe("rename", () => {
 
       describe("shouldn't be path, just a filename", () => {
         const pathToTest = pathUtil.join("new-name", "with-a-slash");
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", pathToTest);
             }).to.throw(
-              `Argument "newName" passed to ${test.methodName}(path, newName, [options]) should be a filename, not a path. Received "${pathToTest}"`
+              `Argument "newName" passed to ${
+                test.methodName
+              }(path, newName, [options]) should be a filename, not a path. Received "${pathToTest}"`
             );
           });
         });
@@ -224,12 +230,14 @@ describe("rename", () => {
 
     describe('"options" object', () => {
       describe('"overwrite" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { overwrite: 1 });
             }).to.throw(
-              `Argument "options.overwrite" passed to ${test.methodName}(path, newName, [options]) must be a boolean. Received number`
+              `Argument "options.overwrite" passed to ${
+                test.methodName
+              }(path, newName, [options]) must be a boolean. Received number`
             );
           });
         });

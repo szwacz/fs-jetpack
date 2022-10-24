@@ -19,7 +19,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("file.txt")
         .then(() => {
@@ -45,7 +45,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack
         .fileAsync("file.txt")
@@ -67,7 +67,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("file.txt", { content: "ąbć" })
         .then(() => {
@@ -88,7 +88,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("file", { content: new Buffer([11, 22]) })
         .then(() => {
@@ -102,7 +102,7 @@ describe("file", () => {
   describe("can save file content given as plain JS object (will be saved as JSON)", () => {
     const obj = {
       a: "abc",
-      b: 123,
+      b: 123
     };
 
     const expectations = () => {
@@ -115,7 +115,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("file.txt", { content: obj })
         .then(() => {
@@ -129,7 +129,7 @@ describe("file", () => {
   describe("written JSON data can be indented", () => {
     const obj = {
       a: "abc",
-      b: 123,
+      b: 123
     };
 
     const expectations = () => {
@@ -147,7 +147,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("a.json", { content: obj, jsonIndent: 0 })
         .then(() => {
@@ -179,7 +179,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack
         .fileAsync("file.txt", { content: "123" })
@@ -210,11 +210,11 @@ describe("file", () => {
       }
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack
         .fileAsync("a")
-        .catch((err) => {
+        .catch(err => {
           expectations(err);
           done();
         })
@@ -232,7 +232,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("a/b/c.txt")
         .then(() => {
@@ -252,10 +252,10 @@ describe("file", () => {
       expectations(jetpack.file("file.txt"));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .fileAsync("file.txt")
-        .then((jetpackContext) => {
+        .then(jetpackContext => {
           expectations(jetpackContext);
           done();
         })
@@ -274,7 +274,7 @@ describe("file", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       const jetContext = jetpack.cwd("a");
       jetContext
         .fileAsync("b.txt")
@@ -302,7 +302,7 @@ describe("file", () => {
         expectations();
       });
 
-      it("async, mode passed as string", (done) => {
+      it("async, mode passed as string", done => {
         jetpack
           .fileAsync("file.txt", { mode: "711" })
           .then(() => {
@@ -312,7 +312,7 @@ describe("file", () => {
           .catch(done);
       });
 
-      it("async, mode passed as number", (done) => {
+      it("async, mode passed as number", done => {
         jetpack
           .fileAsync("file.txt", { mode: 0o711 })
           .then(() => {
@@ -338,7 +338,7 @@ describe("file", () => {
         expectations();
       });
 
-      it("async", (done) => {
+      it("async", done => {
         preparations();
         jetpack
           .fileAsync("file.txt", { mode: "511" })
@@ -371,7 +371,7 @@ describe("file", () => {
         expectations();
       });
 
-      it("async, ensure exists", (done) => {
+      it("async, ensure exists", done => {
         preparations();
         jetpack
           .fileAsync("file.txt")
@@ -382,7 +382,7 @@ describe("file", () => {
           .catch(done);
       });
 
-      it("async, ensure content", (done) => {
+      it("async, ensure content", done => {
         preparations();
         jetpack
           .fileAsync("file.txt", { content: "abc" })
@@ -399,7 +399,7 @@ describe("file", () => {
         jetpack.file("file.txt", { mode: "711" });
       });
 
-      it("async", (done) => {
+      it("async", done => {
         jetpack
           .fileAsync("file.txt", { mode: "711" })
           .then(() => {
@@ -416,17 +416,19 @@ describe("file", () => {
       {
         type: "async",
         method: jetpack.fileAsync as any,
-        methodName: "fileAsync",
-      },
+        methodName: "fileAsync"
+      }
     ];
 
     describe('"path" argument', () => {
-      tests.forEach((test) => {
+      tests.forEach(test => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined);
           }).to.throw(
-            `Argument "path" passed to ${test.methodName}(path, [criteria]) must be a string. Received undefined`
+            `Argument "path" passed to ${
+              test.methodName
+            }(path, [criteria]) must be a string. Received undefined`
           );
         });
       });
@@ -434,34 +436,40 @@ describe("file", () => {
 
     describe('"criteria" object', () => {
       describe('"content" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { content: 1 });
             }).to.throw(
-              `Argument "criteria.content" passed to ${test.methodName}(path, [criteria]) must be a string or a buffer or an object or an array. Received number`
+              `Argument "criteria.content" passed to ${
+                test.methodName
+              }(path, [criteria]) must be a string or a buffer or an object or an array. Received number`
             );
           });
         });
       });
       describe('"jsonIndent" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { jsonIndent: true });
             }).to.throw(
-              `Argument "criteria.jsonIndent" passed to ${test.methodName}(path, [criteria]) must be a number. Received boolean`
+              `Argument "criteria.jsonIndent" passed to ${
+                test.methodName
+              }(path, [criteria]) must be a number. Received boolean`
             );
           });
         });
       });
       describe('"mode" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { mode: true });
             }).to.throw(
-              `Argument "criteria.mode" passed to ${test.methodName}(path, [criteria]) must be a string or a number. Received boolean`
+              `Argument "criteria.mode" passed to ${
+                test.methodName
+              }(path, [criteria]) must be a string or a number. Received boolean`
             );
           });
         });

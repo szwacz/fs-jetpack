@@ -25,9 +25,9 @@ describe("list", () => {
       expectations(jetpack.list("dir"));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
-      jetpack.listAsync("dir").then((listAsync) => {
+      jetpack.listAsync("dir").then(listAsync => {
         expectations(listAsync);
         done();
       });
@@ -50,10 +50,10 @@ describe("list", () => {
       expectations(jetContext.list());
     });
 
-    it("async", (done) => {
+    it("async", done => {
       const jetContext = jetpack.cwd("dir");
       preparations();
-      jetContext.listAsync().then((list) => {
+      jetContext.listAsync().then(list => {
         expectations(list);
         done();
       });
@@ -69,8 +69,8 @@ describe("list", () => {
       expectations(jetpack.list("nonexistent"));
     });
 
-    it("async", (done) => {
-      jetpack.listAsync("nonexistent").then((data) => {
+    it("async", done => {
+      jetpack.listAsync("nonexistent").then(data => {
         expectations(data);
         done();
       });
@@ -96,9 +96,9 @@ describe("list", () => {
       }
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
-      jetpack.listAsync("file.txt").catch((err) => {
+      jetpack.listAsync("file.txt").catch(err => {
         expectations(err);
         done();
       });
@@ -120,10 +120,10 @@ describe("list", () => {
       expectations(jetContext.list("b"));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       const jetContext = jetpack.cwd("a");
       preparations();
-      jetContext.listAsync("b").then((data) => {
+      jetContext.listAsync("b").then(data => {
         expectations(data);
         done();
       });
@@ -136,17 +136,19 @@ describe("list", () => {
       {
         type: "async",
         method: jetpack.listAsync as any,
-        methodName: "listAsync",
-      },
+        methodName: "listAsync"
+      }
     ];
 
     describe('"path" argument', () => {
-      tests.forEach((test) => {
+      tests.forEach(test => {
         it(test.type, () => {
           expect(() => {
             test.method(true);
           }).to.throw(
-            `Argument "path" passed to ${test.methodName}(path) must be a string or an undefined. Received boolean`
+            `Argument "path" passed to ${
+              test.methodName
+            }(path) must be a string or an undefined. Received boolean`
           );
         });
       });

@@ -105,6 +105,6 @@ export default (path: string) => {
       if (message) {
         throw new Error(message);
       }
-    },
+    }
   };
 };

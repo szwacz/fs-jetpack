@@ -48,7 +48,7 @@ const prepareFiles = (jetpackDir, creationConfig) => {
   });
 };
 
-const startTimer = (startMessage) => {
+const startTimer = startMessage => {
   const start = Date.now();
   process.stdout.write(`${startMessage} ... `);
 
@@ -62,7 +62,7 @@ const startTimer = (startMessage) => {
 };
 
 const waitAWhile = () => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     console.log("Waiting 5s to allow hardware buffers be emptied...");
     setTimeout(resolve, 5000);
   });
@@ -89,5 +89,5 @@ module.exports = {
   waitAWhile,
   exec: promisify(childProcess.exec),
   showMemoryUsage,
-  cleanAfterTest,
+  cleanAfterTest
 };

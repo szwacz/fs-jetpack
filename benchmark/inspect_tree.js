@@ -7,7 +7,7 @@ let timer;
 let jetpackTime;
 let nativeTime;
 
-const test = (testConfig) => {
+const test = testConfig => {
   const dirJet = testDir.dir("some-tree");
 
   console.log("");
@@ -27,13 +27,13 @@ const test = (testConfig) => {
       timer = utils.startTimer("jetpack.inspectTreeAsync()");
       return dirJet.inspectTreeAsync(".", { checksum: "md5" });
     })
-    .then((tree) => {
+    .then(tree => {
       timer();
       console.log("md5", tree.md5);
       utils.showMemoryUsage();
       return utils.cleanAfterTest();
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(err);
     });
 };
@@ -42,13 +42,13 @@ const testConfigs = [
   {
     files: 10000,
     filesPerNestedDir: 1000,
-    size: 1000,
+    size: 1000
   },
   {
     files: 1000,
     filesPerNestedDir: 50,
-    size: 10000000,
-  },
+    size: 10000000
+  }
 ];
 
 const runNext = () => {

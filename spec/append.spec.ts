@@ -23,7 +23,7 @@ describe("append", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack.appendAsync("file.txt", "xyz").then(() => {
         expectations();
@@ -47,7 +47,7 @@ describe("append", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
       jetpack.appendAsync("file.bin", new Buffer([22])).then(() => {
         expectations();
@@ -66,7 +66,7 @@ describe("append", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack.appendAsync("file.txt", "xyz").then(() => {
         expectations();
         done();
@@ -84,7 +84,7 @@ describe("append", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack.appendAsync("dir/dir/file.txt", "xyz").then(() => {
         expectations();
         done();
@@ -108,7 +108,7 @@ describe("append", () => {
       expectations();
     });
 
-    it("async", (done) => {
+    it("async", done => {
       const jetContext = jetpack.cwd("a");
       preparations();
       jetContext.appendAsync("b.txt", "xyz").then(() => {
@@ -124,29 +124,33 @@ describe("append", () => {
       {
         type: "async",
         method: jetpack.appendAsync as any,
-        methodName: "appendAsync",
-      },
+        methodName: "appendAsync"
+      }
     ];
 
     describe('"path" argument', () => {
-      tests.forEach((test) => {
+      tests.forEach(test => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined, "xyz");
           }).to.throw(
-            `Argument "path" passed to ${test.methodName}(path, data, [options]) must be a string. Received undefined`
+            `Argument "path" passed to ${
+              test.methodName
+            }(path, data, [options]) must be a string. Received undefined`
           );
         });
       });
     });
 
     describe('"data" argument', () => {
-      tests.forEach((test) => {
+      tests.forEach(test => {
         it(test.type, () => {
           expect(() => {
             test.method("abc");
           }).to.throw(
-            `Argument "data" passed to ${test.methodName}(path, data, [options]) must be a string or a buffer. Received undefined`
+            `Argument "data" passed to ${
+              test.methodName
+            }(path, data, [options]) must be a string or a buffer. Received undefined`
           );
         });
       });
@@ -154,12 +158,14 @@ describe("append", () => {
 
     describe('"options" object', () => {
       describe('"mode" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", "xyz", { mode: true });
             }).to.throw(
-              `Argument "options.mode" passed to ${test.methodName}(path, data, [options]) must be a string or a number. Received boolean`
+              `Argument "options.mode" passed to ${
+                test.methodName
+              }(path, data, [options]) must be a string or a number. Received boolean`
             );
           });
         });
@@ -178,7 +184,7 @@ describe("append", () => {
         expectations();
       });
 
-      it("async", (done) => {
+      it("async", done => {
         jetpack.appendAsync("file.txt", "abc", { mode: "711" }).then(() => {
           expectations();
           done();

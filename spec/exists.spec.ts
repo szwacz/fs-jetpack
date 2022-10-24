@@ -17,8 +17,8 @@ describe("exists", () => {
       expectations(jetpack.exists("file.txt"));
     });
 
-    it("async", (done) => {
-      jetpack.existsAsync("file.txt").then((exists) => {
+    it("async", done => {
+      jetpack.existsAsync("file.txt").then(exists => {
         expectations(exists);
         done();
       });
@@ -39,9 +39,9 @@ describe("exists", () => {
       expectations(jetpack.exists("a"));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
-      jetpack.existsAsync("a").then((exists) => {
+      jetpack.existsAsync("a").then(exists => {
         expectations(exists);
         done();
       });
@@ -62,9 +62,9 @@ describe("exists", () => {
       expectations(jetpack.exists("text.txt"));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       preparations();
-      jetpack.existsAsync("text.txt").then((exists) => {
+      jetpack.existsAsync("text.txt").then(exists => {
         expectations(exists);
         done();
       });
@@ -86,10 +86,10 @@ describe("exists", () => {
       expectations(jetContext.exists("text.txt"));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       const jetContext = jetpack.cwd("a");
       preparations();
-      jetContext.existsAsync("text.txt").then((exists) => {
+      jetContext.existsAsync("text.txt").then(exists => {
         expectations(exists);
         done();
       });
@@ -99,16 +99,18 @@ describe("exists", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.exists, methodName: "exists" },
-      { type: "async", method: jetpack.existsAsync, methodName: "existsAsync" },
+      { type: "async", method: jetpack.existsAsync, methodName: "existsAsync" }
     ];
 
     describe('"path" argument', () => {
-      tests.forEach((test) => {
+      tests.forEach(test => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined);
           }).to.throw(
-            `Argument "path" passed to ${test.methodName}(path) must be a string. Received undefined`
+            `Argument "path" passed to ${
+              test.methodName
+            }(path) must be a string. Received undefined`
           );
         });
       });

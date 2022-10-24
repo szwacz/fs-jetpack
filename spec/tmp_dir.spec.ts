@@ -22,10 +22,10 @@ describe("tmpDir", () => {
       expectations(jetpack.tmpDir());
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .tmpDirAsync()
-        .then((jetpackContext) => {
+        .then(jetpackContext => {
           expectations(jetpackContext);
           done();
         })
@@ -44,10 +44,10 @@ describe("tmpDir", () => {
       expectations(jetpack.tmpDir({ prefix: "abc_" }));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .tmpDirAsync({ prefix: "abc_" })
-        .then((jetpackContext) => {
+        .then(jetpackContext => {
           expectations(jetpackContext);
           done();
         })
@@ -65,10 +65,10 @@ describe("tmpDir", () => {
       expectations(jetpack.tmpDir({ basePath: "." }));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .tmpDirAsync({ basePath: "." })
-        .then((jetpackContext) => {
+        .then(jetpackContext => {
           expectations(jetpackContext);
           done();
         })
@@ -88,10 +88,10 @@ describe("tmpDir", () => {
       expectations(jetpack.tmpDir({ basePath: "abc" }));
     });
 
-    it("async", (done) => {
+    it("async", done => {
       jetpack
         .tmpDirAsync({ basePath: "abc" })
-        .then((jetpackContext) => {
+        .then(jetpackContext => {
           expectations(jetpackContext);
           done();
         })
@@ -105,29 +105,33 @@ describe("tmpDir", () => {
       {
         type: "async",
         method: jetpack.tmpDirAsync as any,
-        methodName: "tmpDirAsync",
-      },
+        methodName: "tmpDirAsync"
+      }
     ];
 
     describe('"options" object', () => {
       describe('"prefix" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method({ prefix: 1 });
             }).to.throw(
-              `Argument "options.prefix" passed to ${test.methodName}([options]) must be a string. Received number`
+              `Argument "options.prefix" passed to ${
+                test.methodName
+              }([options]) must be a string. Received number`
             );
           });
         });
       });
       describe('"basePath" argument', () => {
-        tests.forEach((test) => {
+        tests.forEach(test => {
           it(test.type, () => {
             expect(() => {
               test.method({ basePath: 1 });
             }).to.throw(
-              `Argument "options.basePath" passed to ${test.methodName}([options]) must be a string. Received number`
+              `Argument "options.basePath" passed to ${
+                test.methodName
+              }([options]) must be a string. Received number`
             );
           });
         });
