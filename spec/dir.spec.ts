@@ -20,7 +20,7 @@ describe("dir", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.dirAsync("x").then(() => {
         expectations();
         done();
@@ -43,7 +43,7 @@ describe("dir", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.dirAsync("x").then(() => {
         expectations();
@@ -62,7 +62,7 @@ describe("dir", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       jetpack.dirAsync("a/b/c").then(() => {
         expectations();
         done();
@@ -75,7 +75,7 @@ describe("dir", () => {
       path("a/b/c").shouldBeDirectory();
     };
 
-    it("async", done => {
+    it("async", (done) => {
       let doneCount = 0;
       const check = () => {
         doneCount += 1;
@@ -106,7 +106,7 @@ describe("dir", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.dirAsync("a").then(() => {
         expectations();
@@ -131,7 +131,7 @@ describe("dir", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack.dirAsync("a", { empty: true }).then(() => {
         expectations();
@@ -159,9 +159,9 @@ describe("dir", () => {
       }
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.dirAsync("a").catch(err => {
+      jetpack.dirAsync("a").catch((err) => {
         expectations(err);
         done();
       });
@@ -179,7 +179,7 @@ describe("dir", () => {
       expectations();
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       jetContext.dirAsync("b").then(() => {
         expectations();
@@ -197,8 +197,8 @@ describe("dir", () => {
       expectations(jetpack.dir("a"));
     });
 
-    it("async", done => {
-      jetpack.dirAsync("a").then(jetpackContext => {
+    it("async", (done) => {
+      jetpack.dirAsync("a").then((jetpackContext) => {
         expectations(jetpackContext);
         done();
       });
@@ -221,14 +221,14 @@ describe("dir", () => {
         expectations();
       });
 
-      it("async, mode passed as string", done => {
+      it("async, mode passed as string", (done) => {
         jetpack.dirAsync("a", { mode: "511" }).then(() => {
           expectations();
           done();
         });
       });
 
-      it("async, mode passed as number", done => {
+      it("async, mode passed as number", (done) => {
         jetpack.dirAsync("a", { mode: 0o511 }).then(() => {
           expectations();
           done();
@@ -247,7 +247,7 @@ describe("dir", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         jetpack.dirAsync("a/b", { mode: "711" }).then(() => {
           expectations();
           done();
@@ -269,7 +269,7 @@ describe("dir", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.dirAsync("a", { mode: "511" }).then(() => {
           expectations();
@@ -293,7 +293,7 @@ describe("dir", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
         jetpack.dirAsync("a").then(() => {
           expectations();
@@ -312,7 +312,7 @@ describe("dir", () => {
         expectations();
       });
 
-      it("async", done => {
+      it("async", (done) => {
         jetpack.dirAsync("x", { mode: "511" }).then(() => {
           expectations();
           done();
@@ -327,19 +327,17 @@ describe("dir", () => {
       {
         type: "async",
         method: jetpack.dirAsync as any,
-        methodName: "dirAsync"
-      }
+        methodName: "dirAsync",
+      },
     ];
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined);
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }(path, [criteria]) must be a string. Received undefined`
+            `Argument "path" passed to ${test.methodName}(path, [criteria]) must be a string. Received undefined`
           );
         });
       });
@@ -347,27 +345,23 @@ describe("dir", () => {
 
     describe('"criteria" object', () => {
       describe('"empty" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { empty: 1 });
             }).to.throw(
-              `Argument "criteria.empty" passed to ${
-                test.methodName
-              }(path, [criteria]) must be a boolean. Received number`
+              `Argument "criteria.empty" passed to ${test.methodName}(path, [criteria]) must be a boolean. Received number`
             );
           });
         });
       });
       describe('"mode" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { mode: true });
             }).to.throw(
-              `Argument "criteria.mode" passed to ${
-                test.methodName
-              }(path, [criteria]) must be a string or a number. Received boolean`
+              `Argument "criteria.mode" passed to ${test.methodName}(path, [criteria]) must be a string or a number. Received boolean`
             );
           });
         });

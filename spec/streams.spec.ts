@@ -8,7 +8,7 @@ describe("streams", () => {
   beforeEach(helper.setCleanTestCwd);
   afterEach(helper.switchBackToCorrectCwd);
 
-  it("exposes vanilla stream methods", done => {
+  it("exposes vanilla stream methods", (done) => {
     fse.outputFileSync("a.txt", "abc");
 
     const input = jetpack.createReadStream("a.txt");
@@ -20,7 +20,7 @@ describe("streams", () => {
     input.pipe(output);
   });
 
-  it("stream methods respect jetpack internal CWD", done => {
+  it("stream methods respect jetpack internal CWD", (done) => {
     const dir = jetpack.cwd("dir");
 
     fse.outputFileSync("dir/a.txt", "abc");

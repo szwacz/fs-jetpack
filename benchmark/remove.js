@@ -5,7 +5,7 @@ const utils = require("./utils");
 const testDir = utils.prepareJetpackTestDir();
 let timer;
 
-const test = testConfig => {
+const test = (testConfig) => {
   const dirJet = testDir.dir("to-be-removed-by-jetpack");
   const dirNative = testDir.dir("to-be-removed-by-native");
 
@@ -33,7 +33,7 @@ const test = testConfig => {
       timer();
       return utils.cleanAfterTest();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
@@ -41,8 +41,8 @@ const test = testConfig => {
 const testConfigs = [
   {
     files: 10000,
-    size: 1000
-  }
+    size: 1000,
+  },
 ];
 
 const runNext = () => {

@@ -8,7 +8,7 @@ const createdDirectories: string[] = [];
 process.on("exit", () => {
   // In case something went wrong and some temp
   // directories are still on the disk.
-  createdDirectories.forEach(path => {
+  createdDirectories.forEach((path) => {
     fse.removeSync(path);
   });
 });
@@ -57,5 +57,5 @@ export default {
   setCleanTestCwd,
   switchBackToCorrectCwd,
   parseMode,
-  osSep
+  osSep,
 };

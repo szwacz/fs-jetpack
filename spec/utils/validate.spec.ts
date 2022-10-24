@@ -15,65 +15,65 @@ describe("util validate", () => {
         article: "a",
         goodValue: "abc",
         wrongValue: 123,
-        wrongValueType: "number"
+        wrongValueType: "number",
       },
       {
         type: "number",
         article: "a",
         goodValue: 123,
         wrongValue: "abc",
-        wrongValueType: "string"
+        wrongValueType: "string",
       },
       {
         type: "boolean",
         article: "a",
         goodValue: true,
         wrongValue: "abc",
-        wrongValueType: "string"
+        wrongValueType: "string",
       },
       {
         type: "array",
         article: "an",
         goodValue: [],
         wrongValue: {},
-        wrongValueType: "object"
+        wrongValueType: "object",
       },
       {
         type: "object",
         article: "an",
         goodValue: {},
         wrongValue: [],
-        wrongValueType: "array"
+        wrongValueType: "array",
       },
       {
         type: "buffer",
         article: "a",
         goodValue: new Buffer(1),
         wrongValue: 123,
-        wrongValueType: "number"
+        wrongValueType: "number",
       },
       {
         type: "null",
         article: "a",
         goodValue: null,
         wrongValue: 123,
-        wrongValueType: "number"
+        wrongValueType: "number",
       },
       {
         type: "undefined",
         article: "an",
         goodValue: undefined,
         wrongValue: 123,
-        wrongValueType: "number"
+        wrongValueType: "number",
       },
       {
         type: "function",
         article: "a",
-        goodValue: function() {},
+        goodValue: function () {},
         wrongValue: 123,
-        wrongValueType: "number"
-      }
-    ].forEach(test => {
+        wrongValueType: "number",
+      },
+    ].forEach((test) => {
       it(`validates that given thing is a(n) ${test.type}`, () => {
         expect(() => {
           validate.argument("foo(thing)", "thing", test.goodValue, [test.type]);
@@ -81,12 +81,10 @@ describe("util validate", () => {
 
         expect(() => {
           validate.argument("foo(thing)", "thing", test.wrongValue, [
-            test.type
+            test.type,
           ]);
         }).to.throw(
-          `Argument "thing" passed to foo(thing) must be ${test.article} ${
-            test.type
-          }. Received ${test.wrongValueType}`
+          `Argument "thing" passed to foo(thing) must be ${test.article} ${test.type}. Received ${test.wrongValueType}`
         );
       });
     });
@@ -100,15 +98,13 @@ describe("util validate", () => {
       { type: "buffer", value: new Buffer(1), expect: "number" },
       { type: "null", value: null, expect: "number" },
       { type: "undefined", value: undefined, expect: "number" },
-      { type: "function", value: function() {}, expect: "number" }
-    ].forEach(test => {
+      { type: "function", value: function () {}, expect: "number" },
+    ].forEach((test) => {
       it(`can detect wrong type: ${test.type}`, () => {
         expect(() => {
           validate.argument("foo(thing)", "thing", test.value, [test.expect]);
         }).to.throw(
-          `Argument "thing" passed to foo(thing) must be a ${
-            test.expect
-          }. Received ${test.type}`
+          `Argument "thing" passed to foo(thing) must be a ${test.expect}. Received ${test.type}`
         );
       });
     });
@@ -118,7 +114,7 @@ describe("util validate", () => {
         validate.argument("foo(thing)", "thing", {}, [
           "string",
           "number",
-          "boolean"
+          "boolean",
         ]);
       }).to.throw(
         'Argument "thing" passed to foo(thing) must be a string or a number or a boolean. Received object'
@@ -152,7 +148,7 @@ describe("util validate", () => {
     it("options object might be undefined", () => {
       expect(() => {
         validate.options("foo(options)", "options", undefined, {
-          foo: ["string"]
+          foo: ["string"],
         });
       }).not.to.throw();
     });

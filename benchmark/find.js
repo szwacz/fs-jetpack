@@ -5,7 +5,7 @@ const utils = require("./utils");
 const testDir = utils.prepareJetpackTestDir();
 let timer;
 
-const test = testConfig => {
+const test = (testConfig) => {
   const dirJet = testDir.dir("some-tree");
 
   console.log("");
@@ -27,11 +27,11 @@ const test = testConfig => {
       timer = utils.startTimer("native find");
       return utils.exec(`find ${dirJet.path()} -name 1\*.txt`);
     })
-    .then(results => {
+    .then((results) => {
       timer();
       return utils.cleanAfterTest();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
@@ -40,8 +40,8 @@ const testConfigs = [
   {
     files: 10000,
     filesPerNestedDir: 1000,
-    size: 100
-  }
+    size: 100,
+  },
 ];
 
 const runNext = () => {

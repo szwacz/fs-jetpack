@@ -18,7 +18,7 @@ describe("inspect", () => {
       expect(data).to.eql({
         name: "file.txt",
         type: "file",
-        size: 3
+        size: 3,
       });
     };
 
@@ -27,9 +27,9 @@ describe("inspect", () => {
       expectations(jetpack.inspect("dir/file.txt"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectAsync("dir/file.txt").then(data => {
+      jetpack.inspectAsync("dir/file.txt").then((data) => {
         expectations(data);
         done();
       });
@@ -44,7 +44,7 @@ describe("inspect", () => {
     const expectations = (data: InspectResult) => {
       expect(data).to.eql({
         name: "empty",
-        type: "dir"
+        type: "dir",
       });
     };
 
@@ -53,9 +53,9 @@ describe("inspect", () => {
       expectations(jetpack.inspect("empty"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
-      jetpack.inspectAsync("empty").then(data => {
+      jetpack.inspectAsync("empty").then((data) => {
         expectations(data);
         done();
       });
@@ -71,8 +71,8 @@ describe("inspect", () => {
       expectations(jetpack.inspect("nonexistent"));
     });
 
-    it("async", done => {
-      jetpack.inspectAsync("nonexistent").then(data => {
+    it("async", (done) => {
+      jetpack.inspectAsync("nonexistent").then((data) => {
         expectations(data);
         done();
       });
@@ -96,15 +96,15 @@ describe("inspect", () => {
       expectations(jetpack.inspect("dir/file.txt", { times: true }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectAsync("dir/file.txt", { times: true })
-        .then(data => {
+        .then((data) => {
           expectations(data);
           done();
         })
-        .catch(err => {
+        .catch((err) => {
           done(err);
         });
     });
@@ -124,11 +124,11 @@ describe("inspect", () => {
       expectations(jetpack.inspect("dir/file.txt", { absolutePath: true }));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectAsync("dir/file.txt", { absolutePath: true })
-        .then(data => {
+        .then((data) => {
           expectations(data);
           done();
         });
@@ -150,10 +150,10 @@ describe("inspect", () => {
       expectations(jetContext.inspect("b.txt"));
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const jetContext = jetpack.cwd("a");
       preparations();
-      jetContext.inspectAsync("b.txt").then(data => {
+      jetContext.inspectAsync("b.txt").then((data) => {
         expectations(data);
         done();
       });
@@ -170,7 +170,7 @@ describe("inspect", () => {
       expect(data).to.eql({
         name: "symlinked_file.txt",
         type: "symlink",
-        pointsAt: helper.osSep("dir/file.txt")
+        pointsAt: helper.osSep("dir/file.txt"),
       });
     };
 
@@ -182,17 +182,17 @@ describe("inspect", () => {
       ); // explicit
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectAsync("symlinked_file.txt") // implicit
-        .then(data => {
+        .then((data) => {
           expectations(data);
           return jetpack.inspectAsync("symlinked_file.txt", {
-            symlinks: "report"
+            symlinks: "report",
           }); // explicit
         })
-        .then(data => {
+        .then((data) => {
           expectations(data);
           done();
         })
@@ -210,7 +210,7 @@ describe("inspect", () => {
       expect(data).to.eql({
         name: "symlinked_file.txt",
         type: "file",
-        size: 3
+        size: 3,
       });
     };
 
@@ -221,11 +221,11 @@ describe("inspect", () => {
       );
     });
 
-    it("async", done => {
+    it("async", (done) => {
       preparations();
       jetpack
         .inspectAsync("symlinked_file.txt", { symlinks: "follow" })
-        .then(data => {
+        .then((data) => {
           expectations(data);
           done();
         })
@@ -237,7 +237,7 @@ describe("inspect", () => {
     describe("can output file mode (unix only)", () => {
       const preparations = () => {
         fse.outputFileSync("dir/file.txt", "abc", {
-          mode: 0o511
+          mode: 0o511,
         });
       };
 
@@ -250,9 +250,9 @@ describe("inspect", () => {
         expectations(jetpack.inspect("dir/file.txt", { mode: true }));
       });
 
-      it("async", done => {
+      it("async", (done) => {
         preparations();
-        jetpack.inspectAsync("dir/file.txt", { mode: true }).then(data => {
+        jetpack.inspectAsync("dir/file.txt", { mode: true }).then((data) => {
           expectations(data);
           done();
         });
@@ -266,37 +266,37 @@ describe("inspect", () => {
         name: "md5",
         type: "md5",
         content: "abc",
-        expected: "900150983cd24fb0d6963f7d28e17f72"
+        expected: "900150983cd24fb0d6963f7d28e17f72",
       },
       {
         name: "sha1",
         type: "sha1",
         content: "abc",
-        expected: "a9993e364706816aba3e25717850c26c9cd0d89d"
+        expected: "a9993e364706816aba3e25717850c26c9cd0d89d",
       },
       {
         name: "sha256",
         type: "sha256",
         content: "abc",
         expected:
-          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
       },
       {
         name: "sha512",
         type: "sha512",
         content: "abc",
         expected:
-          "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+          "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f",
       },
       {
         name: "calculates correctly checksum of an empty file",
         type: "md5",
         content: "",
-        expected: "d41d8cd98f00b204e9800998ecf8427e"
-      }
+        expected: "d41d8cd98f00b204e9800998ecf8427e",
+      },
     ];
 
-    testsData.forEach(test => {
+    testsData.forEach((test) => {
       describe(test.name, () => {
         const preparations = () => {
           fse.outputFileSync("file.txt", test.content);
@@ -313,11 +313,11 @@ describe("inspect", () => {
           );
         });
 
-        it("async", done => {
+        it("async", (done) => {
           preparations();
           jetpack
             .inspectAsync("file.txt", { checksum: test.type as Checksum })
-            .then(data => {
+            .then((data) => {
               expectations(data);
               done();
             })
@@ -333,19 +333,17 @@ describe("inspect", () => {
       {
         type: "async",
         method: jetpack.inspectAsync as any,
-        methodName: "inspectAsync"
-      }
+        methodName: "inspectAsync",
+      },
     ];
 
     describe('"path" argument', () => {
-      tests.forEach(test => {
+      tests.forEach((test) => {
         it(test.type, () => {
           expect(() => {
             test.method(undefined);
           }).to.throw(
-            `Argument "path" passed to ${
-              test.methodName
-            }(path, [options]) must be a string. Received undefined`
+            `Argument "path" passed to ${test.methodName}(path, [options]) must be a string. Received undefined`
           );
         });
       });
@@ -353,84 +351,70 @@ describe("inspect", () => {
 
     describe('"options" object', () => {
       describe('"checksum" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { checksum: 1 });
             }).to.throw(
-              `Argument "options.checksum" passed to ${
-                test.methodName
-              }(path, [options]) must be a string. Received number`
+              `Argument "options.checksum" passed to ${test.methodName}(path, [options]) must be a string. Received number`
             );
           });
           it(test.type, () => {
             expect(() => {
               test.method("abc", { checksum: "foo" });
             }).to.throw(
-              `Argument "options.checksum" passed to ${
-                test.methodName
-              }(path, [options]) must have one of values: md5, sha1, sha256`
+              `Argument "options.checksum" passed to ${test.methodName}(path, [options]) must have one of values: md5, sha1, sha256`
             );
           });
         });
       });
       describe('"mode" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { mode: 1 });
             }).to.throw(
-              `Argument "options.mode" passed to ${
-                test.methodName
-              }(path, [options]) must be a boolean. Received number`
+              `Argument "options.mode" passed to ${test.methodName}(path, [options]) must be a boolean. Received number`
             );
           });
         });
       });
       describe('"times" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { times: 1 });
             }).to.throw(
-              `Argument "options.times" passed to ${
-                test.methodName
-              }(path, [options]) must be a boolean. Received number`
+              `Argument "options.times" passed to ${test.methodName}(path, [options]) must be a boolean. Received number`
             );
           });
         });
       });
       describe('"absolutePath" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { absolutePath: 1 });
             }).to.throw(
-              `Argument "options.absolutePath" passed to ${
-                test.methodName
-              }(path, [options]) must be a boolean. Received number`
+              `Argument "options.absolutePath" passed to ${test.methodName}(path, [options]) must be a boolean. Received number`
             );
           });
         });
       });
       describe('"symlinks" argument', () => {
-        tests.forEach(test => {
+        tests.forEach((test) => {
           it(test.type, () => {
             expect(() => {
               test.method("abc", { symlinks: 1 });
             }).to.throw(
-              `Argument "options.symlinks" passed to ${
-                test.methodName
-              }(path, [options]) must be a string. Received number`
+              `Argument "options.symlinks" passed to ${test.methodName}(path, [options]) must be a string. Received number`
             );
           });
           it(test.type, () => {
             expect(() => {
               test.method("abc", { symlinks: "foo" });
             }).to.throw(
-              `Argument "options.symlinks" passed to ${
-                test.methodName
-              }(path, [options]) must have one of values: report, follow`
+              `Argument "options.symlinks" passed to ${test.methodName}(path, [options]) must have one of values: report, follow`
             );
           });
         });

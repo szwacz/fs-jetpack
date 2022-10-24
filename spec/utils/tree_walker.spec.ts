@@ -29,44 +29,44 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a"),
           item: {
             type: "dir",
-            name: "a"
-          }
+            name: "a",
+          },
         },
         {
           path: pathUtil.resolve("a", "a.txt"),
           item: {
             type: "file",
-            name: "a.txt"
-          }
+            name: "a.txt",
+          },
         },
         {
           path: pathUtil.resolve("a", "b"),
           item: {
             type: "dir",
-            name: "b"
-          }
+            name: "b",
+          },
         },
         {
           path: pathUtil.resolve("a", "b", "c"),
           item: {
             type: "dir",
-            name: "c"
-          }
+            name: "c",
+          },
         },
         {
           path: pathUtil.resolve("a", "b", "z1.txt"),
           item: {
             type: "file",
-            name: "z1.txt"
-          }
+            name: "z1.txt",
+          },
         },
         {
           path: pathUtil.resolve("a", "b", "z2.txt"),
           item: {
             type: "file",
-            name: "z2.txt"
-          }
-        }
+            name: "z2.txt",
+          },
+        },
       ];
       expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
@@ -81,7 +81,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
@@ -111,51 +111,51 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a"),
           item: {
             type: "dir",
-            name: "a"
-          }
+            name: "a",
+          },
         },
         {
           path: pathUtil.resolve("a", "b"),
           item: {
             type: "dir",
-            name: "b"
-          }
+            name: "b",
+          },
         },
         {
           path: pathUtil.resolve("a", "b", "x"),
           item: {
             type: "dir",
-            name: "x"
-          }
+            name: "x",
+          },
         },
         {
           path: pathUtil.resolve("a", "b", "x", "z1.txt"),
           item: {
             type: "file",
-            name: "z1.txt"
-          }
+            name: "z1.txt",
+          },
         },
         {
           path: pathUtil.resolve("a", "c"),
           item: {
             type: "dir",
-            name: "c"
-          }
+            name: "c",
+          },
         },
         {
           path: pathUtil.resolve("a", "c", "y"),
           item: {
             type: "dir",
-            name: "y"
-          }
+            name: "y",
+          },
         },
         {
           path: pathUtil.resolve("a", "c", "y", "z2.txt"),
           item: {
             type: "file",
-            name: "z2.txt"
-          }
-        }
+            name: "z2.txt",
+          },
+        },
       ];
       expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
@@ -170,7 +170,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
@@ -190,7 +190,7 @@ describe("tree walker", () => {
 
   describe("won't penetrate folder tree deeper than maxLevelsDeep option tells", () => {
     const options = {
-      maxLevelsDeep: 1
+      maxLevelsDeep: 1,
     };
 
     const preparations = () => {
@@ -204,23 +204,23 @@ describe("tree walker", () => {
           path: pathUtil.resolve("a"),
           item: {
             type: "dir",
-            name: "a"
-          }
+            name: "a",
+          },
         },
         {
           path: pathUtil.resolve("a", "a.txt"),
           item: {
             type: "file",
-            name: "a.txt"
-          }
+            name: "a.txt",
+          },
         },
         {
           path: pathUtil.resolve("a", "b"),
           item: {
             type: "dir",
-            name: "b"
-          }
-        }
+            name: "b",
+          },
+        },
       ];
       expect(sortByPath(data)).to.eql(sortByPath(expectedData));
     };
@@ -235,7 +235,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();
@@ -264,9 +264,9 @@ describe("tree walker", () => {
           path: pathUtil.resolve("abc"),
           item: {
             type: "dir",
-            name: "abc"
-          }
-        }
+            name: "abc",
+          },
+        },
       ]);
     };
 
@@ -280,7 +280,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("abc");
       const data: any[] = [];
       preparations();
@@ -309,9 +309,9 @@ describe("tree walker", () => {
           path: pathUtil.resolve("abc.txt"),
           item: {
             type: "file",
-            name: "abc.txt"
-          }
-        }
+            name: "abc.txt",
+          },
+        },
       ]);
     };
 
@@ -325,7 +325,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
       const data: any[] = [];
       preparations();
@@ -348,8 +348,8 @@ describe("tree walker", () => {
       expect(data).to.eql([
         {
           path: pathUtil.resolve("abc.txt"),
-          item: undefined
-        }
+          item: undefined,
+        },
       ]);
     };
 
@@ -362,7 +362,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("abc.txt");
       const data: any[] = [];
       walker.async(
@@ -383,8 +383,8 @@ describe("tree walker", () => {
     const options = {
       inspectOptions: {
         checksum: "md5",
-        absolutePath: true
-      }
+        absolutePath: true,
+      },
     };
 
     const preparations = () => {
@@ -398,16 +398,16 @@ describe("tree walker", () => {
           item: {
             type: "dir",
             name: "a",
-            absolutePath: pathUtil.resolve("a")
-          }
+            absolutePath: pathUtil.resolve("a"),
+          },
         },
         {
           path: pathUtil.resolve("a", "b"),
           item: {
             type: "dir",
             name: "b",
-            absolutePath: pathUtil.resolve("a", "b")
-          }
+            absolutePath: pathUtil.resolve("a", "b"),
+          },
         },
         {
           path: pathUtil.resolve("a", "b", "c.txt"),
@@ -416,9 +416,9 @@ describe("tree walker", () => {
             name: "c.txt",
             size: 3,
             md5: "900150983cd24fb0d6963f7d28e17f72",
-            absolutePath: pathUtil.resolve("a", "b", "c.txt")
-          }
-        }
+            absolutePath: pathUtil.resolve("a", "b", "c.txt"),
+          },
+        },
       ]);
     };
 
@@ -432,7 +432,7 @@ describe("tree walker", () => {
       expectations(data);
     });
 
-    it("async", done => {
+    it("async", (done) => {
       const absoluteStartingPath = pathUtil.resolve("a");
       const data: any[] = [];
       preparations();

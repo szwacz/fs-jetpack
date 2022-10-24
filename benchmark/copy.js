@@ -6,7 +6,7 @@ const testDir = utils.prepareJetpackTestDir();
 const toCopyDir = testDir.dir("to-copy");
 let timer;
 
-const test = testConfig => {
+const test = (testConfig) => {
   console.log("");
 
   return utils
@@ -36,7 +36,7 @@ const test = testConfig => {
       timer();
       return utils.cleanAfterTest();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
@@ -44,12 +44,12 @@ const test = testConfig => {
 const testConfigs = [
   {
     files: 10000,
-    size: 1000
+    size: 1000,
   },
   {
     files: 50,
-    size: 1000 * 1000 * 10
-  }
+    size: 1000 * 1000 * 10,
+  },
 ];
 
 const runNext = () => {
