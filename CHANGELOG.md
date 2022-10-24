@@ -1,3 +1,6 @@
+# 5.1.0 (2022-10-24)
+- `filter` function of `find()` method now receives also `absolutePath` property of each file
+
 # 5.0.0 (2022-09-15)
 - **(breaking change)** Dropped support for all node.js engines older than v14
 - **(possibly breaking change)** `inspect("some-file", { times: true })` now will return also `birthTime` of a file
