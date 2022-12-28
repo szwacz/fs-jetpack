@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6",
+    "target": "es2020",
     "noImplicitAny": true,
     "allowJs": false,
+    "declaration": true,
     "outDir": "./dist"
   },
   "include": ["src/**/*"]
