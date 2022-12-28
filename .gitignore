@@ -1,6 +1,5 @@
 /node_modules
-/coverage
-/.nyc_output
+/dist
 package-lock.json
 *.log
 .DS_Store
