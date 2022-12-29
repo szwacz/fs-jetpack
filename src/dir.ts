@@ -1,7 +1,16 @@
 import { inspect } from "util";
 import { resolve } from "path";
+import { constructFile, File } from "./file";
+import { removeSync, removeAsync } from "./remove";
 
-import { constructFile } from "./file";
+interface Dir {
+  path(): string;
+  dir(...pathParts: string[]): Dir;
+  file(...pathParts: string[]): File;
+  remove(path?: string): void;
+  removeAsync(path?: string): Promise<void>;
+  toString(): string;
+}
 
 const allArrayElementsAreStrings = (arr: any[]) => {
   return arr.reduce((accumulator: boolean, currentValue: any) => {
@@ -22,7 +31,7 @@ const pathPartsValid = (pathParts: string[]) => {
   );
 };
 
-export const constructDir = (dirPath: () => string) => {
+export const constructDir = (dirPath: () => string): Dir => {
   const toString = () => {
     return `[fs-jetpack dir ${dirPath()}]`;
   };
@@ -42,7 +51,31 @@ export const constructDir = (dirPath: () => string) => {
       }
       return constructFile(resolve(dirPath(), ...pathParts));
     },
+    remove: (path?: string) => {
+      if (path === undefined) {
+        removeSync(dirPath());
+      } else {
+        if (typeof path !== "string" || path === "") {
+          throw new Error(
+            `Method "dir.remove()" received invalid path parameter`
+          );
+        }
+        removeSync(resolve(dirPath(), path));
+      }
+    },
+    removeAsync: (path?: string): Promise<void> => {
+      if (path === undefined) {
+        return removeAsync(dirPath());
+      }
+      if (typeof path !== "string" || path === "") {
+        throw new Error(
+          `Method "dir.removeAsync()" received invalid path parameter`
+        );
+      }
+      return removeAsync(resolve(dirPath(), path));
+    },
     toString,
+    // @ts-ignore
     [inspect.custom]: toString,
   };
 };
