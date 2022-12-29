@@ -1,5 +1,5 @@
 import { expect } from "chai";
-
+import { osPath } from "./helpers/os";
 import jetpack, { file } from "../src/index";
 
 describe("file", () => {
@@ -13,7 +13,8 @@ describe("file", () => {
   it("console.log(file) gives nice info", () => {
     const f = file("foo.txt");
     console.log(f);
-    expect(f.toString()).to.equal(`[fs-jetpack file ${process.cwd()}/foo.txt]`);
+    const p = osPath(`${process.cwd()}/foo.txt`);
+    expect(f.toString()).to.equal(`[fs-jetpack file ${p}]`);
   });
 
   describe("input validation", () => {
@@ -22,6 +23,7 @@ describe("file", () => {
         file();
       }).to.throw(`Method "file()" received invalid path parameter`);
       expect(() => {
+        // @ts-ignore
         file(null);
       }).to.throw(`Method "file()" received invalid path parameter`);
       expect(() => {
@@ -31,6 +33,7 @@ describe("file", () => {
 
     it("throws if one of path parts is not a string", () => {
       expect(() => {
+        // @ts-ignore
         file("a", null);
       }).to.throw(`Method "file()" received invalid path parameter`);
       expect(() => {
@@ -39,7 +42,7 @@ describe("file", () => {
       }).to.throw(`Method "file()" received invalid path parameter`);
       expect(() => {
         // @ts-ignore
-        file([1,2]);
+        file([1, 2]);
       }).to.throw(`Method "file()" received invalid path parameter`);
     });
   });
