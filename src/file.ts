@@ -27,6 +27,7 @@ export const constructFile = (filePath: string): File => {
       return removeAsync(path());
     },
     toString,
+    // @ts-ignore
     [inspect.custom]: toString,
   };
 };
