@@ -1,10 +1,6 @@
 import { rmSync } from "fs";
 import { rm } from "fs/promises";
 
-// ---------------------------------------------------------
-// Sync
-// ---------------------------------------------------------
-
 export const removeSync = (path: string) => {
   rmSync(path, {
     recursive: true,
@@ -12,10 +8,6 @@ export const removeSync = (path: string) => {
     maxRetries: 3,
   });
 };
-
-// ---------------------------------------------------------
-// Async
-// ---------------------------------------------------------
 
 export const removeAsync = (path: string) => {
   return rm(path, {

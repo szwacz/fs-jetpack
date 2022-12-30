@@ -1,6 +1,6 @@
-import { constructDir } from "./dir";
+import { constructDir, Dir } from "./dir";
 
-const defaultDir = constructDir(() => process.cwd());
+const defaultDir: Dir = constructDir(() => process.cwd());
 const dir = defaultDir.dir;
 const file = defaultDir.file;
 

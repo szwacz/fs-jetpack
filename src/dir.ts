@@ -1,12 +1,15 @@
 import { inspect } from "util";
 import { resolve } from "path";
 import { constructFile, File } from "./file";
+import { emptyDirSync, emptyDirAsync } from "./empty";
 import { removeSync, removeAsync } from "./remove";
 
-interface Dir {
+export interface Dir {
   path(): string;
   dir(...pathParts: string[]): Dir;
   file(...pathParts: string[]): File;
+  empty(): void;
+  emptyAsync(): Promise<void>;
   remove(path?: string): void;
   removeAsync(path?: string): Promise<void>;
   toString(): string;
@@ -50,6 +53,12 @@ export const constructDir = (dirPath: () => string): Dir => {
         throw new Error(`Method "file()" received invalid path parameter`);
       }
       return constructFile(resolve(dirPath(), ...pathParts));
+    },
+    empty:() => {
+      emptyDirSync(dirPath())
+    },
+    emptyAsync:(): Promise<void> => {
+      return emptyDirAsync(dirPath())
     },
     remove: (path?: string) => {
       if (path === undefined) {
