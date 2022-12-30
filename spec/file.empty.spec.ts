@@ -74,7 +74,7 @@ describe("file.empty", () => {
       const timeDiff = Math.abs(
         fileStat.mtime.getTime() - fileStat.birthtime.getTime()
       );
-      expect(timeDiff).to.be.above(9);
+      expect(timeDiff).to.be.above(7);
     };
 
     it("sync", (done) => {
