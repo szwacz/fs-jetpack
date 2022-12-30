@@ -50,17 +50,23 @@ describe("file.empty", () => {
   describe("should leave file birth time and mode intact", () => {
     const preparations = () => {
       fse.outputFileSync("file.txt", "abc");
-      fse.chmodSync("file.txt", 0o711);
-      path("file.txt").shouldHaveMode("711");
+      if (process.platform !== "win32") {
+        fse.chmodSync("file.txt", 0o711);
+        path("file.txt").shouldHaveMode("711");
+      }
       const fileStat = fse.statSync("file.txt");
       expect(fileStat.birthtime.getTime()).to.equal(fileStat.mtime.getTime());
     };
 
     const expectations = () => {
       path("file.txt").shouldBeFileWithContent("");
-      path("file.txt").shouldHaveMode("711");
+      if (process.platform !== "win32") {
+        path("file.txt").shouldHaveMode("711");
+      }
       const fileStat = fse.statSync("file.txt");
-      expect(fileStat.birthtime.getTime()).to.not.equal(fileStat.mtime.getTime());
+      expect(fileStat.birthtime.getTime()).to.not.equal(
+        fileStat.mtime.getTime()
+      );
     };
 
     it("sync", (done) => {
