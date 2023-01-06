@@ -24,7 +24,7 @@ describe("file.empty", () => {
     });
   });
 
-  describe("if file exits will make it empty", () => {
+  describe("if file exists will make it empty", () => {
     const preparations = () => {
       fse.outputFileSync("file.txt", "abc");
       path("file.txt").shouldBeFileWithContent("abc");

@@ -1,12 +1,15 @@
 import { inspect } from "util";
 import { resolve } from "path";
 import { emptyFileSync, emptyFileAsync } from "./empty";
+import { existsFileSync, existsFileAsync } from "./exists";
 import { removeSync, removeAsync } from "./remove";
 
 export interface File {
   path(): string;
   empty(): void;
   emptyAsync(): Promise<void>;
+  exists(): boolean;
+  existsAsync(): Promise<boolean>;
   remove(): void;
   removeAsync(): Promise<void>;
   toString(): string;
@@ -28,6 +31,12 @@ export const constructFile = (filePath: string): File => {
     },
     emptyAsync: (): Promise<void> => {
       return emptyFileAsync(path());
+    },
+    exists: (): boolean => {
+      return existsFileSync(path());
+    },
+    existsAsync: (): Promise<boolean> => {
+      return existsFileAsync(path());
     },
     remove: () => {
       removeSync(path());
