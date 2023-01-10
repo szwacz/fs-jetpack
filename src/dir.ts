@@ -2,6 +2,7 @@ import { inspect } from "util";
 import { resolve } from "path";
 import { constructFile, File } from "./file";
 import { emptyDirSync, emptyDirAsync } from "./empty";
+import { existsPathSync, existsPathAsync } from "./exists";
 import { removeSync, removeAsync } from "./remove";
 
 export interface Dir {
@@ -10,6 +11,8 @@ export interface Dir {
   file(...pathParts: string[]): File;
   empty(): void;
   emptyAsync(): Promise<void>;
+  exists(path?: string): boolean;
+  existsAsync(path?: string): Promise<boolean>;
   remove(path?: string): void;
   removeAsync(path?: string): Promise<void>;
   toString(): string;
@@ -54,11 +57,29 @@ export const constructDir = (dirPath: () => string): Dir => {
       }
       return constructFile(resolve(dirPath(), ...pathParts));
     },
-    empty:() => {
-      emptyDirSync(dirPath())
+    empty: () => {
+      emptyDirSync(dirPath());
     },
-    emptyAsync:(): Promise<void> => {
-      return emptyDirAsync(dirPath())
+    emptyAsync: (): Promise<void> => {
+      return emptyDirAsync(dirPath());
+    },
+    exists: (path?: string): boolean => {
+      let p;
+      if (path === undefined) {
+        p = dirPath();
+      } else {
+        p = resolve(dirPath(), path);
+      }
+      return existsPathSync(p);
+    },
+    existsAsync: (path?: string): Promise<boolean> => {
+      let p;
+      if (path === undefined) {
+        p = dirPath();
+      } else {
+        p = resolve(dirPath(), path);
+      }
+      return existsPathAsync(p);
     },
     remove: (path?: string) => {
       if (path === undefined) {

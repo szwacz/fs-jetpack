@@ -36,3 +36,32 @@ export const existsFileAsync = (path: string): Promise<boolean> => {
       });
   });
 };
+
+export const existsPathSync = (path: string) => {
+  try {
+    const st = statSync(path);
+    return true;
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      return false;
+    } else {
+      throw err;
+    }
+  }
+};
+
+export const existsPathAsync = (path: string): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    stat(path)
+      .then((st) => {
+        resolve(true);
+      })
+      .catch((err) => {
+        if (err.code === "ENOENT") {
+          resolve(false);
+        } else {
+          reject(err);
+        }
+      });
+  });
+};
