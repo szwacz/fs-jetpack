@@ -4,6 +4,8 @@ import { appendToFileSync, appendToFileAsync } from "./append";
 import { emptyFileSync, emptyFileAsync } from "./empty";
 import { existsFileSync, existsFileAsync } from "./exists";
 import { removeSync, removeAsync } from "./remove";
+import { writeToFileSync, writeToFileAsync } from "./write";
+import { isStringOrBuffer } from "./helpers/validators";
 
 export interface File {
   path(): string;
@@ -15,6 +17,8 @@ export interface File {
   existsAsync(): Promise<boolean>;
   remove(): void;
   removeAsync(): Promise<void>;
+  write(data: string | Buffer): void;
+  writeAsync(data: string | Buffer): Promise<void>;
   toString(): string;
 }
 
@@ -30,8 +34,7 @@ export const constructFile = (filePath: string): File => {
   return {
     path,
     append: (data: string | Buffer) => {
-      const isDataValid = typeof data === "string" || Buffer.isBuffer(data);
-      if (isDataValid === false) {
+      if (isStringOrBuffer(data) === false) {
         throw new Error(
           `Method "file.append()" received invalid data parameter`
         );
@@ -39,8 +42,7 @@ export const constructFile = (filePath: string): File => {
       appendToFileSync(path(), data);
     },
     appendAsync: (data: string | Buffer): Promise<void> => {
-      const isDataValid = typeof data === "string" || Buffer.isBuffer(data);
-      if (isDataValid === false) {
+      if (isStringOrBuffer(data) === false) {
         throw new Error(
           `Method "file.appendAsync()" received invalid data parameter`
         );
@@ -64,6 +66,22 @@ export const constructFile = (filePath: string): File => {
     },
     removeAsync: (): Promise<void> => {
       return removeAsync(path());
+    },
+    write: (data: string | Buffer) => {
+      if (isStringOrBuffer(data) === false) {
+        throw new Error(
+          `Method "file.write()" received invalid data parameter`
+        );
+      }
+      writeToFileSync(path(), data);
+    },
+    writeAsync: (data: string | Buffer): Promise<void> => {
+      if (isStringOrBuffer(data) === false) {
+        throw new Error(
+          `Method "file.writeAsync()" received invalid data parameter`
+        );
+      }
+      return writeToFileAsync(path(), data);
     },
     toString,
     // @ts-ignore
