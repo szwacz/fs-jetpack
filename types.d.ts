@@ -69,6 +69,12 @@ export interface InspectResult {
   birthTime?: Date;
 }
 
+export interface Serializer<Input = any, Output = any> {
+  validate?: (input: Input) => boolean;
+  stringify: (input: Input) => string;
+  parse: (input: string) => Output;
+}
+
 type InspectTreeOptions = {
   checksum?: Checksum;
   relativePath?: boolean;
@@ -87,6 +93,7 @@ type WriteOptions = {
   mode?: string | number;
   atomic?: boolean;
   jsonIndent?: number;
+  serializer?: Serializer | false;
 };
 
 type MoveOptions = {
@@ -124,6 +131,27 @@ export interface FSJetpack {
   };
 
   path(...pathParts: string[]): string;
+
+  /**
+   * Adds a serializer for a given file extension.
+   *
+   * @param extension   the file extension the serializer applies to
+   * @param serializer  an object with conformant `validate`, `parse`, and `stringify` functions
+   */
+  setSerializer(extension: string, serializer: Serializer): void;
+
+  /**
+   * List all current serializers and their mapped extensions.
+   */
+  listSerializers(): Record<string, Serializer>;
+
+  /**
+   * Removes the serializer for a given file extension.
+   *
+   * @param extension   the file extension whose serializer should be removed
+   */
+
+  deleteSerializer(extension: string): void;
 
   /**
    * Appends given data to the end of file. If file or any parent directory doesn't exist it will be created.
@@ -338,21 +366,24 @@ export interface FSJetpack {
    * Reads content of file.
    *
    * @param path path to file
-   * @param returnAs a custom return types
+   * @param returnAs a custom return type; if set to `auto`, attempt to find a serializer to match the file extension
    */
   read(path: string): string | undefined;
   read(path: string, returnAs: "utf8"): string | undefined;
   read(path: string, returnAs: "buffer"): Buffer | undefined;
   read(path: string, returnAs: "json" | "jsonWithDates"): any | undefined;
+  read(path: string, returnAs: "auto"): any | undefined;
+  read(path: string, returnAs: Serializer["parse"]): any | undefined;
   /**
    * Reads content of file.
    *
    * @param path path to file
-   * @param returnAs a custom return types
+   * @param returnAs a custom return type; if set to `auto`, attempt to find a serializer to match the file extension
    */
   readAsync(path: string): Promise<string | undefined>;
   readAsync(path: string, returnAs: "utf8"): Promise<string | undefined>;
   readAsync(path: string, returnAs: "buffer"): Promise<Buffer | undefined>;
+  readAsync(path: string, returnAs: "auto"): Promise<any | undefined>;
   readAsync(
     path: string,
     returnAs: "json" | "jsonWithDates"
@@ -431,6 +462,7 @@ export interface FSJetpack {
    * @param data data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputted into file as JSON).
    * @param options
    */
+  write(path: string, data: WritableData, options?: WriteOptions): void;
   write(path: string, data: WritableData, options?: WriteOptions): void;
 
   /**

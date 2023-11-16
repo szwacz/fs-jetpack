@@ -97,7 +97,7 @@ describe("read", () => {
     };
 
     const expectations = (err: any) => {
-      expect(err.message).to.have.string("JSON parsing failed while reading");
+      expect(err.message).to.have.string("Parsing failed while reading");
     };
 
     it("sync", () => {
@@ -257,12 +257,12 @@ describe("read", () => {
           expect(() => {
             test.method("abc", true);
           }).to.throw(
-            `Argument "returnAs" passed to ${test.methodName}(path, returnAs) must be a string or an undefined. Received boolean`
+            `Argument "returnAs" passed to ${test.methodName}(path, returnAs) must be a string or a function or an undefined. Received boolean`
           );
           expect(() => {
             test.method("abc", "foo");
           }).to.throw(
-            `Argument "returnAs" passed to ${test.methodName}(path, returnAs) must have one of values: utf8, buffer, json, jsonWithDates`
+            `Argument "returnAs" passed to ${test.methodName}(path, returnAs) must have one of values: utf8, buffer, json, jsonWithDates, auto`
           );
         });
       });
