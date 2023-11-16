@@ -70,7 +70,7 @@ export interface InspectResult {
 }
 
 export interface Serializer<Input = any, Output = any> {
-  validate: (input: Input) => boolean;
+  validate?: (input: Input) => boolean;
   stringify: (input: Input) => string;
   parse: (input: string) => Output;
 }
