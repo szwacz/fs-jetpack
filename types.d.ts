@@ -374,6 +374,7 @@ export interface FSJetpack {
   read(path: string, returnAs: "buffer"): Buffer | undefined;
   read(path: string, returnAs: "json" | "jsonWithDates"): any | undefined;
   read(path: string, returnAs: "auto"): any | undefined;
+  read(path: string, returnAs: Serializer['parse']): any | undefined;
   /**
    * Reads content of file.
    *
