@@ -132,6 +132,28 @@ export interface FSJetpack {
 
   path(...pathParts: string[]): string;
 
+
+  /**
+   * Adds a serializer for a given file extension.
+   *
+   * @param extension   the file extension the serializer applies to
+   * @param serializer  an object with conformant `validate`, `parse`, and `stringify` functions
+   */
+  setSerializer(extension: string, serializer: Serializer): void;
+
+  /**
+   * List all current serializers and their mapped extensions.
+   */
+  listSerializers(): Record<string, Serializer>;
+
+  /**
+   * Removes the serializer for a given file extension.
+   *
+   * @param extension   the file extension whose serializer should be removed
+   */
+
+  deleteSerializer(extension: string): void;
+
   /**
    * Appends given data to the end of file. If file or any parent directory doesn't exist it will be created.
    *
@@ -345,7 +367,7 @@ export interface FSJetpack {
    * Reads content of file.
    *
    * @param path path to file
-   * @param returnAs a custom return types
+   * @param returnAs a custom return type; if set to `auto`, attempt to find a serializer to match the file extension
    */
   read(path: string): string | undefined;
   read(path: string, returnAs: "utf8"): string | undefined;
@@ -356,7 +378,7 @@ export interface FSJetpack {
    * Reads content of file.
    *
    * @param path path to file
-   * @param returnAs a custom return types
+   * @param returnAs a custom return type; if set to `auto`, attempt to find a serializer to match the file extension
    */
   readAsync(path: string): Promise<string | undefined>;
   readAsync(path: string, returnAs: "utf8"): Promise<string | undefined>;
