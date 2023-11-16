@@ -97,7 +97,7 @@ describe("read", () => {
     };
 
     const expectations = (err: any) => {
-      expect(err.message).to.have.string("JSON parsing failed while reading");
+      expect(err.message).to.have.string("Parsing failed while reading");
     };
 
     it("sync", () => {
