@@ -69,6 +69,12 @@ export interface InspectResult {
   birthTime?: Date;
 }
 
+export interface Serializer<Input = any, Output = any> {
+  validate: (input: Input) => boolean;
+  stringify: (input: Input) => string;
+  parse: (input: string) => Output;
+}
+
 type InspectTreeOptions = {
   checksum?: Checksum;
   relativePath?: boolean;
@@ -87,6 +93,7 @@ type WriteOptions = {
   mode?: string | number;
   atomic?: boolean;
   jsonIndent?: number;
+  serializer?: Serializer;
 };
 
 type MoveOptions = {
@@ -344,6 +351,7 @@ export interface FSJetpack {
   read(path: string, returnAs: "utf8"): string | undefined;
   read(path: string, returnAs: "buffer"): Buffer | undefined;
   read(path: string, returnAs: "json" | "jsonWithDates"): any | undefined;
+  read(path: string, returnAs: "auto"): any | undefined;
   /**
    * Reads content of file.
    *
@@ -353,6 +361,7 @@ export interface FSJetpack {
   readAsync(path: string): Promise<string | undefined>;
   readAsync(path: string, returnAs: "utf8"): Promise<string | undefined>;
   readAsync(path: string, returnAs: "buffer"): Promise<Buffer | undefined>;
+  readAsync(path: string, returnAs: "auto"): Promise<any | undefined>;
   readAsync(
     path: string,
     returnAs: "json" | "jsonWithDates"
@@ -431,6 +440,7 @@ export interface FSJetpack {
    * @param data data to be written. This could be `String`, `Buffer`, `Object` or `Array` (if last two used, the data will be outputted into file as JSON).
    * @param options
    */
+  write(path: string, data: WritableData, options?: WriteOptions): void;
   write(path: string, data: WritableData, options?: WriteOptions): void;
 
   /**
