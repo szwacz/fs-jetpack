@@ -93,7 +93,7 @@ type WriteOptions = {
   mode?: string | number;
   atomic?: boolean;
   jsonIndent?: number;
-  serializer?: Serializer;
+  serializer?: Serializer | false;
 };
 
 type MoveOptions = {
