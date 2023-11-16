@@ -5,9 +5,9 @@ import { Serializer } from "../../types";
 describe("serializer management", () => {
   const dummySerializer: Serializer = {
     validate: (input: unknown) => true,
-    stringify: (input: any) => '[serializer-test]',
+    stringify: (input: any) => "[serializer-test]",
     parse: (input: string) => input.length,
-  }
+  };
 
   it("set", () => {
     jetpack.setSerializer("serializer-test", dummySerializer);
