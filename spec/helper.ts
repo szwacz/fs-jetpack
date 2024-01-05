@@ -13,13 +13,18 @@ process.on("exit", () => {
   });
 });
 
-const setCleanTestCwd = () => {
+const getRandomName = (prefix : string) => {
   const random = crypto.randomBytes(16).toString("hex");
-  const path = `${os.tmpdir()}/fs-jetpack-test-${random}`;
+  return prefix + random;
+}
+
+const setCleanTestCwd = () => {
+  const path = getRandomName(`${os.tmpdir()}/fs-jetpack-test-`);
   fse.mkdirSync(path);
   createdDirectories.push(path);
   process.chdir(path);
 };
+
 
 const switchBackToCorrectCwd = () => {
   const path = createdDirectories.pop();
@@ -56,6 +61,7 @@ function osSep(path: any): any {
 export default {
   setCleanTestCwd,
   switchBackToCorrectCwd,
+  getRandomName,
   parseMode,
   osSep,
 };

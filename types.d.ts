@@ -93,6 +93,8 @@ type MoveOptions = {
   overwrite?: boolean;
 };
 
+export type RealpathResult = string;
+
 type RenameOptions = {
   overwrite?: boolean;
 };
@@ -357,6 +359,30 @@ export interface FSJetpack {
     path: string,
     returnAs: "json" | "jsonWithDates"
   ): Promise<any | undefined>;
+  /**
+   *
+   * Computes the canonical pathname by resolving ., .., and symbolic links.
+   * Wrapper around
+   * [fs.realpath](https://nodejs.org/api/fs.html#fsrealpathpath-options-callback)
+   * but does not throw on ENOENT but instead returns an empty value.
+   *
+   * @param path path to resolve
+   *
+   * Returns:
+   *  - `<resolved-path>` the canonical pathname
+   *  - `""` if path does not exist
+   */
+  realpath(path: string): RealpathResult;
+  /**
+   *
+   * Asyncronously the canonical pathname by resolving ., .., and symbolic links.
+   * Wrapper around
+   * [fs.realpath](https://nodejs.org/api/fs.html#fsrealpathpath-options-callback)
+   * but does not throw on ENOENT but instead returns an empty value.
+   *
+   * @param path path to resolve
+   */
+  realpathAsync(path: string): Promise<RealpathResult>;
 
   /**
    * Deletes given path, no matter what it is (file, directory or non-empty directory). If path already doesn't exist
