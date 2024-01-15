@@ -62,7 +62,7 @@ describe("realpath", () => {
     };
 
     const expectations = (realpath: RealpathResult) => {
-      chai.expect(realpath).to.contains(name);
+      chai.expect(realpath.includes(name)).to.be.true;
     };
 
     it("sync", () => {
@@ -87,7 +87,7 @@ describe("realpath", () => {
     };
 
     const expectations = (realpath: RealpathResult) => {
-      chai.expect(realpath).to.contains(path);
+      chai.expect(realpath.includes(path)).to.be.true;
     };
 
     it("sync", () => {
@@ -114,7 +114,7 @@ describe("realpath", () => {
     };
 
     const expectations = (realpath: RealpathResult) => {
-      chai.expect(realpath).to.contains(name);
+      chai.expect(realpath.includes(name)).to.be.true;
     };
 
     it("sync", () => {
