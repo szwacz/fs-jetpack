@@ -1,8 +1,6 @@
 import * as fse from "fs-extra";
 import * as chai from "chai";
 
-chai.use(require("chai-string"));
-
 import helper from "./helper";
 import * as jetpack from "..";
 import { RealpathResult } from "../types";
@@ -40,7 +38,7 @@ describe("realpath", () => {
     };
 
     const expectations = (realpath: RealpathResult) => {
-      chai.expect(realpath).to.contains(name);
+      chai.expect(realpath.includes(name)).to.be.true;
     };
 
     it("sync", () => {
@@ -83,7 +81,7 @@ describe("realpath", () => {
 
   describe("respects internal CWD of jetpack instance", () => {
     const name = helper.getRandomName("text.txt");
-    const path = "a/" + name
+    const path = "a/" + name;
     const preparations = () => {
       fse.outputFileSync(path, "abc");
     };
@@ -141,17 +139,23 @@ describe("realpath", () => {
   describe("input validation", () => {
     const tests = [
       { type: "sync", method: jetpack.realpath, methodName: "realpath" },
-      { type: "async", method: jetpack.realpathAsync, methodName: "realpathAsync" },
+      {
+        type: "async",
+        method: jetpack.realpathAsync,
+        methodName: "realpathAsync",
+      },
     ];
 
     describe('"path" argument', () => {
       tests.forEach((test) => {
         it(test.type, () => {
-          chai.expect(() => {
-            test.method(undefined);
-          }).to.throw(
-            `Argument "path" passed to ${test.methodName}(path) must be a string. Received undefined`
-          );
+          chai
+            .expect(() => {
+              test.method(undefined);
+            })
+            .to.throw(
+              `Argument "path" passed to ${test.methodName}(path) must be a string. Received undefined`
+            );
         });
       });
     });
