@@ -1,5 +1,6 @@
 import * as fse from "fs-extra";
 import * as chai from "chai";
+import * as pathUtil from "path";
 
 import helper from "./helper";
 import * as jetpack from "..";
@@ -81,7 +82,7 @@ describe("realpath", () => {
 
   describe("respects internal CWD of jetpack instance", () => {
     const name = helper.getRandomName("text.txt");
-    const path = "a/" + name;
+    const path = pathUtil.join("a", name)
     const preparations = () => {
       fse.outputFileSync(path, "abc");
     };
