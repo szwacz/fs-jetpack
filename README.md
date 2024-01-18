@@ -23,6 +23,7 @@ API for your everyday file system manipulations, much more convenient than [fs](
 [move](#movefrom-to-options)  
 [path](#pathparts)  
 [read](#readpath-returnas)  
+[realpath](#realpath)
 [remove](#removepath)  
 [rename](#renamepath-newname-options)  
 [symlink](#symlinksymlinkvalue-path)  
@@ -71,11 +72,11 @@ Commonly used naming convention in node.js world has been flipped in this API, s
 
 ```js
 // Synchronous call
-const data = jetpack.read('file.txt');
+const data = jetpack.read("file.txt");
 console.log(data);
 
 // Asynchronous call
-const data = await jetpack.readAsync('file.txt');
+const data = await jetpack.readAsync("file.txt");
 console.log(data);
 ```
 
@@ -116,7 +117,9 @@ src.find({ matching: "*" }).forEach((path) => {
 Need to delete all temporary and log files inside `my_folder` tree?
 
 ```js
-jetpack.find("my_folder", { matching: ["*.tmp", "*.log"] }).forEach(jetpack.remove);
+jetpack
+  .find("my_folder", { matching: ["*.tmp", "*.log"] })
+  .forEach(jetpack.remove);
 ```
 
 Need to perform temporary data transformations?
@@ -207,17 +210,17 @@ jetpack.copy("file.txt", "foo/file.txt", { overwrite: true });
 jetpack.copy("foo_1", "foo_final", {
   overwrite: (srcInspectData, destInspectData) => {
     return srcInspectData.modifyTime > destInspectData.modifyTime;
-  }
+  },
 });
 
 // Asynchronously copies files from folder foo_1 to foo_final,
 // but overwrites only files containing "John Doe" string.
 jetpack.copyAsync("foo_1", "foo_final", {
   overwrite: (srcInspectData, destInspectData) => {
-    return jetpack.readAsync(srcInspectData.absolutePath).then(data => {
+    return jetpack.readAsync(srcInspectData.absolutePath).then((data) => {
       return data.includes("John Doe");
     });
-  }
+  },
 });
 
 // Copies only '.md' files from 'foo' (and subdirectories of 'foo') to 'bar'.
@@ -237,7 +240,7 @@ jetpack.copy("foo", "bar", { matching: ["*.md", "!top-secret/**/*"] });
 // So in this example directory 'dir1/dir2/images' will be copied
 // to 'copied-dir2/images'
 jetpack.copy("dir1/dir2", "copied-dir2", {
-  matching: "images/**"
+  matching: "images/**",
 });
 ```
 
@@ -394,12 +397,12 @@ jetpack.find("foo", { matching: "bar/**/*.txt" });
 jetpack.find("foo", { matching: "bar/*.txt" });
 
 // Finds all '.txt' files that were modified after 2019-01-01
-const borderDate = new Date("2019-01-01")
+const borderDate = new Date("2019-01-01");
 jetpack.find("foo", {
   matching: "*.txt",
   filter: (inspectObj) => {
-    return inspectObj.modifyTime > borderDate
-  }
+    return inspectObj.modifyTime > borderDate;
+  },
 });
 
 // Finds all '.js' files inside 'my-project' but excluding those in 'vendor' subtree.
@@ -422,7 +425,7 @@ myStuffDir.find({ matching: ["*.md"] });
 // For example lets delete all `.tmp` files inside `foo` directory
 jetpack
   .find("foo", {
-    matching: "*.tmp"
+    matching: "*.tmp",
   })
   .forEach(jetpack.remove);
 ```
@@ -573,8 +576,34 @@ Reads content of file.
 - `'json'` content will be returned as parsed JSON object.
 - `'jsonWithDates'` content will be returned as parsed JSON object, and date strings in [ISO format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) will be automatically turned into Date objects.
 
-**returns:**  
+**returns:**
 File content in specified format, or `undefined` if file doesn't exist.
+
+## realpath([path])
+
+asynchronous: **realpathAsync([path])**
+
+Computes the canonical pathname by resolving ., .., and symbolic links.
+Wrapper around
+[fs.realpath](https://nodejs.org/api/fs.html#fsrealpathpath-options-callback)
+but does not throw on ENOENT but instead returns an empty value.
+
+**arguments:**
+`path` (optional) path to file or directory to check.
+
+**returns:**
+The canonical pathname
+
+**examples:**
+
+```javascript
+// Compute the canonical pathname by resolving ., .., and symbolic links.
+
+jetpack.realpath("my_work/notes.txt"); // my_work/notes.txt
+
+jetpack.symlink("my_work/notes.txt", "notes");
+jetpack.realpath("notes"); // my_work/notes.txt
+```
 
 ## remove([path])
 
